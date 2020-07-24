@@ -5,6 +5,7 @@ on: [pull_request, push]
 
 jobs:
 
+
   check_release_notes:
     name: check_release_notes
     timeout-minutes: 1
@@ -44,6 +45,7 @@ jobs:
               esac
           fi
 
+
   run_tests:
     name: run_tests
     timeout-minutes: 1
@@ -66,6 +68,7 @@ jobs:
           go test -timeout 1m -race -run=XXXX -bench=. ./...
           go test -timeout 1m -v -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
           go tool cover -html=coverage.out -o coverage.html
+          go tool cover -func=coverage.out
 
 
   run_analysis:
