@@ -49,6 +49,7 @@ METHODS: %v
 			iType,
 			iType,
 		)
+		// TODO: dict is an odd name
 		var dict = []string{preamble}
 		fmt.Println(dict)
 		return
@@ -93,6 +94,7 @@ METHODS: %v
 		fields,
 		methods,
 	)
+	// TODO: dict is an odd name
 	var dict = []string{preamble}
 	fmt.Println(dict)
 }
