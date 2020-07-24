@@ -12,6 +12,10 @@ import (
 	"github.com/komuw/meli"
 )
 
+// TODO: clean up
+
+// TODO: add documentation
+
 type Foo struct {
 	Prop string
 }
@@ -30,6 +34,8 @@ func (f Foo) private(s string) string {
 	return s
 }
 
+// TODO: this will stutter; `dir.dir(23)`
+// maybe it is okay??
 func dir(i interface{}) {
 	// TODO: from the documentation of reflect.Type interface:
 	// Not all methods apply to all kinds of types. Restrictions,
