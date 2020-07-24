@@ -10,7 +10,6 @@ import (
 
 	"github.com/bradfitz/iter"
 	"github.com/komuw/meli"
-	"github.com/pkg/errors"
 )
 
 type Foo struct {
@@ -127,7 +126,6 @@ func main() {
 
 	dir(dc)
 	dir(myFunc)
-	dir(errors.New)
 
 	// dir(io.Reader{})
 }
