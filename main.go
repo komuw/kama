@@ -39,7 +39,7 @@ func dir(i interface{}) {
 			`
 NAME: %v,
 KIND: %v,
-STRING: %v,
+SIGNATURE: %v,
 FIELDS: %v
 METHODS: %v
 `,
@@ -78,11 +78,12 @@ METHODS: %v
 	methods = append(methods, "\n\t")
 
 	// TODO: make this a constant template?
+	// TODO: is using `iType.String()` as the value of `SIGNATURE` correct?
 	preamble := fmt.Sprintf(
 		`
 NAME: %v,
 KIND: %v,
-STRING: %v,
+SIGNATURE: %v,
 FIELDS: %v
 METHODS: %v
 `,
@@ -99,7 +100,6 @@ METHODS: %v
 func main() {
 	defer panicHandler()
 
-	dir(nil)
 	foo := Foo{}
 	dir(foo)
 	dir(bufio.Scanner{})
@@ -112,6 +112,7 @@ func main() {
 		FollowLogs:     true}
 
 	dir(dc)
+	dir(reflect.Value{})
 
 	// dir(io.Reader{})
 }
