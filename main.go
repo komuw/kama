@@ -166,7 +166,6 @@ func cool(pkg *packages.Package) {
 				// skip unexported names
 				continue
 			}
-
 			// fmt.Println("obj type: ", obj.Type())
 			// fmt.Println("obj name: ", obj.Name())
 			// fmt.Println("ok: ", types.ObjectString(obj, qual))
@@ -175,14 +174,6 @@ func cool(pkg *packages.Package) {
 		}
 		// for _, name := range scope.Names() {
 		// 	obj := scope.Lookup(name)
-		// 	if !obj.Exported() {
-		// 		continue // skip unexported names
-		// 	}
-		// 	xxx := reflect.TypeOf(obj)
-
-		// 	fmt.Println("xxx: ", xxx, xxx.Kind())
-
-		// 	fmt.Printf("\t%s\n", types.ObjectString(obj, qual))
 		// 	// if _, ok := obj.(*types.TypeName); ok {
 		// 	// 	for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), nil) {
 		// 	// 		if !meth.Obj().Exported() {
