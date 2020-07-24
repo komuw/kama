@@ -60,7 +60,7 @@ METHODS: %v
 	if typeName == "." {
 		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 		if typeName == "" {
-			typeName = "."
+			typeName = "." + iType.Elem().Name()
 		}
 	}
 
