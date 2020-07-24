@@ -64,7 +64,7 @@ jobs:
       - name: tests and benchmarks
         run: |
           go test -timeout 1m -race -run=XXXX -bench=. ./...
-          go test -timeout 1m -v -race -cover -coverprofile=coverage.txt ./... && \
+          go test -timeout 1m -v -race -cover -coverprofile=coverage.out ./... && \
           bash <(curl -s https://codecov.io/bash)
 
 
