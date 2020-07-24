@@ -4,11 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"runtime"
 
 	"reflect"
 
 	"github.com/bradfitz/iter"
 	"github.com/komuw/meli"
+	"github.com/pkg/errors"
 )
 
 type Foo struct {
@@ -56,6 +58,13 @@ METHODS: %v
 	}
 
 	typeName := iType.PkgPath() + "." + iType.Name()
+	if typeName == "." {
+		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+		if typeName == "" {
+			typeName = "."
+		}
+	}
+
 	typeKind := iType.Kind()
 	typeString := iType.String()
 
@@ -99,6 +108,9 @@ METHODS: %v
 	fmt.Println(dict)
 }
 
+func myFunc(arg1 string, arg2 int) {
+
+}
 func main() {
 	defer panicHandler()
 
@@ -114,7 +126,8 @@ func main() {
 		FollowLogs:     true}
 
 	dir(dc)
-	dir(reflect.Value{})
+	dir(myFunc)
+	dir(errors.New)
 
 	// dir(io.Reader{})
 }

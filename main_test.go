@@ -1,7 +1,10 @@
 package main
 
 import (
+	"reflect"
 	"testing"
+
+	"github.com/pkg/errors"
 )
 
 /*
@@ -23,6 +26,10 @@ type IntAlias int
 
 func SomeFunction(arg1 string, arg2 int) (string, error) {
 	return "", nil
+}
+
+func OkayFunc(arg1 string, arg2 int) {
+
 }
 
 func TestPrimitives(t *testing.T) {
@@ -54,9 +61,22 @@ func TestPrimitives(t *testing.T) {
 		IntAlias(10),
 		(func(v IntAlias) *IntAlias { return &v })(10),
 		SomeFunction,
+
 		func(arg string) (bool, error) { return false, nil },
 		nil,
 		interface{}(nil),
+	}
+
+	for _, v := range tt {
+		dir(v)
+
+	}
+}
+
+func TestMore(t *testing.T) {
+	tt := []interface{}{
+		reflect.Value{},
+		errors.New,
 	}
 
 	for _, v := range tt {

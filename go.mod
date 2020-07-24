@@ -6,6 +6,7 @@ require (
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
 	github.com/containerd/containerd v1.3.6 // indirect
 	github.com/komuw/meli v0.2.2
+	github.com/pkg/errors v0.8.1
 	github.com/sanity-io/litter v1.2.0
 )
 
