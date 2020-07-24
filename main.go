@@ -1,38 +1,20 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"go/types"
+	"log"
 	"runtime"
+	"strings"
 
 	"reflect"
 
-	"github.com/bradfitz/iter"
-	"github.com/komuw/meli"
+	"golang.org/x/tools/go/packages"
 )
 
 // TODO: clean up
 
 // TODO: add documentation
-
-type Foo struct {
-	Prop string
-}
-
-func (f Foo) String() string {
-	return fmt.Sprintf("Foo(%v)", f.Prop)
-}
-
-func (f Foo) Bar() string {
-	return f.Prop
-}
-func (f Foo) Add(a, b int) int {
-	return a + b
-}
-func (f Foo) private(s string) string {
-	return s
-}
 
 // TODO: this will stutter; `dir.dir(23)`
 // maybe it is okay??
@@ -129,25 +111,109 @@ METHODS: %v
 	fmt.Println(dict)
 }
 
-func myFunc(arg1 string, arg2 int) {
+func pkgInfo(patterns []string) {
+	// patterns := []string{"pattern=net/http"}
+	//patterns := []string{"pattern=os"}
 
+	// A higher numbered modes cause Load to return more information,
+	cfg := &packages.Config{Mode: packages.LoadAllSyntax}
+	pkgs, err := packages.Load(cfg, patterns...)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	// if packages.PrintErrors(pkgs) > 0 {
+	// 	// TODO: maybe we do not need this
+	// 	log.Fatal("PrintErrors")
+	// }
+
+	pkg1 := pkgs[0]
+	// pkg1.Imports: %v
+	fmt.Printf(`
+		Name: %v
+		PkgPath: %v
+        ExportFile: %v
+		`,
+		pkg1.Name,
+		pkg1.PkgPath,
+		pkg1.ExportFile,
+		// pkg1.TypesInfo,
+
+		// pkg1.TypesInfo,
+	)
+	cool(pkgs[0])
+	// litter.Dump(pkgs[0])
+	// dir(pkgs[0])
+	// for _, pkg := range pkgs {
+	// 	fmt.Println(pkg.ID, pkg.GoFiles)
+	// }
+}
+
+func cool(pkg *packages.Package) {
+	// package members (TypeCheck or WholeProgram mode)
+
+	items := []string{}
+	if pkg.Types != nil {
+		qual := types.RelativeTo(pkg.Types)
+		scope := pkg.Types.Scope()
+
+		// fmt.Println("scope: ", scope)
+		for _, name := range scope.Names() {
+			obj := scope.Lookup(name)
+			if !obj.Exported() {
+				// skip unexported names
+				continue
+			}
+
+			// fmt.Println("obj type: ", obj.Type())
+			// fmt.Println("obj name: ", obj.Name())
+			// fmt.Println("ok: ", types.ObjectString(obj, qual))
+			items = append(items, types.ObjectString(obj, qual))
+
+		}
+		// for _, name := range scope.Names() {
+		// 	obj := scope.Lookup(name)
+		// 	if !obj.Exported() {
+		// 		continue // skip unexported names
+		// 	}
+		// 	xxx := reflect.TypeOf(obj)
+
+		// 	fmt.Println("xxx: ", xxx, xxx.Kind())
+
+		// 	fmt.Printf("\t%s\n", types.ObjectString(obj, qual))
+		// 	// if _, ok := obj.(*types.TypeName); ok {
+		// 	// 	for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), nil) {
+		// 	// 		if !meth.Obj().Exported() {
+		// 	// 			continue // skip unexported names
+		// 	// 		}
+		// 	// 		fmt.Printf("\t%s\n", types.SelectionString(meth, qual))
+		// 	// 	}
+		// 	// }
+		// }
+	}
+
+	fmt.Println("items: ", items)
+
+	varSlice := []string{}
+	constantSlice := []string{}
+	typeSlice := []string{}
+	for _, v := range items {
+		if strings.HasPrefix(v, "var") {
+			varSlice = append(varSlice, v)
+		} else if strings.HasPrefix(v, "const") {
+			constantSlice = append(constantSlice, v)
+		} else if strings.HasPrefix(v, "type") {
+			typeSlice = append(typeSlice, v)
+		}
+	}
+
+	fmt.Println("varSlice: ", varSlice)
+	fmt.Println("constantSlice: ", constantSlice)
+	fmt.Println("typeSlice: ", typeSlice)
 }
 func main() {
 	defer panicHandler()
 
-	foo := Foo{}
-	dir(foo)
-	dir(bufio.Scanner{})
-	dir(iter.N)
-	dir(iter.N(89))
+	pkgInfo([]string{"pattern=archive/tar"})
 
-	dc := &meli.DockerContainer{
-		ComposeService: meli.ComposeService{Image: "busybox"},
-		LogMedium:      os.Stdout,
-		FollowLogs:     true}
-
-	dir(dc)
-	dir(myFunc)
-
-	// dir(io.Reader{})
 }
