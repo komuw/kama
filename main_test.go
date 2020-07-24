@@ -2,7 +2,9 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
 	"reflect"
 	"testing"
 
@@ -18,6 +20,27 @@ import (
   That repo as of that commit has an MIT license;
   https://github.com/sanity-io/litter/blob/b3546bd0a12c8738436e565b9e016bcd1876403d/LICENSE
 */
+
+const acceptableCodeCoverage = 0.5
+
+func TestMain(m *testing.M) {
+	// call flag.Parse() here if TestMain uses flags
+
+	eCode := m.Run()
+
+	if eCode == 0 && testing.CoverMode() != "" {
+		coverage := testing.Coverage()
+		// note: for some reason the value of `coverage` is always less
+		// than the one reported on the terminal by go test
+
+		if coverage < acceptableCodeCoverage {
+			fmt.Printf("\n\tThe test code coverage has fallen below the acceptable value of %v. The current value is %v. \n", acceptableCodeCoverage, coverage)
+			eCode = -1
+		}
+	}
+
+	os.Exit(eCode)
+}
 
 type BlankStruct struct{}
 type BasicStruct struct {
