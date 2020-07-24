@@ -98,6 +98,12 @@ METHODS: %v
 		meth := iType.Method(i)
 		methName := meth.PkgPath + "." + meth.Name
 		methSig := meth.Type.String() // type signature
+
+		// TODO: maybe we should try and also add argument names if any.
+		// currently the signature is displayed as;
+		//   func(main.Foo, int, int) int
+		// it would be cooler to display as;
+		//   func(main.Foo, price int, commission int) int
 		methods = append(methods, "\n\t"+methName+fmt.Sprintf("\n\t\t%v", methSig))
 	}
 	methods = append(methods, "\n\t")
