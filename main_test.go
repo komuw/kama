@@ -75,12 +75,18 @@ func TestPrimitives(t *testing.T) {
 	}
 }
 
+type myHandler struct{}
+
+func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
+}
+
 func TestStdlibTypes(t *testing.T) {
 	tt := []interface{}{
 		errors.New,
 		reflect.Value{},
 		http.Handle,
 		http.HandleFunc,
+		http.Handler(myHandler{}),
 	}
 
 	for _, v := range tt {
@@ -96,6 +102,5 @@ func TestThirdPartyTypes(t *testing.T) {
 
 	for _, v := range tt {
 		dir(v)
-
 	}
 }
