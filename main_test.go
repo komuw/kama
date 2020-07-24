@@ -1,11 +1,12 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"reflect"
 	"testing"
 
-	"github.com/pkg/errors"
+	pkgErrors "github.com/pkg/errors"
 )
 
 /*
@@ -74,12 +75,23 @@ func TestPrimitives(t *testing.T) {
 	}
 }
 
-func TestMore(t *testing.T) {
+func TestStdlibTypes(t *testing.T) {
 	tt := []interface{}{
-		reflect.Value{},
 		errors.New,
+		reflect.Value{},
 		http.Handle,
 		http.HandleFunc,
+	}
+
+	for _, v := range tt {
+		dir(v)
+
+	}
+}
+
+func TestThirdPartyTypes(t *testing.T) {
+	tt := []interface{}{
+		pkgErrors.New,
 	}
 
 	for _, v := range tt {
