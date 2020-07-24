@@ -19,9 +19,9 @@ func (f Foo) String() string {
 	return fmt.Sprintf("Foo(%v)", f.Prop)
 }
 
-// func (f Foo) Bar() string {
-// 	return f.Prop
-// }
+func (f Foo) Bar() string {
+	return f.Prop
+}
 func (f Foo) Add(a, b int) int {
 	return a + b
 }
@@ -75,6 +75,7 @@ METHODS: %v
 func main() {
 	defer panicHandler()
 
+	dir(34)
 	foo := Foo{}
 	dir(foo)
 	dir(bufio.Scanner{})
