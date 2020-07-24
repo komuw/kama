@@ -54,6 +54,7 @@ func dir(i interface{}) {
 	}
 	methods = append(methods, "\n\t")
 
+	// TODO: make this a constant template?
 	preamble := fmt.Sprintf(
 		`
 NAME: %v,
