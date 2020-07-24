@@ -9,6 +9,7 @@ import (
 
 	"reflect"
 
+	"github.com/sanity-io/litter"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/types/typeutil"
 )
@@ -133,10 +134,10 @@ func pkgInfo(patterns []string) {
 	pkg1 := pkgs[0]
 	// pkg1.Imports: %v
 	fmt.Printf(`
-		Name: %v
-		PkgPath: %v
-        ExportFile: %v
-		`,
+Name: %v
+PkgPath: %v
+ExportFile: %v
+`,
 		pkg1.Name,
 		pkg1.PkgPath,
 		pkg1.ExportFile,
@@ -144,8 +145,8 @@ func pkgInfo(patterns []string) {
 
 		// pkg1.TypesInfo,
 	)
-	constantSlice, varSlice, typeSlice, methods := cool(pkgs[0])
-	okay(constantSlice, varSlice, typeSlice, methods)
+	constantSlice, varSlice, typeSlice, methodSlice := cool(pkgs[0])
+	okay(constantSlice, varSlice, typeSlice, methodSlice)
 	// litter.Dump(pkgs[0])
 	// dir(pkgs[0])
 	// for _, pkg := range pkgs {
@@ -153,20 +154,44 @@ func pkgInfo(patterns []string) {
 	// }
 }
 
-func okay(constantSlice, varSlice, typeSlice, methods []string) {
-	fmt.Println("constantSlice: ", constantSlice)
-	fmt.Println("varSlice: ", varSlice)
-	fmt.Println("typeSlice: ", typeSlice)
+func okay(constantSlice, varSlice, typeSlice, methodSlice []string) {
+	// fmt.Println("constantSlice: ", constantSlice)
+	// fmt.Println("varSlice: ", varSlice)
+	// fmt.Println("typeSlice: ", typeSlice)
 	// TODO: associate methods with their types from `typeSlice`
-	fmt.Println("methods: ", methods)
+	// fmt.Println("methodSlice: ", methodSlice)
 
+	type2Methods := map[string][]string{}
+	for _, typ := range typeSlice {
+		typName := strings.Split(typ, " ")[1]
+		for _, meth := range methodSlice {
+			methReceiverName := strings.Split(meth, " ")[1]
+			methReceiverName = strings.ReplaceAll(methReceiverName, ")", "")
+			methReceiverName = strings.ReplaceAll(methReceiverName, "(", "")
+			methReceiverName = strings.ReplaceAll(methReceiverName, "*", "")
+
+			if methReceiverName == typName {
+				_, exists := type2Methods[typ]
+				if exists {
+					methds := type2Methods[typ]
+					methds = append(methds, meth)
+					type2Methods[typ] = methds
+				} else {
+					type2Methods[typ] = []string{meth}
+				}
+			}
+		}
+
+	}
+	fmt.Println("type2Methods:")
+	litter.Dump(type2Methods)
 }
 
 func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 	// package members (TypeCheck or WholeProgram mode)
 
 	constVarTyp := []string{}
-	methods := []string{}
+	methodSlice := []string{}
 	if pkg.Types != nil {
 		qual := types.RelativeTo(pkg.Types)
 		scope := pkg.Types.Scope()
@@ -186,7 +211,7 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 						// skip unexported methods
 						continue
 					}
-					methods = append(methods, types.SelectionString(meth, qual))
+					methodSlice = append(methodSlice, types.SelectionString(meth, qual))
 				}
 			}
 
@@ -206,7 +231,7 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 		}
 	}
 	// TODO: associate methods with their types from `typeSlice`
-	return constantSlice, varSlice, typeSlice, methods
+	return constantSlice, varSlice, typeSlice, methodSlice
 }
 func main() {
 	defer panicHandler()
