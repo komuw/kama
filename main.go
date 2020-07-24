@@ -194,23 +194,20 @@ func cool(pkg *packages.Package) {
 		// }
 	}
 
-	fmt.Println("items: ", items)
-
-	varSlice := []string{}
 	constantSlice := []string{}
+	varSlice := []string{}
 	typeSlice := []string{}
 	for _, v := range items {
-		if strings.HasPrefix(v, "var") {
-			varSlice = append(varSlice, v)
-		} else if strings.HasPrefix(v, "const") {
+		if strings.HasPrefix(v, "const") {
 			constantSlice = append(constantSlice, v)
+		} else if strings.HasPrefix(v, "var") {
+			varSlice = append(varSlice, v)
 		} else if strings.HasPrefix(v, "type") {
 			typeSlice = append(typeSlice, v)
 		}
 	}
-
-	fmt.Println("varSlice: ", varSlice)
 	fmt.Println("constantSlice: ", constantSlice)
+	fmt.Println("varSlice: ", varSlice)
 	fmt.Println("typeSlice: ", typeSlice)
 }
 func main() {
