@@ -30,6 +30,8 @@ func (f Foo) private(s string) string {
 	return s
 }
 
+// TODO: surface all info for both the type and its pointer.
+// currently `dir(&http.Client{})` & `dir(http.Client{})` produces different output; they should NOT
 func dir(i interface{}) {
 	// TODO: from the documentation of reflect.Type interface:
 	// Not all methods apply to all kinds of types. Restrictions,
