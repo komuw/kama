@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"reflect"
 	"testing"
 
@@ -77,6 +78,8 @@ func TestMore(t *testing.T) {
 	tt := []interface{}{
 		reflect.Value{},
 		errors.New,
+		http.Handle,
+		http.HandleFunc,
 	}
 
 	for _, v := range tt {
