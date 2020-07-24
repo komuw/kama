@@ -31,6 +31,29 @@ func (f Foo) private(s string) string {
 
 func dir(i interface{}) {
 	iType := reflect.TypeOf(i)
+	if iType == nil {
+		// TODO: make this template a constant
+		// TODO: stop repeating myself
+		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
+		preamble := fmt.Sprintf(
+			`
+NAME: %v,
+KIND: %v,
+STRING: %v,
+FIELDS: %v
+METHODS: %v
+`,
+			iType,
+			iType,
+			iType,
+			iType,
+			iType,
+		)
+		var dict = []string{preamble}
+		fmt.Println(dict)
+		return
+	}
+
 	typeName := iType.PkgPath() + "." + iType.Name()
 	typeKind := iType.Kind()
 	typeString := iType.String()
@@ -76,7 +99,7 @@ METHODS: %v
 func main() {
 	defer panicHandler()
 
-	dir(34)
+	dir(nil)
 	foo := Foo{}
 	dir(foo)
 	dir(bufio.Scanner{})
