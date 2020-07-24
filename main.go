@@ -144,7 +144,8 @@ func pkgInfo(patterns []string) {
 
 		// pkg1.TypesInfo,
 	)
-	cool(pkgs[0])
+	constantSlice, varSlice, typeSlice, methods := cool(pkgs[0])
+	okay(constantSlice, varSlice, typeSlice, methods)
 	// litter.Dump(pkgs[0])
 	// dir(pkgs[0])
 	// for _, pkg := range pkgs {
@@ -152,7 +153,16 @@ func pkgInfo(patterns []string) {
 	// }
 }
 
-func cool(pkg *packages.Package) {
+func okay(constantSlice, varSlice, typeSlice, methods []string) {
+	fmt.Println("constantSlice: ", constantSlice)
+	fmt.Println("varSlice: ", varSlice)
+	fmt.Println("typeSlice: ", typeSlice)
+	// TODO: associate methods with their types from `typeSlice`
+	fmt.Println("methods: ", methods)
+
+}
+
+func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 	// package members (TypeCheck or WholeProgram mode)
 
 	constVarTyp := []string{}
@@ -195,12 +205,8 @@ func cool(pkg *packages.Package) {
 			typeSlice = append(typeSlice, v)
 		}
 	}
-	fmt.Println("constantSlice: ", constantSlice)
-	fmt.Println("varSlice: ", varSlice)
-	fmt.Println("typeSlice: ", typeSlice)
-
 	// TODO: associate methods with their types from `typeSlice`
-	fmt.Println("methods: ", methods)
+	return constantSlice, varSlice, typeSlice, methods
 }
 func main() {
 	defer panicHandler()
