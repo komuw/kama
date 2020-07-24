@@ -10,6 +10,7 @@ import (
 	"reflect"
 
 	"golang.org/x/tools/go/packages"
+	"golang.org/x/tools/go/types/typeutil"
 )
 
 // TODO: clean up
@@ -154,41 +155,38 @@ func pkgInfo(patterns []string) {
 func cool(pkg *packages.Package) {
 	// package members (TypeCheck or WholeProgram mode)
 
-	items := []string{}
+	constVarTyp := []string{}
+	methods := []string{}
 	if pkg.Types != nil {
 		qual := types.RelativeTo(pkg.Types)
 		scope := pkg.Types.Scope()
 
-		// fmt.Println("scope: ", scope)
 		for _, name := range scope.Names() {
 			obj := scope.Lookup(name)
 			if !obj.Exported() {
 				// skip unexported names
 				continue
 			}
-			// fmt.Println("obj type: ", obj.Type())
-			// fmt.Println("obj name: ", obj.Name())
-			// fmt.Println("ok: ", types.ObjectString(obj, qual))
-			items = append(items, types.ObjectString(obj, qual))
+			constVarTyp = append(constVarTyp, types.ObjectString(obj, qual))
+
+			// lets get methods of types
+			if _, ok := obj.(*types.TypeName); ok {
+				for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), nil) {
+					if !meth.Obj().Exported() {
+						// skip unexported methods
+						continue
+					}
+					methods = append(methods, types.SelectionString(meth, qual))
+				}
+			}
 
 		}
-		// for _, name := range scope.Names() {
-		// 	obj := scope.Lookup(name)
-		// 	// if _, ok := obj.(*types.TypeName); ok {
-		// 	// 	for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), nil) {
-		// 	// 		if !meth.Obj().Exported() {
-		// 	// 			continue // skip unexported names
-		// 	// 		}
-		// 	// 		fmt.Printf("\t%s\n", types.SelectionString(meth, qual))
-		// 	// 	}
-		// 	// }
-		// }
 	}
 
 	constantSlice := []string{}
 	varSlice := []string{}
 	typeSlice := []string{}
-	for _, v := range items {
+	for _, v := range constVarTyp {
 		if strings.HasPrefix(v, "const") {
 			constantSlice = append(constantSlice, v)
 		} else if strings.HasPrefix(v, "var") {
@@ -200,6 +198,9 @@ func cool(pkg *packages.Package) {
 	fmt.Println("constantSlice: ", constantSlice)
 	fmt.Println("varSlice: ", varSlice)
 	fmt.Println("typeSlice: ", typeSlice)
+
+	// TODO: associate methods with their types from `typeSlice`
+	fmt.Println("methods: ", methods)
 }
 func main() {
 	defer panicHandler()
