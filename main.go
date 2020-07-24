@@ -73,7 +73,7 @@ METHODS: %v
 		meth := iType.Method(i)
 		methName := meth.PkgPath + "." + meth.Name
 		methSig := meth.Type.String() // type signature
-		methods = append(methods, "\n\t"+methName+fmt.Sprintf(" <<%v>> ", methSig))
+		methods = append(methods, "\n\t"+methName+fmt.Sprintf("\n\t\t%v", methSig))
 	}
 	methods = append(methods, "\n\t")
 
