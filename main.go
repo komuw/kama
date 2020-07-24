@@ -31,6 +31,16 @@ func (f Foo) private(s string) string {
 }
 
 func dir(i interface{}) {
+	// TODO: from the documentation of reflect.Type interface:
+	// Not all methods apply to all kinds of types. Restrictions,
+	// if any, are noted in the documentation for each method.
+	// Use the Kind method to find out the kind of type before
+	// calling kind-specific methods. Calling a method
+	// inappropriate to the kind of type causes a run-time panic.
+	//
+	// TODO: we should check the kinds before calling any methods on the `Type`
+	// to make sure they are allowed.
+
 	iType := reflect.TypeOf(i)
 	if iType == nil {
 		// TODO: make this template a constant
