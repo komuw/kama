@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/types"
 	"log"
+	"net/http"
 	"runtime"
 	"strings"
 
@@ -17,6 +18,10 @@ import (
 // TODO: clean up
 
 // TODO: add documentation
+
+// TODO: add a command line api.
+//   eg; `dir http.Request` or `dir http`
+// have a look at `golang.org/x/tools/cmd/godex`
 
 // TODO: this will stutter; `dir.dir(23)`
 // maybe it is okay??
@@ -74,6 +79,8 @@ METHODS: %v
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
 			f := iType.Field(i)
+			// TODO: do not include private fields.
+			// eg for `http.Request` we should not include the field `http.Request.ctx`
 			fields = append(fields, f.PkgPath+"."+f.Name+",")
 		}
 	}
@@ -183,6 +190,8 @@ func okay(constantSlice, varSlice, typeSlice, methodSlice []string) {
 		}
 
 	}
+	fmt.Println("constantSlice: ", constantSlice)
+	fmt.Println("varSlice: ", varSlice)
 	fmt.Println("type2Methods:")
 	litter.Dump(type2Methods)
 }
@@ -237,5 +246,7 @@ func main() {
 	defer panicHandler()
 
 	pkgInfo([]string{"pattern=archive/tar"})
+	dir(&http.Request{})
+	dir(http.Request{})
 
 }
