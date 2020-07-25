@@ -220,6 +220,12 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 				// skip unexported names
 				continue
 			}
+
+			// TODO: add top level, Exported functions.
+			// currently we do not. see `pkgInfo("github.com/pkg/errors")` <- this is missing the exported Funcs
+			// fmt.Println("name: ", name)
+			// fmt.Println("obj: ", obj)
+
 			constVarTyp = append(constVarTyp, types.ObjectString(obj, qual))
 
 			// lets get methods of types
@@ -257,5 +263,6 @@ func main() {
 	pkgInfo("archive/tar")
 	dir(&http.Request{})
 	dir(http.Request{})
+	pkgInfo("github.com/pkg/errors")
 
 }
