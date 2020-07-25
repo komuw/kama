@@ -122,13 +122,22 @@ METHODS: %v
 	fmt.Println(dict)
 }
 
-func pkgInfo(patterns []string) {
+func pkgInfo(pattern string) {
 	// patterns := []string{"pattern=net/http"}
 	//patterns := []string{"pattern=os"}
 
+	// Although `packages.Load` accepts a slice of multiple items, for `dir` we only accept one.
+	patterns := []string{fmt.Sprintf("pattern=%s", pattern)}
+
 	// A higher numbered modes cause Load to return more information,
 	cfg := &packages.Config{Mode: packages.LoadAllSyntax}
-	pkgs, err := packages.Load(cfg, patterns...)
+	pkgs, err := packages.Load(
+		// Load passes most patterns directly to the underlying build tool, but all patterns with the prefix "query=",
+		// where query is a non-empty string of letters from [a-z], are reserved and may be interpreted as query operators.
+		// Two query operators are currently supported: "file" and "pattern".
+		// See: https://pkg.go.dev/golang.org/x/tools/go/packages?tab=doc#pkg-overview
+		cfg, patterns...,
+	)
 	if err != nil {
 		log.Fatal(err)
 
@@ -245,7 +254,7 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 func main() {
 	defer panicHandler()
 
-	pkgInfo([]string{"pattern=archive/tar"})
+	pkgInfo("archive/tar")
 	dir(&http.Request{})
 	dir(http.Request{})
 
