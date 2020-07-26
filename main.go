@@ -10,7 +10,6 @@ import (
 
 	"reflect"
 
-	"github.com/sanity-io/litter"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/types/typeutil"
 )
@@ -50,9 +49,9 @@ func dir(i interface{}) {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
 		preamble := fmt.Sprintf(
 			`
-NAME: %v,
-KIND: %v,
-SIGNATURE: %v,
+NAME: %v
+KIND: %v
+SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
 `,
@@ -110,9 +109,9 @@ METHODS: %v
 	// TODO: is using `iType.String()` as the value of `SIGNATURE` correct?
 	preamble := fmt.Sprintf(
 		`
-NAME: %v,
-KIND: %v,
-SIGNATURE: %v,
+NAME: %v
+KIND: %v
+SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
 `,
@@ -153,29 +152,27 @@ func pkgInfo(pattern string) {
 	// }
 
 	pkg1 := pkgs[0]
-	// pkg1.Imports: %v
-	fmt.Printf(`
-Name: %v
-PkgPath: %v
-ExportFile: %v
+	constantSlice, varSlice, typeSlice, methodSlice := cool(pkg1)
+	_ = okay(typeSlice, methodSlice)
+
+	preamble := fmt.Sprintf(
+		`
+NAME: %v
+PATH: %v
+CONSTANTS: %v
+VARIABLES: %v
 `,
 		pkg1.Name,
 		pkg1.PkgPath,
-		pkg1.ExportFile,
-		// pkg1.TypesInfo,
-
-		// pkg1.TypesInfo,
+		constantSlice,
+		varSlice,
 	)
-	constantSlice, varSlice, typeSlice, methodSlice := cool(pkgs[0])
-	okay(constantSlice, varSlice, typeSlice, methodSlice)
-	// litter.Dump(pkgs[0])
-	// dir(pkgs[0])
-	// for _, pkg := range pkgs {
-	// 	fmt.Println(pkg.ID, pkg.GoFiles)
-	// }
+	// TODO: dict is an odd name
+	var dict = []string{preamble}
+	fmt.Println(dict)
 }
 
-func okay(constantSlice, varSlice, typeSlice, methodSlice []string) {
+func okay(typeSlice, methodSlice []string) map[string][]string {
 	// fmt.Println("constantSlice: ", constantSlice)
 	// fmt.Println("varSlice: ", varSlice)
 	// fmt.Println("typeSlice: ", typeSlice)
@@ -204,10 +201,8 @@ func okay(constantSlice, varSlice, typeSlice, methodSlice []string) {
 		}
 
 	}
-	fmt.Println("constantSlice: ", constantSlice)
-	fmt.Println("varSlice: ", varSlice)
-	fmt.Println("type2Methods:")
-	litter.Dump(type2Methods)
+
+	return type2Methods
 }
 
 func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
@@ -269,5 +264,4 @@ func main() {
 	dir(&http.Request{})
 	dir(http.Request{})
 	pkgInfo("pkg/errors")
-
 }
