@@ -17,7 +17,12 @@ import (
 
 // TODO: clean up
 
-// TODO: add documentation
+// TODO: add of `dir` documentation
+
+// TODO: maybe we should show docs when someone requests for something specific.
+// eg if they do `dir(http)` we do not show docs, but if they do `dir(&http.Request{})` we show docs.
+// An alternative is only show docs, if someone requests. `dir(i interface{}, config ...dir.Config)`; config is `...` so that it is optional
+// where config is a `type Config struct {}`
 
 // TODO: add a command line api.
 //   eg; `dir http.Request` or `dir http`
@@ -263,6 +268,6 @@ func main() {
 	pkgInfo("archive/tar")
 	dir(&http.Request{})
 	dir(http.Request{})
-	pkgInfo("github.com/pkg/errors")
+	pkgInfo("pkg/errors")
 
 }
