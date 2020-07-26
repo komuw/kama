@@ -247,9 +247,11 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 	typeSlice := []string{}
 	for _, v := range constVarTyp {
 		if strings.HasPrefix(v, "const") {
-			constantSlice = append(constantSlice, v)
+			v = strings.TrimPrefix(v, "const")
+			constantSlice = append(constantSlice, fmt.Sprintf("\n\t%v", v))
 		} else if strings.HasPrefix(v, "var") {
-			varSlice = append(varSlice, v)
+			v = strings.TrimPrefix(v, "var")
+			varSlice = append(varSlice, fmt.Sprintf("\n\t%v", v))
 		} else if strings.HasPrefix(v, "type") {
 			typeSlice = append(typeSlice, v)
 		}
