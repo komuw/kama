@@ -153,7 +153,7 @@ func pkgInfo(pattern string) {
 
 	pkg1 := pkgs[0]
 	constantSlice, varSlice, typeSlice, methodSlice := cool(pkg1)
-	_ = okay(typeSlice, methodSlice)
+	type2Methods := okay(typeSlice, methodSlice)
 
 	preamble := fmt.Sprintf(
 		`
@@ -161,11 +161,13 @@ NAME: %v
 PATH: %v
 CONSTANTS: %v
 VARIABLES: %v
+TYPES: %v
 `,
 		pkg1.Name,
 		pkg1.PkgPath,
 		constantSlice,
 		varSlice,
+		type2Methods,
 	)
 	// TODO: dict is an odd name
 	var dict = []string{preamble}
@@ -188,14 +190,16 @@ func okay(typeSlice, methodSlice []string) map[string][]string {
 			methReceiverName = strings.ReplaceAll(methReceiverName, "(", "")
 			methReceiverName = strings.ReplaceAll(methReceiverName, "*", "")
 
+			typSaveName := strings.Split(typ, " ")[1] + " " + strings.Split(typ, " ")[2]
+			typSaveName = strings.TrimSpace(strings.Split(typSaveName, "{")[0])
 			if methReceiverName == typName {
-				_, exists := type2Methods[typ]
+				_, exists := type2Methods[typSaveName]
 				if exists {
-					methds := type2Methods[typ]
+					methds := type2Methods[typSaveName]
 					methds = append(methds, meth)
-					type2Methods[typ] = methds
+					type2Methods[typSaveName] = methds
 				} else {
-					type2Methods[typ] = []string{meth}
+					type2Methods[typSaveName] = []string{meth}
 				}
 			}
 		}
