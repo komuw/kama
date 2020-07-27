@@ -12,6 +12,11 @@ import (
 	"github.com/komuw/meli"
 )
 
+// TODO: If someone passes in, say a struct;
+// we should show them its type, methods etc
+// but also print it out and its contents
+// basically, do what `litter.Dump` would have done
+
 // TODO: clean up
 
 // TODO: add documentation
