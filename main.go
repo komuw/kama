@@ -153,7 +153,16 @@ func pkgInfo(pattern string) {
 
 	pkg1 := pkgs[0]
 	constantSlice, varSlice, typeSlice, methodSlice := cool(pkg1)
+
 	type2Methods := okay(typeSlice, methodSlice)
+	var finalTypeSlice = []string{}
+	for typ, methSlice := range type2Methods {
+		meths := ""
+		for _, v := range methSlice {
+			meths = meths + fmt.Sprintf("\n\t%s", v)
+		}
+		finalTypeSlice = append(finalTypeSlice, fmt.Sprintf("\n%v%v", typ, meths))
+	}
 
 	preamble := fmt.Sprintf(
 		`
@@ -167,7 +176,7 @@ TYPES: %v
 		pkg1.PkgPath,
 		constantSlice,
 		varSlice,
-		type2Methods,
+		finalTypeSlice,
 	)
 	// TODO: dict is an odd name
 	var dict = []string{preamble}
@@ -175,12 +184,6 @@ TYPES: %v
 }
 
 func okay(typeSlice, methodSlice []string) map[string][]string {
-	// fmt.Println("constantSlice: ", constantSlice)
-	// fmt.Println("varSlice: ", varSlice)
-	// fmt.Println("typeSlice: ", typeSlice)
-	// TODO: associate methods with their types from `typeSlice`
-	// fmt.Println("methodSlice: ", methodSlice)
-
 	type2Methods := map[string][]string{}
 	for _, typ := range typeSlice {
 		typName := strings.Split(typ, " ")[1]
