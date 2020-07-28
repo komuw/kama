@@ -146,7 +146,15 @@ func pkgInfo(pattern string) {
 	const (
 		// TODO: move this to a global var
 		// TODO: whittle this down to only what we need
-		loadAll = packages.NeedName | packages.NeedFiles | packages.NeedCompiledGoFiles | packages.NeedImports | packages.NeedTypes | packages.NeedTypesSizes | packages.NeedSyntax | packages.NeedTypesInfo | packages.NeedDeps
+		loadAll = packages.NeedName |
+			packages.NeedFiles |
+			packages.NeedCompiledGoFiles |
+			packages.NeedImports |
+			packages.NeedTypes |
+			packages.NeedTypesSizes |
+			packages.NeedSyntax |
+			packages.NeedTypesInfo |
+			packages.NeedDeps
 	)
 
 	// Although `packages.Load` accepts a slice of multiple items, for `dir` we only accept one.
