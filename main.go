@@ -90,8 +90,10 @@ METHODS: %v
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
 			f := iType.Field(i)
-			// TODO: do not include private fields.
-			// eg for `http.Request` we should not include the field `http.Request.ctx`
+			if f.PkgPath != "" {
+				// private field
+				continue
+			}
 			fields = append(fields, f.PkgPath+"."+f.Name+",")
 		}
 	}
