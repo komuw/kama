@@ -19,7 +19,6 @@ import (
 // but also print it out and its contents
 // basically, do what `litter.Dump` would have done
 
-
 // TODO: maybe add syntax highlighting, maybe make it optional??
 
 // TODO: clean up
@@ -167,6 +166,7 @@ func pkgInfo(pattern string) {
 	for typ, methSlice := range type2Methods {
 		meths := ""
 		for _, v := range methSlice {
+			v = strings.TrimPrefix(v, "method ")
 			meths = meths + fmt.Sprintf("\n\t%s", v)
 		}
 		finalTypeSlice = append(finalTypeSlice, fmt.Sprintf("\n%v%v", typ, meths))
@@ -262,10 +262,10 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 	typeSlice := []string{}
 	for _, v := range constVarTyp {
 		if strings.HasPrefix(v, "const") {
-			v = strings.TrimPrefix(v, "const")
+			v = strings.TrimPrefix(v, "const ")
 			constantSlice = append(constantSlice, fmt.Sprintf("\n\t%v", v))
 		} else if strings.HasPrefix(v, "var") {
-			v = strings.TrimPrefix(v, "var")
+			v = strings.TrimPrefix(v, "var ")
 			varSlice = append(varSlice, fmt.Sprintf("\n\t%v", v))
 		} else if strings.HasPrefix(v, "type") {
 			typeSlice = append(typeSlice, v)
