@@ -102,6 +102,10 @@ METHODS: %v
 	numMethods := iType.NumMethod()
 	for i := 0; i < numMethods; i++ {
 		meth := iType.Method(i)
+		if meth.PkgPath != "" {
+			// private method
+			continue
+		}
 		methName := meth.PkgPath + "." + meth.Name
 		methSig := meth.Type.String() // type signature
 
