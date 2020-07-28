@@ -53,10 +53,6 @@ func SomeFunction(arg1 string, arg2 int) (string, error) {
 	return "", nil
 }
 
-func OkayFunc(arg1 string, arg2 int) {
-
-}
-
 func TestPrimitives(t *testing.T) {
 	tt := []interface{}{
 		false,
