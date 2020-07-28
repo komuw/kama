@@ -14,6 +14,14 @@ import (
 	"golang.org/x/tools/go/types/typeutil"
 )
 
+// TODO: If someone passes in, say a struct;
+// we should show them its type, methods etc
+// but also print it out and its contents
+// basically, do what `litter.Dump` would have done
+
+
+// TODO: maybe add syntax highlighting, maybe make it optional??
+
 // TODO: clean up
 
 // TODO: add of `dir` documentation
