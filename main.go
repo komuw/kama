@@ -1,15 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"go/types"
+	"log"
+	"net/http"
 	"runtime"
+	"strings"
 
 	"reflect"
 
-	"github.com/bradfitz/iter"
-	"github.com/komuw/meli"
+	"golang.org/x/tools/go/packages"
+	"golang.org/x/tools/go/types/typeutil"
 )
 
 // TODO: If someone passes in, say a struct;
@@ -17,30 +19,20 @@ import (
 // but also print it out and its contents
 // basically, do what `litter.Dump` would have done
 
-
 // TODO: maybe add syntax highlighting, maybe make it optional??
 
 // TODO: clean up
 
-// TODO: add documentation
+// TODO: add of `dir` documentation
 
-type Foo struct {
-	Prop string
-}
+// TODO: maybe we should show docs when someone requests for something specific.
+// eg if they do `dir(http)` we do not show docs, but if they do `dir(&http.Request{})` we show docs.
+// An alternative is only show docs, if someone requests. `dir(i interface{}, config ...dir.Config)`; config is `...` so that it is optional
+// where config is a `type Config struct {}`
 
-func (f Foo) String() string {
-	return fmt.Sprintf("Foo(%v)", f.Prop)
-}
-
-func (f Foo) Bar() string {
-	return f.Prop
-}
-func (f Foo) Add(a, b int) int {
-	return a + b
-}
-func (f Foo) private(s string) string {
-	return s
-}
+// TODO: add a command line api.
+//   eg; `dir http.Request` or `dir http`
+// have a look at `golang.org/x/tools/cmd/godex`
 
 // TODO: this will stutter; `dir.dir(23)`
 // maybe it is okay??
@@ -64,9 +56,9 @@ func dir(i interface{}) {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
 		preamble := fmt.Sprintf(
 			`
-NAME: %v,
-KIND: %v,
-SIGNATURE: %v,
+NAME: %v
+KIND: %v
+SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
 `,
@@ -98,6 +90,10 @@ METHODS: %v
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
 			f := iType.Field(i)
+			if f.PkgPath != "" {
+				// private field
+				continue
+			}
 			fields = append(fields, f.PkgPath+"."+f.Name+",")
 		}
 	}
@@ -106,6 +102,10 @@ METHODS: %v
 	numMethods := iType.NumMethod()
 	for i := 0; i < numMethods; i++ {
 		meth := iType.Method(i)
+		if meth.PkgPath != "" {
+			// private method
+			continue
+		}
 		methName := meth.PkgPath + "." + meth.Name
 		methSig := meth.Type.String() // type signature
 
@@ -122,9 +122,9 @@ METHODS: %v
 	// TODO: is using `iType.String()` as the value of `SIGNATURE` correct?
 	preamble := fmt.Sprintf(
 		`
-NAME: %v,
-KIND: %v,
-SIGNATURE: %v,
+NAME: %v
+KIND: %v
+SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
 `,
@@ -139,25 +139,152 @@ METHODS: %v
 	fmt.Println(dict)
 }
 
-func myFunc(arg1 string, arg2 int) {
+func pkgInfo(pattern string) {
+	// patterns := []string{"pattern=net/http"}
+	//patterns := []string{"pattern=os"}
 
+	// Although `packages.Load` accepts a slice of multiple items, for `dir` we only accept one.
+	patterns := []string{fmt.Sprintf("pattern=%s", pattern)}
+
+	// A higher numbered modes cause Load to return more information,
+	cfg := &packages.Config{Mode: packages.LoadAllSyntax}
+	pkgs, err := packages.Load(
+		// Load passes most patterns directly to the underlying build tool, but all patterns with the prefix "query=",
+		// where query is a non-empty string of letters from [a-z], are reserved and may be interpreted as query operators.
+		// Two query operators are currently supported: "file" and "pattern".
+		// See: https://pkg.go.dev/golang.org/x/tools/go/packages?tab=doc#pkg-overview
+		cfg, patterns...,
+	)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	// if packages.PrintErrors(pkgs) > 0 {
+	// 	// TODO: maybe we do not need this
+	// 	log.Fatal("PrintErrors")
+	// }
+
+	pkg1 := pkgs[0]
+	constantSlice, varSlice, typeSlice, methodSlice := cool(pkg1)
+
+	type2Methods := okay(typeSlice, methodSlice)
+	var finalTypeSlice = []string{}
+	for typ, methSlice := range type2Methods {
+		meths := ""
+		for _, v := range methSlice {
+			v = strings.TrimPrefix(v, "method ")
+			meths = meths + fmt.Sprintf("\n\t%s", v)
+		}
+		finalTypeSlice = append(finalTypeSlice, fmt.Sprintf("\n%v%v", typ, meths))
+	}
+
+	preamble := fmt.Sprintf(
+		`
+NAME: %v
+PATH: %v
+CONSTANTS: %v
+VARIABLES: %v
+TYPES: %v
+`,
+		pkg1.Name,
+		pkg1.PkgPath,
+		constantSlice,
+		varSlice,
+		finalTypeSlice,
+	)
+	// TODO: dict is an odd name
+	var dict = []string{preamble}
+	fmt.Println(dict)
+}
+
+func okay(typeSlice, methodSlice []string) map[string][]string {
+	type2Methods := map[string][]string{}
+	for _, typ := range typeSlice {
+		typName := strings.Split(typ, " ")[1]
+		for _, meth := range methodSlice {
+			methReceiverName := strings.Split(meth, " ")[1]
+			methReceiverName = strings.ReplaceAll(methReceiverName, ")", "")
+			methReceiverName = strings.ReplaceAll(methReceiverName, "(", "")
+			methReceiverName = strings.ReplaceAll(methReceiverName, "*", "")
+
+			typSaveName := strings.Split(typ, " ")[1] + " " + strings.Split(typ, " ")[2]
+			typSaveName = strings.TrimSpace(strings.Split(typSaveName, "{")[0])
+			if methReceiverName == typName {
+				_, exists := type2Methods[typSaveName]
+				if exists {
+					methds := type2Methods[typSaveName]
+					methds = append(methds, meth)
+					type2Methods[typSaveName] = methds
+				} else {
+					type2Methods[typSaveName] = []string{meth}
+				}
+			}
+		}
+
+	}
+
+	return type2Methods
+}
+
+func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
+	// package members (TypeCheck or WholeProgram mode)
+
+	constVarTyp := []string{}
+	methodSlice := []string{}
+	if pkg.Types != nil {
+		qual := types.RelativeTo(pkg.Types)
+		scope := pkg.Types.Scope()
+
+		for _, name := range scope.Names() {
+			obj := scope.Lookup(name)
+			if !obj.Exported() {
+				// skip unexported names
+				continue
+			}
+
+			// TODO: add top level, Exported functions.
+			// currently we do not. see `pkgInfo("github.com/pkg/errors")` <- this is missing the exported Funcs
+			// fmt.Println("name: ", name)
+			// fmt.Println("obj: ", obj)
+
+			constVarTyp = append(constVarTyp, types.ObjectString(obj, qual))
+
+			// lets get methods of types
+			if _, ok := obj.(*types.TypeName); ok {
+				for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), nil) {
+					if !meth.Obj().Exported() {
+						// skip unexported methods
+						continue
+					}
+					methodSlice = append(methodSlice, types.SelectionString(meth, qual))
+				}
+			}
+
+		}
+	}
+
+	constantSlice := []string{}
+	varSlice := []string{}
+	typeSlice := []string{}
+	for _, v := range constVarTyp {
+		if strings.HasPrefix(v, "const") {
+			v = strings.TrimPrefix(v, "const ")
+			constantSlice = append(constantSlice, fmt.Sprintf("\n\t%v", v))
+		} else if strings.HasPrefix(v, "var") {
+			v = strings.TrimPrefix(v, "var ")
+			varSlice = append(varSlice, fmt.Sprintf("\n\t%v", v))
+		} else if strings.HasPrefix(v, "type") {
+			typeSlice = append(typeSlice, v)
+		}
+	}
+	// TODO: associate methods with their types from `typeSlice`
+	return constantSlice, varSlice, typeSlice, methodSlice
 }
 func main() {
 	defer panicHandler()
 
-	foo := Foo{}
-	dir(foo)
-	dir(bufio.Scanner{})
-	dir(iter.N)
-	dir(iter.N(89))
-
-	dc := &meli.DockerContainer{
-		ComposeService: meli.ComposeService{Image: "busybox"},
-		LogMedium:      os.Stdout,
-		FollowLogs:     true}
-
-	dir(dc)
-	dir(myFunc)
-
-	// dir(io.Reader{})
+	pkgInfo("archive/tar")
+	dir(&http.Request{})
+	dir(http.Request{})
+	pkgInfo("pkg/errors")
 }
