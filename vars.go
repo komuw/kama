@@ -7,6 +7,10 @@ import (
 	"reflect"
 )
 
+
+// TODO: merge methods/fields of T and *T
+// https://play.golang.org/p/aQbEhI8WDP0
+
 // vari represents a variable
 type vari struct {
 	name      string
