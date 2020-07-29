@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"go/types"
-	"log"
 	"net/http"
 	"runtime"
 	"strings"
@@ -14,76 +13,57 @@ import (
 	"golang.org/x/tools/go/types/typeutil"
 )
 
-// TODO: If someone passes in, say a struct;
-// we should show them its type, methods etc
-// but also print it out and its contents
-// basically, do what `litter.Dump` would have done
+// vari represents a variable
+type vari struct {
+	name      string
+	kind      reflect.Kind
+	signature string
+	fields    []string
+	methods   []string
+}
 
-// TODO: maybe add syntax highlighting, maybe make it optional??
-
-// TODO: clean up
-
-// TODO: add of `dir` documentation
-
-// TODO: maybe we should show docs when someone requests for something specific.
-// eg if they do `dir(http)` we do not show docs, but if they do `dir(&http.Request{})` we show docs.
-// An alternative is only show docs, if someone requests. `dir(i interface{}, config ...dir.Config)`; config is `...` so that it is optional
-// where config is a `type Config struct {}`
-
-// TODO: add a command line api.
-//   eg; `dir http.Request` or `dir http`
-// have a look at `golang.org/x/tools/cmd/godex`
-
-// TODO: this will stutter; `dir.dir(23)`
-// maybe it is okay??
-// TODO: surface all info for both the type and its pointer.
-// currently `dir(&http.Client{})` & `dir(http.Client{})` produces different output; they should NOT
-func dir(i interface{}) {
-	// TODO: from the documentation of reflect.Type interface:
-	// Not all methods apply to all kinds of types. Restrictions,
-	// if any, are noted in the documentation for each method.
-	// Use the Kind method to find out the kind of type before
-	// calling kind-specific methods. Calling a method
-	// inappropriate to the kind of type causes a run-time panic.
-	//
-	// TODO: we should check the kinds before calling any methods on the `Type`
-	// to make sure they are allowed.
-
-	iType := reflect.TypeOf(i)
-	if iType == nil {
-		// TODO: make this template a constant
-		// TODO: stop repeating myself
-		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
-		preamble := fmt.Sprintf(
-			`
+func (v vari) String() string {
+	return fmt.Sprintf(
+		`
+[
 NAME: %v
 KIND: %v
 SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
+]
 `,
-			iType,
-			iType,
-			iType,
-			iType,
-			iType,
-		)
-		// TODO: dict is an odd name
-		var dict = []string{preamble}
-		fmt.Println(dict)
-		return
+		v.name,
+		v.kind,
+		v.signature,
+		v.fields,
+		v.methods,
+	)
+
+	// // TODO: dict is an odd name
+	// var dict = []string{preamble}
+	// fmt.Println(dict)
+}
+
+func newVari(i interface{}) vari {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+	if iType == nil {
+		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
+		return vari{
+			name:      "nil",
+			kind:      typeKind,
+			signature: "nil"}
 	}
 
 	typeName := iType.PkgPath() + "." + iType.Name()
+	typeSig := iType.String()
 	if typeName == "." {
 		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 		if typeName == "" {
 			typeName = "." + iType.Elem().Name()
 		}
 	}
-
-	typeKind := iType.Kind()
-	typeString := iType.String()
 
 	var fields = []string{}
 	if typeKind == reflect.Struct {
@@ -118,28 +98,90 @@ METHODS: %v
 	}
 	methods = append(methods, "\n\t")
 
-	// TODO: make this a constant template?
-	// TODO: is using `iType.String()` as the value of `SIGNATURE` correct?
-	preamble := fmt.Sprintf(
-		`
-NAME: %v
-KIND: %v
-SIGNATURE: %v
-FIELDS: %v
-METHODS: %v
-`,
-		typeName,
-		typeKind,
-		typeString,
-		fields,
-		methods,
-	)
-	// TODO: dict is an odd name
-	var dict = []string{preamble}
-	fmt.Println(dict)
+	return vari{
+		name:      typeName,
+		kind:      typeKind,
+		signature: typeSig,
+		fields:    fields,
+		methods:   methods,
+	}
+
 }
 
-func pkgInfo(pattern string) {
+// TODO: If someone passes in, say a struct;
+// we should show them its type, methods etc
+// but also print it out and its contents
+// basically, do what `litter.Dump` would have done
+
+// TODO: maybe add syntax highlighting, maybe make it optional??
+
+// TODO: clean up
+
+// TODO: add of `dir` documentation
+
+// TODO: maybe we should show docs when someone requests for something specific.
+// eg if they do `dir(http)` we do not show docs, but if they do `dir(&http.Request{})` we show docs.
+// An alternative is only show docs, if someone requests. `dir(i interface{}, config ...dir.Config)`; config is `...` so that it is optional
+// where config is a `type Config struct {}`
+
+// TODO: add a command line api.
+//   eg; `dir http.Request` or `dir http`
+// have a look at `golang.org/x/tools/cmd/godex`
+
+// TODO: this will stutter; `dir.dir(23)`
+// maybe it is okay??
+// TODO: surface all info for both the type and its pointer.
+// currently `dir(&http.Client{})` & `dir(http.Client{})` produces different output; they should NOT
+func dir(i interface{}) {
+	var res interface{}
+	var err error
+
+	if reflect.TypeOf(i).Kind() == reflect.String {
+		i := i.(string)
+		res, err = newPaki(i)
+		if err != nil {
+			res = newVari(i)
+		}
+	} else {
+		res = newVari(i)
+	}
+
+	fmt.Println(res)
+
+}
+
+// paki represents a Go package
+type paki struct {
+	name string
+	path string
+
+	constants []string
+	variables []string
+	functions []string
+	types     []string
+}
+
+func (p paki) String() string {
+	return fmt.Sprintf(
+		`
+[
+NAME: %v
+PATH: %v
+CONSTANTS: %v
+VARIABLES: %v
+FUNCTIONS: %v
+TYPES: %v
+]`,
+		p.name,
+		p.path,
+		p.constants,
+		p.variables,
+		p.functions,
+		p.types,
+	)
+}
+
+func newPaki(pattern string) (paki, error) {
 	// patterns := []string{"pattern=net/http"}
 	//patterns := []string{"pattern=os"}
 
@@ -170,7 +212,7 @@ func pkgInfo(pattern string) {
 		cfg, patterns...,
 	)
 	if err != nil {
-		log.Fatal(err)
+		return paki{}, err
 
 	}
 	// if packages.PrintErrors(pkgs) > 0 {
@@ -178,10 +220,10 @@ func pkgInfo(pattern string) {
 	// 	log.Fatal("PrintErrors")
 	// }
 
-	pkg1 := pkgs[0]
-	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := cool(pkg1)
+	pkg := pkgs[0]
+	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := pkgScope(pkg)
 
-	type2Methods := okay(typeSlice, methodSlice)
+	type2Methods := associateTypeMethods(typeSlice, methodSlice)
 	var finalTypeSlice = []string{}
 	for typ, methSlice := range type2Methods {
 		meths := ""
@@ -192,57 +234,18 @@ func pkgInfo(pattern string) {
 		finalTypeSlice = append(finalTypeSlice, fmt.Sprintf("\n%v%v", typ, meths))
 	}
 
-	preamble := fmt.Sprintf(
-		`
-NAME: %v
-PATH: %v
-CONSTANTS: %v
-VARIABLES: %v
-FUNCTIONS: %v
-TYPES: %v
-`,
-		pkg1.Name,
-		pkg1.PkgPath,
-		constantSlice,
-		varSlice,
-		funcSlice,
-		finalTypeSlice,
-	)
-	// TODO: dict is an odd name
-	var dict = []string{preamble}
-	fmt.Println(dict)
+	return paki{
+		name: pkg.Name,
+		path: pkg.PkgPath,
+
+		constants: constantSlice,
+		variables: varSlice,
+		functions: funcSlice,
+		types:     finalTypeSlice,
+	}, nil
 }
 
-func okay(typeSlice, methodSlice []string) map[string][]string {
-	type2Methods := map[string][]string{}
-	for _, typ := range typeSlice {
-		typName := strings.Split(typ, " ")[1]
-		for _, meth := range methodSlice {
-			methReceiverName := strings.Split(meth, " ")[1]
-			methReceiverName = strings.ReplaceAll(methReceiverName, ")", "")
-			methReceiverName = strings.ReplaceAll(methReceiverName, "(", "")
-			methReceiverName = strings.ReplaceAll(methReceiverName, "*", "")
-
-			typSaveName := strings.Split(typ, " ")[1] + " " + strings.Split(typ, " ")[2]
-			typSaveName = strings.TrimSpace(strings.Split(typSaveName, "{")[0])
-			if methReceiverName == typName {
-				_, exists := type2Methods[typSaveName]
-				if exists {
-					methds := type2Methods[typSaveName]
-					methds = append(methds, meth)
-					type2Methods[typSaveName] = methds
-				} else {
-					type2Methods[typSaveName] = []string{meth}
-				}
-			}
-		}
-
-	}
-
-	return type2Methods
-}
-
-func cool(pkg *packages.Package) ([]string, []string, []string, []string, []string) {
+func pkgScope(pkg *packages.Package) ([]string, []string, []string, []string, []string) {
 	// package members (TypeCheck or WholeProgram mode)
 
 	constVarTypFunc := []string{} //holds top level constants, variables, types & functions
@@ -298,12 +301,41 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string, []stri
 
 	return constantSlice, varSlice, typeSlice, funcSlice, methodSlice
 }
+func associateTypeMethods(typeSlice, methodSlice []string) map[string][]string {
+	type2Methods := map[string][]string{}
+	for _, typ := range typeSlice {
+		typName := strings.Split(typ, " ")[1]
+		for _, meth := range methodSlice {
+			methReceiverName := strings.Split(meth, " ")[1]
+			methReceiverName = strings.ReplaceAll(methReceiverName, ")", "")
+			methReceiverName = strings.ReplaceAll(methReceiverName, "(", "")
+			methReceiverName = strings.ReplaceAll(methReceiverName, "*", "")
+
+			typSaveName := strings.Split(typ, " ")[1] + " " + strings.Split(typ, " ")[2]
+			typSaveName = strings.TrimSpace(strings.Split(typSaveName, "{")[0])
+			if methReceiverName == typName {
+				_, exists := type2Methods[typSaveName]
+				if exists {
+					methds := type2Methods[typSaveName]
+					methds = append(methds, meth)
+					type2Methods[typSaveName] = methds
+				} else {
+					type2Methods[typSaveName] = []string{meth}
+				}
+			}
+		}
+
+	}
+
+	return type2Methods
+}
+
 func main() {
 	defer panicHandler()
 
-	pkgInfo("archive/tar")
-	pkgInfo("compress/flate")
+	dir("archive/tar")
+	dir("compress/flate")
 	dir(&http.Request{})
 	dir(http.Request{})
-	pkgInfo("github.com/pkg/errors")
+	dir("github.com/pkg/errors")
 }
