@@ -143,11 +143,25 @@ func pkgInfo(pattern string) {
 	// patterns := []string{"pattern=net/http"}
 	//patterns := []string{"pattern=os"}
 
+	const (
+		// TODO: move this to a global variable
+		// TODO: whittle this down to only what we need(I think we only need `NeedTypes`)
+		loadAll = packages.NeedName |
+			packages.NeedFiles |
+			packages.NeedCompiledGoFiles |
+			packages.NeedImports |
+			packages.NeedTypes |
+			packages.NeedTypesSizes |
+			packages.NeedSyntax |
+			packages.NeedTypesInfo |
+			packages.NeedDeps
+	)
+
 	// Although `packages.Load` accepts a slice of multiple items, for `dir` we only accept one.
 	patterns := []string{fmt.Sprintf("pattern=%s", pattern)}
 
 	// A higher numbered modes cause Load to return more information,
-	cfg := &packages.Config{Mode: packages.LoadAllSyntax}
+	cfg := &packages.Config{Mode: loadAll}
 	pkgs, err := packages.Load(
 		// Load passes most patterns directly to the underlying build tool, but all patterns with the prefix "query=",
 		// where query is a non-empty string of letters from [a-z], are reserved and may be interpreted as query operators.
