@@ -144,7 +144,7 @@ func pkgInfo(pattern string) {
 	//patterns := []string{"pattern=os"}
 
 	const (
-		// TODO: move this to a global var
+		// TODO: move this to a global variable
 		// TODO: whittle this down to only what we need(I think we only need `NeedTypes`)
 		loadAll = packages.NeedName |
 			packages.NeedFiles |
