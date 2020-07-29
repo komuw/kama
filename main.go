@@ -12,16 +12,9 @@ import (
 // but also print it out and its contents
 // basically, do what `litter.Dump` would have done
 
-// TODO: maybe add syntax highlighting, maybe make it optional??
-
 // TODO: clean up
 
-// TODO: add of `dir` documentation
-
-// TODO: maybe we should show docs when someone requests for something specific.
-// eg if they do `dir(http)` we do not show docs, but if they do `dir(&http.Request{})` we show docs.
-// An alternative is only show docs, if someone requests. `dir(i interface{}, config ...dir.Config)`; config is `...` so that it is optional
-// where config is a `type Config struct {}`
+// TODO: add documentation for `dir`
 
 // TODO: add a command line api.
 //   eg; `dir http.Request` or `dir http`

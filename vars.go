@@ -33,10 +33,6 @@ METHODS: %v
 		v.fields,
 		v.methods,
 	)
-
-	// // TODO: dict is an odd name
-	// var dict = []string{preamble}
-	// fmt.Println(dict)
 }
 
 func newVari(i interface{}) vari {
