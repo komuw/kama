@@ -145,7 +145,7 @@ func pkgInfo(pattern string) {
 
 	const (
 		// TODO: move this to a global var
-		// TODO: whittle this down to only what we need
+		// TODO: whittle this down to only what we need(I think we only need `NeedTypes`)
 		loadAll = packages.NeedName |
 			packages.NeedFiles |
 			packages.NeedCompiledGoFiles |
