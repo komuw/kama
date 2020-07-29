@@ -28,7 +28,10 @@ func dir(i interface{}) {
 	var res interface{}
 	var err error
 
-	if reflect.TypeOf(i).Kind() == reflect.String {
+	iType := reflect.TypeOf(i)
+	if iType == nil {
+		res = newVari(i)
+	} else if iType.Kind() == reflect.String {
 		i := i.(string)
 		res, err = newPaki(i)
 		if err != nil {

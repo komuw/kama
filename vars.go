@@ -37,15 +37,15 @@ METHODS: %v
 
 func newVari(i interface{}) vari {
 	iType := reflect.TypeOf(i)
-	typeKind := iType.Kind()
 	if iType == nil {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
 		return vari{
 			name:      "nil",
-			kind:      typeKind,
+			kind:      reflect.Ptr,
 			signature: "nil"}
 	}
 
+	typeKind := iType.Kind()
 	typeName := iType.PkgPath() + "." + iType.Name()
 	typeSig := iType.String()
 	if typeName == "." {
