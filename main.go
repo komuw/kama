@@ -179,7 +179,7 @@ func pkgInfo(pattern string) {
 	// }
 
 	pkg1 := pkgs[0]
-	constantSlice, varSlice, typeSlice, methodSlice := cool(pkg1)
+	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := cool(pkg1)
 
 	type2Methods := okay(typeSlice, methodSlice)
 	var finalTypeSlice = []string{}
@@ -198,12 +198,14 @@ NAME: %v
 PATH: %v
 CONSTANTS: %v
 VARIABLES: %v
+FUNCTIONS: %v
 TYPES: %v
 `,
 		pkg1.Name,
 		pkg1.PkgPath,
 		constantSlice,
 		varSlice,
+		funcSlice,
 		finalTypeSlice,
 	)
 	// TODO: dict is an odd name
@@ -240,10 +242,10 @@ func okay(typeSlice, methodSlice []string) map[string][]string {
 	return type2Methods
 }
 
-func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
+func cool(pkg *packages.Package) ([]string, []string, []string, []string, []string) {
 	// package members (TypeCheck or WholeProgram mode)
 
-	constVarTyp := []string{}
+	constVarTypFunc := []string{} //holds top level constants, variables, types & functions
 	methodSlice := []string{}
 	if pkg.Types != nil {
 		qual := types.RelativeTo(pkg.Types)
@@ -256,16 +258,13 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 				continue
 			}
 
-			// TODO: add top level, Exported functions.
-			// currently we do not. see `pkgInfo("github.com/pkg/errors")` <- this is missing the exported Funcs
-			// fmt.Println("name: ", name)
-			// fmt.Println("obj: ", obj)
-
-			constVarTyp = append(constVarTyp, types.ObjectString(obj, qual))
+			constVarTypFunc = append(constVarTypFunc, types.ObjectString(obj, qual))
 
 			// lets get methods of types
 			if _, ok := obj.(*types.TypeName); ok {
 				for _, meth := range typeutil.IntuitiveMethodSet(obj.Type(), nil) {
+					// look into: `godex.combinedMethodSet()`
+					// https://github.com/golang/tools/blob/e96c4e24768da594adeb5eed27c8ecd547a3d4f1/cmd/godex/print.go#L347-L373
 					if !meth.Obj().Exported() {
 						// skip unexported methods
 						continue
@@ -280,7 +279,12 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 	constantSlice := []string{}
 	varSlice := []string{}
 	typeSlice := []string{}
-	for _, v := range constVarTyp {
+	funcSlice := []string{}
+	for _, v := range constVarTypFunc {
+		if strings.HasPrefix(v, "func") {
+			v = strings.TrimPrefix(v, "func ")
+			funcSlice = append(funcSlice, fmt.Sprintf("\n\t%v", v))
+		}
 		if strings.HasPrefix(v, "const") {
 			v = strings.TrimPrefix(v, "const ")
 			constantSlice = append(constantSlice, fmt.Sprintf("\n\t%v", v))
@@ -291,14 +295,15 @@ func cool(pkg *packages.Package) ([]string, []string, []string, []string) {
 			typeSlice = append(typeSlice, v)
 		}
 	}
-	// TODO: associate methods with their types from `typeSlice`
-	return constantSlice, varSlice, typeSlice, methodSlice
+
+	return constantSlice, varSlice, typeSlice, funcSlice, methodSlice
 }
 func main() {
 	defer panicHandler()
 
 	pkgInfo("archive/tar")
+	pkgInfo("compress/flate")
 	dir(&http.Request{})
 	dir(http.Request{})
-	pkgInfo("pkg/errors")
+	pkgInfo("github.com/pkg/errors")
 }
