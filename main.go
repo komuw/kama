@@ -14,6 +14,8 @@ import (
 
 // TODO: clean up
 
+// TODO: fuzz test
+
 // TODO: add documentation for `dir`
 
 // TODO: add a command line api.
