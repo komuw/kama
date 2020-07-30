@@ -10,7 +10,8 @@ import (
 
 // TODO: merge methods/fields of T and *T
 // 1. https://play.golang.org/p/aQbEhI8WDP0
-// 2. https://play.golang.org/p/Olb2az0L2iI
+// 2. https://play.golang.org/p/EBhZW6hjb7O
+// 3. https://play.golang.org/p/Olb2az0L2iI
 
 // vari represents a variable
 type vari struct {
