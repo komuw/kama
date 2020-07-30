@@ -8,9 +8,10 @@ import (
 )
 
 type Person struct {
-	Name   string
-	Age    int
-	Height float32
+	Name             string
+	Age              int
+	Height           float32
+	somePrivateField string
 }
 
 func (p Person) ValueMethodOne() {}
