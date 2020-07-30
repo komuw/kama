@@ -20,7 +20,7 @@ func (p Person) ValueMethodOne()        {}
 func (p *Person) PtrMethodOne()         {}
 func (p Person) ValueMethodTwo()        {}
 
-func TestVariables(t *testing.T) {
+func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
 		expected vari
