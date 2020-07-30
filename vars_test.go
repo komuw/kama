@@ -20,6 +20,10 @@ func (p Person) ValueMethodOne()        {}
 func (p *Person) PtrMethodOne()         {}
 func (p Person) ValueMethodTwo()        {}
 
+func ThisFunction(arg1 string, arg2 int) (string, error) {
+	return "", nil
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -44,6 +48,15 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				// TODO: `Methods` should be unified with that of Person{} above
 				Methods: []string{"PtrMethodOne func(*main.Person)", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)"},
+			},
+		},
+		{
+			ThisFunction, vari{
+				Name:      "github.com/komuw/dir.ThisFunction",
+				Kind:      reflect.Func,
+				Signature: "func(string, int) (string, error)",
+				Fields:    []string{},
+				Methods:   []string{},
 			},
 		},
 	}
