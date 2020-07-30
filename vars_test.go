@@ -14,9 +14,11 @@ type Person struct {
 	somePrivateField string
 }
 
-func (p Person) ValueMethodOne() {}
-func (p *Person) PtrMethodOne()  {}
-func (p Person) ValueMethodTwo() {}
+func (p Person) somePrivateMethodOne()  {}
+func (p *Person) somePrivateMethodTwo() {}
+func (p Person) ValueMethodOne()        {}
+func (p *Person) PtrMethodOne()         {}
+func (p Person) ValueMethodTwo()        {}
 
 func TestVariables(t *testing.T) {
 	tt := []struct {
