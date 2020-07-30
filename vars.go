@@ -60,7 +60,22 @@ func newVari(i interface{}) vari {
 		}
 	}
 
+	var fields = getFields(iType)
+	var methods = getMethods(iType)
+
+	return vari{
+		Name:      typeName,
+		Kind:      typeKind,
+		Signature: typeSig,
+		Fields:    fields,
+		Methods:   methods,
+	}
+
+}
+
+func getFields(iType reflect.Type) []string {
 	var fields = []string{}
+	typeKind := iType.Kind()
 	if typeKind == reflect.Struct {
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
@@ -73,6 +88,10 @@ func newVari(i interface{}) vari {
 		}
 	}
 
+	return fields
+}
+
+func getMethods(iType reflect.Type) []string {
 	var methods = []string{}
 	numMethods := iType.NumMethod()
 	for i := 0; i < numMethods; i++ {
@@ -92,12 +111,5 @@ func newVari(i interface{}) vari {
 		methods = append(methods, methName+" "+methSig)
 	}
 
-	return vari{
-		Name:      typeName,
-		Kind:      typeKind,
-		Signature: typeSig,
-		Fields:    fields,
-		Methods:   methods,
-	}
-
+	return methods
 }
