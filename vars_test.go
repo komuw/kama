@@ -26,6 +26,10 @@ func ThisFunction(arg1 string, arg2 int) (string, error) {
 
 var thisFunctionVar = ThisFunction
 
+type customerID uint16
+
+func (c customerID) Id() uint16 { return uint16(c) }
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -68,6 +72,15 @@ func TestBasicVariables(t *testing.T) {
 				Signature: "func(string, int) (string, error)",
 				Fields:    []string{},
 				Methods:   []string{},
+			},
+		},
+		{
+			customerID(9), vari{
+				Name:      "github.com/komuw/dir.customerID",
+				Kind:      reflect.Uint16,
+				Signature: "main.customerID",
+				Fields:    []string{},
+				Methods:   []string{"Id func(main.customerID) uint16"},
 			},
 		},
 	}
