@@ -21,7 +21,7 @@ import (
   https://github.com/sanity-io/litter/blob/b3546bd0a12c8738436e565b9e016bcd1876403d/LICENSE
 */
 
-const acceptableCodeCoverage = 0.6 // 60%
+const acceptableCodeCoverage = 0.5 // 60%
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
