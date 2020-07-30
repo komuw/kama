@@ -7,7 +7,6 @@ import (
 	"reflect"
 )
 
-
 // TODO: merge methods/fields of T and *T
 // 1. https://play.golang.org/p/aQbEhI8WDP0
 // 2. https://play.golang.org/p/EBhZW6hjb7O
@@ -15,11 +14,11 @@ import (
 
 // vari represents a variable
 type vari struct {
-	name      string
-	kind      reflect.Kind
-	signature string
-	fields    []string
-	methods   []string
+	Name      string
+	Kind      reflect.Kind
+	Signature string
+	Fields    []string
+	Methods   []string
 }
 
 func (v vari) String() string {
@@ -33,11 +32,11 @@ FIELDS: %v
 METHODS: %v
 ]
 `,
-		v.name,
-		v.kind,
-		v.signature,
-		v.fields,
-		v.methods,
+		v.Name,
+		v.Kind,
+		v.Signature,
+		v.Fields,
+		v.Methods,
 	)
 }
 
@@ -46,9 +45,9 @@ func newVari(i interface{}) vari {
 	if iType == nil {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
 		return vari{
-			name:      "nil",
-			kind:      reflect.Ptr,
-			signature: "nil"}
+			Name:      "nil",
+			Kind:      reflect.Ptr,
+			Signature: "nil"}
 	}
 
 	typeKind := iType.Kind()
@@ -70,7 +69,7 @@ func newVari(i interface{}) vari {
 				// private field
 				continue
 			}
-			fields = append(fields, f.PkgPath+"."+f.Name+",")
+			fields = append(fields, f.Name)
 		}
 	}
 
@@ -82,7 +81,7 @@ func newVari(i interface{}) vari {
 			// private method
 			continue
 		}
-		methName := meth.PkgPath + "." + meth.Name
+		methName := meth.Name
 		methSig := meth.Type.String() // type signature
 
 		// TODO: maybe we should try and also add argument names if any.
@@ -90,16 +89,15 @@ func newVari(i interface{}) vari {
 		//   func(main.Foo, int, int) int
 		// it would be cooler to display as;
 		//   func(main.Foo, price int, commission int) int
-		methods = append(methods, "\n\t"+methName+fmt.Sprintf("\n\t\t%v", methSig))
+		methods = append(methods, methName+" "+methSig)
 	}
-	methods = append(methods, "\n\t")
 
 	return vari{
-		name:      typeName,
-		kind:      typeKind,
-		signature: typeSig,
-		fields:    fields,
-		methods:   methods,
+		Name:      typeName,
+		Kind:      typeKind,
+		Signature: typeSig,
+		Fields:    fields,
+		Methods:   methods,
 	}
 
 }
