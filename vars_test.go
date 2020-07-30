@@ -24,6 +24,8 @@ func ThisFunction(arg1 string, arg2 int) (string, error) {
 	return "", nil
 }
 
+var thisFunctionVar = ThisFunction
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -52,6 +54,15 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			ThisFunction, vari{
+				Name:      "github.com/komuw/dir.ThisFunction",
+				Kind:      reflect.Func,
+				Signature: "func(string, int) (string, error)",
+				Fields:    []string{},
+				Methods:   []string{},
+			},
+		},
+		{
+			thisFunctionVar, vari{
 				Name:      "github.com/komuw/dir.ThisFunction",
 				Kind:      reflect.Func,
 				Signature: "func(string, int) (string, error)",
