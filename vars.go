@@ -61,7 +61,7 @@ func newVari(i interface{}) vari {
 	}
 
 	// TODO: merge all fields of both type `T` and `*T`
-	var fields = getFields(iType)
+	var fields = getAllFields(i)
 
 	// TODO: If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
 	var methods = getAllMethods(i)
@@ -76,10 +76,28 @@ func newVari(i interface{}) vari {
 
 }
 
+// getFields finds all the fields(if any) of type `T` and `*T`
+func getAllFields(i interface{}) []string {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	var allFields = []string{}
+	if typeKind == reflect.Ptr {
+		// the passed in type maybe be a `*T struct{}` so lets also find methods of `T struct{}`
+		valueI := reflect.ValueOf(i).Elem()
+		allFields = getFields(valueI.Type())
+	} else if typeKind == reflect.Struct {
+		allFields = getFields(iType)
+	}
+
+	return allFields
+}
+
 // getFields finds all the fields(if any) of a type
 func getFields(iType reflect.Type) []string {
 	var fields = []string{}
 	typeKind := iType.Kind()
+
 	if typeKind == reflect.Struct {
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
@@ -100,18 +118,18 @@ func getAllMethods(i interface{}) []string {
 	iType := reflect.TypeOf(i)
 
 	var allMethods = []string{}
+	var methodsOfPassedInType = []string{}
 	var methodsOfT = []string{}
 	var methodsOfPointerT = []string{}
-	var methodsOfPassedInType = []string{}
 
 	methodsOfPassedInType = getMethods(iType)
 
 	if iType.Kind() == reflect.Ptr {
-		// the passed in is a `*T` so lets also find methods of `T`
+		// the passed in type is a `*T` so lets also find methods of `T`
 		valueI := reflect.ValueOf(i).Elem()
 		methodsOfT = getMethods(valueI.Type())
 	} else {
-		// the passed in is a `T` so lets also find methods of `*T`
+		// the passed in type is a `T` so lets also find methods of `*T`
 		ptrOfT := reflect.PtrTo(iType)
 		methodsOfPointerT = getMethods(ptrOfT)
 	}

@@ -52,7 +52,7 @@ func TestBasicVariables(t *testing.T) {
 				Name:      ".Person",
 				Kind:      reflect.Ptr,
 				Signature: "*main.Person",
-				Fields:    []string{},
+				Fields:    []string{"Name", "Age", "Height"},
 				// TODO: `Methods` should be unified with that of Person{} above
 				Methods: []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)"},
 			},
