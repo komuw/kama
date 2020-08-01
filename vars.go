@@ -60,6 +60,7 @@ func newVari(i interface{}) vari {
 		}
 	}
 
+	// TODO: merge all fields of both type `T` and `*T`
 	var fields = getFields(iType)
 
 	// TODO: If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
