@@ -8,6 +8,9 @@ import "fmt"
 // 	defer panicHandler()
 // }
 //
+// Do note that this would not catch all panics.
+// eg; `panic(nil)` will not be caught
+//
 func panicHandler() {
 	// keep an eye on the accepeted proposal: issues/37023
 	// https://github.com/golang/go/issues/37023
