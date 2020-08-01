@@ -19,6 +19,7 @@ func (p *Person) somePrivateMethodTwo() {}
 func (p Person) ValueMethodOne()        {}
 func (p *Person) PtrMethodOne()         {}
 func (p Person) ValueMethodTwo()        {}
+func (p *Person) PtrMethodTwo() float32 { return p.Height }
 
 func ThisFunction(arg1 string, arg2 int) (string, error) {
 	return "", nil
@@ -42,7 +43,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: "main.Person",
 				Fields:    []string{"Name", "Age", "Height"},
 				// TODO: `Methods` should include `PtrMethodOne`
-				Methods: []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)"},
+				Methods: []string{"PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)", "ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)"},
 			},
 		},
 		{
@@ -53,7 +54,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: "*main.Person",
 				Fields:    []string{},
 				// TODO: `Methods` should be unified with that of Person{} above
-				Methods: []string{"PtrMethodOne func(*main.Person)", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)"},
+				Methods: []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)"},
 			},
 		},
 		{
@@ -80,7 +81,9 @@ func TestBasicVariables(t *testing.T) {
 				Kind:      reflect.Uint16,
 				Signature: "main.customerID",
 				Fields:    []string{},
-				Methods:   []string{"Id func(main.customerID) uint16"},
+				// TODO: this should only be `Id func(main.customerID) uint16`
+				// If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
+				Methods: []string{"Id func(*main.customerID) uint16", "Id func(main.customerID) uint16"},
 			},
 		},
 	}

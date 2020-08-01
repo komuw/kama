@@ -61,7 +61,9 @@ func newVari(i interface{}) vari {
 	}
 
 	var fields = getFields(iType)
-	var methods = getMethods(iType)
+
+	// TODO: If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
+	var methods = getAllMethods(i)
 
 	return vari{
 		Name:      typeName,
@@ -73,6 +75,7 @@ func newVari(i interface{}) vari {
 
 }
 
+// getFields finds all the fields(if any) of a type
 func getFields(iType reflect.Type) []string {
 	var fields = []string{}
 	typeKind := iType.Kind()
@@ -91,6 +94,34 @@ func getFields(iType reflect.Type) []string {
 	return fields
 }
 
+// getAllMethods finds all the methods of type `T` and `*T`
+func getAllMethods(i interface{}) []string {
+	iType := reflect.TypeOf(i)
+
+	var allMethods = []string{}
+	var methodsOfT = []string{}
+	var methodsOfPointerT = []string{}
+	var methodsOfPassedInType = []string{}
+
+	methodsOfPassedInType = getMethods(iType)
+
+	if iType.Kind() == reflect.Ptr {
+		// the passed in is a `*T` so lets also find methods of `T`
+		valueI := reflect.ValueOf(i).Elem()
+		methodsOfT = getMethods(valueI.Type())
+	} else {
+		// the passed in is a `T` so lets also find methods of `*T`
+		ptrOfT := reflect.PtrTo(iType)
+		methodsOfPointerT = getMethods(ptrOfT)
+	}
+
+	allMethods = append(allMethods, methodsOfT...)
+	allMethods = append(allMethods, methodsOfPointerT...)
+	allMethods = append(allMethods, methodsOfPassedInType...)
+	return allMethods
+}
+
+// getMethods finds all the methods of type.
 func getMethods(iType reflect.Type) []string {
 	var methods = []string{}
 	numMethods := iType.NumMethod()
