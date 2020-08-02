@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+// TODO: remove this file
+
 // Usage:
 //
 // func main() {
