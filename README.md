@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/komuw/kama/branch/master/graph/badge.svg)](https://codecov.io/gh/komuw/kama)
 
 
+![ci](https://github.com/komuw/kama/workflows/dir%20ci/badge.svg)
+
 `kama` prints exported information of types, variables, packages, modules, imports etc     
 It can be used to aid debugging and testing.        
 
