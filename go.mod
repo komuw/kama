@@ -1,4 +1,4 @@
-module github.com/komuw/dir
+module github.com/komuw/kama
 
 go 1.14
 
