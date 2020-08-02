@@ -49,7 +49,7 @@ func TestBasicVariables(t *testing.T) {
 		{
 
 			&Person{Name: "Jane"}, vari{
-				Name:      ".Person",
+				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"*main.Person", "main.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
@@ -153,8 +153,7 @@ func TestStdlibVariables(t *testing.T) {
 
 		{
 			&http.Request{}, vari{
-				// TODO: This name should be the same as that of `http.Request{}`
-				Name:      ".Request",
+				Name:      "net/http.Request",
 				Kind:      reflect.Struct,
 				Signature: []string{"*http.Request", "http.Request"},
 				Fields: []string{
