@@ -138,6 +138,7 @@ func getAllMethods(i interface{}) []string {
 	allMethods = append(allMethods, methodsOfT...)
 	allMethods = append(allMethods, methodsOfPointerT...)
 	allMethods = append(allMethods, methodsOfPassedInType...)
+
 	return allMethods
 }
 
@@ -168,7 +169,7 @@ func getMethods(iType reflect.Type) []string {
 // trimMethods removes any duplicated methods.
 // if a method is applicable for both type `T` and `*T`, then `trimMethods` will
 // just remove the one for `*T`
-func trimMethods(methods []string) (trimmedMethods []string) {
+func trimMethods(methods []string) []string {
 
 	// contains tells whether a contains x.
 	contains := func(a []string, x string) bool {
@@ -180,6 +181,7 @@ func trimMethods(methods []string) (trimmedMethods []string) {
 		return false
 	}
 
+	var trimmedMethods = []string{}
 	var TmethNames []string
 
 	// first add all methods for type `T`
