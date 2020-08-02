@@ -26,6 +26,15 @@ type pak struct {
 
 func (p pak) String() string {
 
+	nLf := func(x []string) []string {
+		var fm = []string{}
+		for _, c := range x {
+			fm = append(fm, "\n\t"+c)
+		}
+		fm = append(fm, "\n\t")
+		return fm
+	}
+
 	return fmt.Sprintf(
 		`
 [
@@ -36,9 +45,9 @@ FUNCTIONS: %v
 TYPES: %v
 ]`,
 		p.Name,
-		p.Constants,
-		p.Variables,
-		p.Functions,
+		nLf(p.Constants),
+		nLf(p.Variables),
+		nLf(p.Functions),
 		p.Types,
 	)
 }
