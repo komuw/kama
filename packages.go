@@ -17,9 +17,7 @@ const (
 
 // pak represents a Go package
 type pak struct {
-	Name string
-	Path string
-
+	Name      string
 	Constants []string
 	Variables []string
 	Functions []string
@@ -32,14 +30,12 @@ func (p pak) String() string {
 		`
 [
 NAME: %v
-PATH: %v
 CONSTANTS: %v
 VARIABLES: %v
 FUNCTIONS: %v
 TYPES: %v
 ]`,
 		p.Name,
-		p.Path,
 		p.Constants,
 		p.Variables,
 		p.Functions,
@@ -78,9 +74,7 @@ func newPak(pattern string) (pak, error) {
 	type2Methods := associateTypeMethods(typeSlice, methodSlice)
 
 	return pak{
-		Name: pkg.Name,
-		Path: pkg.PkgPath,
-
+		Name:      pkg.PkgPath,
 		Constants: constantSlice,
 		Variables: varSlice,
 		Functions: funcSlice,

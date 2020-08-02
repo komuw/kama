@@ -13,8 +13,8 @@ func TestStdlibPackages(t *testing.T) {
 	}{
 		{
 			"errors", pak{
-				Name:      "errors",
-				Path:      "errors",
+				Name: "errors",
+
 				Constants: []string{},
 				Variables: []string{},
 				Functions: []string{"As(err error, target interface{}) bool", "Is(err error, target error) bool", "New(text string) error", "Unwrap(err error) error"},
@@ -24,8 +24,7 @@ func TestStdlibPackages(t *testing.T) {
 
 		{
 			"archive/tar", pak{
-				Name:      "tar",
-				Path:      "archive/tar",
+				Name:      "archive/tar",
 				Constants: []string{"FormatGNU Format", "FormatPAX Format", "FormatUSTAR Format", "FormatUnknown Format", "TypeBlock untyped rune", "TypeChar untyped rune", "TypeCont untyped rune", "TypeDir untyped rune", "TypeFifo untyped rune", "TypeGNULongLink untyped rune", "TypeGNULongName untyped rune", "TypeGNUSparse untyped rune", "TypeLink untyped rune", "TypeReg untyped rune", "TypeRegA untyped rune", "TypeSymlink untyped rune", "TypeXGlobalHeader untyped rune", "TypeXHeader untyped rune"},
 				Variables: []string{"ErrFieldTooLong error", "ErrHeader error", "ErrWriteAfterClose error", "ErrWriteTooLong error"},
 				Functions: []string{"FileInfoHeader(fi os.FileInfo, link string) (*Header, error)", "NewReader(r io.Reader) *Reader", "NewWriter(w io.Writer) *Writer"},
@@ -70,8 +69,7 @@ func TestThirdPartyPackages(t *testing.T) {
 	}{
 		{
 			"github.com/pkg/errors", pak{
-				Name:      "errors",
-				Path:      "github.com/pkg/errors",
+				Name:      "github.com/pkg/errors",
 				Constants: []string{},
 				Variables: []string{},
 				Functions: []string{
