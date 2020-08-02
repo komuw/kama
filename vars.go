@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"strings"
 
 	"reflect"
 )
-
 
 // TODO: merge methods/fields of T and *T
 // 1. https://play.golang.org/p/aQbEhI8WDP0
@@ -15,11 +15,11 @@ import (
 
 // vari represents a variable
 type vari struct {
-	name      string
-	kind      reflect.Kind
-	signature string
-	fields    []string
-	methods   []string
+	Name      string
+	Kind      reflect.Kind
+	Signature []string
+	Fields    []string
+	Methods   []string
 }
 
 func (v vari) String() string {
@@ -33,11 +33,11 @@ FIELDS: %v
 METHODS: %v
 ]
 `,
-		v.name,
-		v.kind,
-		v.signature,
-		v.fields,
-		v.methods,
+		v.Name,
+		v.Kind,
+		v.Signature,
+		v.Fields,
+		v.Methods,
 	)
 }
 
@@ -46,14 +46,14 @@ func newVari(i interface{}) vari {
 	if iType == nil {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
 		return vari{
-			name:      "nil",
-			kind:      reflect.Ptr,
-			signature: "nil"}
+			Name:      "nil",
+			Kind:      reflect.Ptr,
+			Signature: []string{"nil"}}
 	}
 
-	typeKind := iType.Kind()
+	typeKind := getKind(i)
 	typeName := iType.PkgPath() + "." + iType.Name()
-	typeSig := iType.String()
+	typeSig := getSignature(i)
 	if typeName == "." {
 		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 		if typeName == "" {
@@ -61,7 +61,79 @@ func newVari(i interface{}) vari {
 		}
 	}
 
+	var fields = getAllFields(i)
+	var methods = trimMethods(getAllMethods(i))
+
+	return vari{
+		Name:      typeName,
+		Kind:      typeKind,
+		Signature: typeSig,
+		Fields:    fields,
+		Methods:   methods,
+	}
+
+}
+
+func getKind(i interface{}) reflect.Kind {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	if typeKind != reflect.Ptr {
+		return typeKind
+	} else {
+		// the passed in type maybe be a `*T` so lets find the kind of `T`
+		valueI := reflect.ValueOf(i).Elem()
+		iType := valueI.Type()
+		typeKind := iType.Kind()
+		return typeKind
+	}
+}
+
+func getSignature(i interface{}) []string {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	var allSignatures = []string{iType.String()}
+
+	if typeKind == reflect.Ptr {
+		// the passed in type maybe be a `*T` so lets find the signature of `T`
+		valueI := reflect.ValueOf(i).Elem()
+		iType := valueI.Type()
+		sig := iType.String()
+		allSignatures = append(allSignatures, sig)
+	} else if typeKind == reflect.Struct {
+		// the passed in type is a `T` so lets also find the signature of `*T`
+		// NB: We are currently only allowing structs here. But we could expand to other types
+		ptrOfT := reflect.PtrTo(iType)
+		sig := ptrOfT.String()
+		allSignatures = append(allSignatures, sig)
+	}
+
+	return allSignatures
+}
+
+// getFields finds all the fields(if any) of type `T` and `*T`
+func getAllFields(i interface{}) []string {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	var allFields = []string{}
+	if typeKind == reflect.Ptr {
+		// the passed in type maybe be a `*T struct{}` so lets also find methods of `T struct{}`
+		valueI := reflect.ValueOf(i).Elem()
+		allFields = getFields(valueI.Type())
+	} else if typeKind == reflect.Struct {
+		allFields = getFields(iType)
+	}
+
+	return allFields
+}
+
+// getFields finds all the fields(if any) of a type
+func getFields(iType reflect.Type) []string {
 	var fields = []string{}
+	typeKind := iType.Kind()
+
 	if typeKind == reflect.Struct {
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
@@ -70,10 +142,43 @@ func newVari(i interface{}) vari {
 				// private field
 				continue
 			}
-			fields = append(fields, f.PkgPath+"."+f.Name+",")
+			fields = append(fields, f.Name)
 		}
 	}
 
+	return fields
+}
+
+// getAllMethods finds all the methods of type `T` and `*T`
+func getAllMethods(i interface{}) []string {
+	iType := reflect.TypeOf(i)
+
+	var allMethods = []string{}
+	var methodsOfPassedInType = []string{}
+	var methodsOfT = []string{}
+	var methodsOfPointerT = []string{}
+
+	methodsOfPassedInType = getMethods(iType)
+
+	if iType.Kind() == reflect.Ptr {
+		// the passed in type is a `*T` so lets also find methods of `T`
+		valueI := reflect.ValueOf(i).Elem()
+		methodsOfT = getMethods(valueI.Type())
+	} else {
+		// the passed in type is a `T` so lets also find methods of `*T`
+		ptrOfT := reflect.PtrTo(iType)
+		methodsOfPointerT = getMethods(ptrOfT)
+	}
+
+	allMethods = append(allMethods, methodsOfT...)
+	allMethods = append(allMethods, methodsOfPointerT...)
+	allMethods = append(allMethods, methodsOfPassedInType...)
+
+	return allMethods
+}
+
+// getMethods finds all the methods of type.
+func getMethods(iType reflect.Type) []string {
 	var methods = []string{}
 	numMethods := iType.NumMethod()
 	for i := 0; i < numMethods; i++ {
@@ -82,7 +187,7 @@ func newVari(i interface{}) vari {
 			// private method
 			continue
 		}
-		methName := meth.PkgPath + "." + meth.Name
+		methName := meth.Name
 		methSig := meth.Type.String() // type signature
 
 		// TODO: maybe we should try and also add argument names if any.
@@ -90,16 +195,47 @@ func newVari(i interface{}) vari {
 		//   func(main.Foo, int, int) int
 		// it would be cooler to display as;
 		//   func(main.Foo, price int, commission int) int
-		methods = append(methods, "\n\t"+methName+fmt.Sprintf("\n\t\t%v", methSig))
-	}
-	methods = append(methods, "\n\t")
-
-	return vari{
-		name:      typeName,
-		kind:      typeKind,
-		signature: typeSig,
-		fields:    fields,
-		methods:   methods,
+		methods = append(methods, methName+" "+methSig)
 	}
 
+	return methods
+}
+
+// trimMethods removes any duplicated methods.
+// if a method is applicable for both type `T` and `*T`, then `trimMethods` will
+// just remove the one for `*T`
+func trimMethods(methods []string) []string {
+
+	// contains tells whether a contains x.
+	contains := func(a []string, x string) bool {
+		for _, n := range a {
+			if x == n {
+				return true
+			}
+		}
+		return false
+	}
+
+	var trimmedMethods = []string{}
+	var TmethNames []string
+
+	// first add all methods for type `T`
+	for _, meth := range methods {
+		if !strings.Contains(meth, "*") {
+			trimmedMethods = append(trimmedMethods, meth)
+			methName := strings.Split(meth, " ")[0]
+			TmethNames = append(TmethNames, methName)
+		}
+	}
+	// then add methods for `*T` but only if they do not exist for `T`
+	for _, meth := range methods {
+		if strings.Contains(meth, "*") {
+			methName := strings.Split(meth, " ")[0]
+			if !contains(TmethNames, methName) {
+				trimmedMethods = append(trimmedMethods, meth)
+			}
+		}
+	}
+
+	return trimmedMethods
 }
