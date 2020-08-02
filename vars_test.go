@@ -40,7 +40,7 @@ func TestBasicVariables(t *testing.T) {
 			Person{Name: "John"}, vari{
 				Name:      "github.com/komuw/dir.Person",
 				Kind:      reflect.Struct,
-				Signature: "main.Person",
+				Signature: []string{"main.Person", "*main.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
 				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
 			},
@@ -50,7 +50,7 @@ func TestBasicVariables(t *testing.T) {
 			&Person{Name: "Jane"}, vari{
 				Name:      ".Person",
 				Kind:      reflect.Struct,
-				Signature: "*main.Person",
+				Signature: []string{"*main.Person", "main.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
 				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
 			},
@@ -59,7 +59,7 @@ func TestBasicVariables(t *testing.T) {
 			ThisFunction, vari{
 				Name:      "github.com/komuw/dir.ThisFunction",
 				Kind:      reflect.Func,
-				Signature: "func(string, int) (string, error)",
+				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
 			},
@@ -68,7 +68,7 @@ func TestBasicVariables(t *testing.T) {
 			thisFunctionVar, vari{
 				Name:      "github.com/komuw/dir.ThisFunction",
 				Kind:      reflect.Func,
-				Signature: "func(string, int) (string, error)",
+				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
 			},
@@ -77,7 +77,7 @@ func TestBasicVariables(t *testing.T) {
 			customerID(9), vari{
 				Name:      "github.com/komuw/dir.customerID",
 				Kind:      reflect.Uint16,
-				Signature: "main.customerID",
+				Signature: []string{"main.customerID"},
 				Fields:    []string{},
 				Methods:   []string{"Id func(main.customerID) uint16"},
 			},

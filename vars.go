@@ -17,7 +17,7 @@ import (
 type vari struct {
 	Name      string
 	Kind      reflect.Kind
-	Signature string
+	Signature []string
 	Fields    []string
 	Methods   []string
 }
@@ -48,12 +48,12 @@ func newVari(i interface{}) vari {
 		return vari{
 			Name:      "nil",
 			Kind:      reflect.Ptr,
-			Signature: "nil"}
+			Signature: []string{"nil"}}
 	}
 
 	typeKind := getKind(i)
 	typeName := iType.PkgPath() + "." + iType.Name()
-	typeSig := iType.String()
+	typeSig := getSignature(i)
 	if typeName == "." {
 		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 		if typeName == "" {
@@ -65,9 +65,8 @@ func newVari(i interface{}) vari {
 	var methods = trimMethods(getAllMethods(i))
 
 	return vari{
-		Name: typeName,
-		Kind: typeKind,
-		// TODO: for type `T`, signature should be both `T` and `*T`
+		Name:      typeName,
+		Kind:      typeKind,
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
@@ -88,6 +87,29 @@ func getKind(i interface{}) reflect.Kind {
 		typeKind := iType.Kind()
 		return typeKind
 	}
+}
+
+func getSignature(i interface{}) []string {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	var allSignatures = []string{iType.String()}
+
+	if typeKind == reflect.Ptr {
+		// the passed in type maybe be a `*T` so lets find the signature of `T`
+		valueI := reflect.ValueOf(i).Elem()
+		iType := valueI.Type()
+		sig := iType.String()
+		allSignatures = append(allSignatures, sig)
+	} else if typeKind == reflect.Struct {
+		// the passed in type is a `T` so lets also find the signature of `*T`
+		// NB: We are currently only allowing structs here. But we could expand to other types
+		ptrOfT := reflect.PtrTo(iType)
+		sig := ptrOfT.String()
+		allSignatures = append(allSignatures, sig)
+	}
+
+	return allSignatures
 }
 
 // getFields finds all the fields(if any) of type `T` and `*T`
