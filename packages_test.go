@@ -6,7 +6,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestStdlib(t *testing.T) {
+func TestStdlibPackages(t *testing.T) {
 	tt := []struct {
 		importPath string
 		expected   paki
