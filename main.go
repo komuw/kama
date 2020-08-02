@@ -24,8 +24,6 @@ import (
 
 // TODO: this will stutter; `dir.dir(23)`
 // maybe it is okay??
-// TODO: surface all info for both the type and its pointer.
-// currently `dir(&http.Client{})` & `dir(http.Client{})` produces different output; they should NOT
 func dir(i interface{}) {
 	var res interface{}
 	var err error
@@ -35,7 +33,7 @@ func dir(i interface{}) {
 		res = newVari(i)
 	} else if iType.Kind() == reflect.String {
 		i := i.(string)
-		res, err = newPaki(i)
+		res, err = newPak(i)
 		if err != nil {
 			res = newVari(i)
 		}

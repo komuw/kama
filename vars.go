@@ -52,7 +52,7 @@ func newVari(i interface{}) vari {
 	}
 
 	typeKind := getKind(i)
-	typeName := iType.PkgPath() + "." + iType.Name()
+	typeName := getName(i)
 	typeSig := getSignature(i)
 	if typeName == "." {
 		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
@@ -72,6 +72,20 @@ func newVari(i interface{}) vari {
 		Methods:   methods,
 	}
 
+}
+
+func getName(i interface{}) string {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	typeName := iType.PkgPath() + "." + iType.Name()
+	if typeKind == reflect.Ptr {
+		valueI := reflect.ValueOf(i).Elem()
+		iType := valueI.Type()
+		typeName = iType.PkgPath() + "." + iType.Name()
+	}
+
+	return typeName
 }
 
 func getKind(i interface{}) reflect.Kind {

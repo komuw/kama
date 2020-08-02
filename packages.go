@@ -10,50 +10,40 @@ import (
 )
 
 const (
-	// TODO: whittle this down to only what we need(I think we only need `NeedTypes`)
 	packageNeeds = packages.NeedName |
-		packages.NeedFiles |
-		packages.NeedCompiledGoFiles |
 		packages.NeedImports |
-		packages.NeedTypes |
-		packages.NeedTypesSizes |
-		packages.NeedSyntax |
-		packages.NeedTypesInfo |
-		packages.NeedDeps
+		packages.NeedTypes
 )
 
-// paki represents a Go package
-type paki struct {
-	name string
-	path string
-
-	constants []string
-	variables []string
-	functions []string
-	types     []string
+// pak represents a Go package
+type pak struct {
+	Name      string
+	Constants []string
+	Variables []string
+	Functions []string
+	Types     map[string][]string
 }
 
-func (p paki) String() string {
+func (p pak) String() string {
+
 	return fmt.Sprintf(
 		`
 [
 NAME: %v
-PATH: %v
 CONSTANTS: %v
 VARIABLES: %v
 FUNCTIONS: %v
 TYPES: %v
 ]`,
-		p.name,
-		p.path,
-		p.constants,
-		p.variables,
-		p.functions,
-		p.types,
+		p.Name,
+		p.Constants,
+		p.Variables,
+		p.Functions,
+		p.Types,
 	)
 }
 
-func newPaki(pattern string) (paki, error) {
+func newPak(pattern string) (pak, error) {
 	// patterns := []string{"pattern=net/http"}
 	//patterns := []string{"pattern=os"}
 
@@ -70,7 +60,7 @@ func newPaki(pattern string) (paki, error) {
 		cfg, patterns...,
 	)
 	if err != nil {
-		return paki{}, err
+		return pak{}, err
 
 	}
 	// if packages.PrintErrors(pkgs) > 0 {
@@ -82,24 +72,13 @@ func newPaki(pattern string) (paki, error) {
 	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := pkgScope(pkg)
 
 	type2Methods := associateTypeMethods(typeSlice, methodSlice)
-	var finalTypeSlice = []string{}
-	for typ, methSlice := range type2Methods {
-		meths := ""
-		for _, v := range methSlice {
-			v = strings.TrimPrefix(v, "method ")
-			meths = meths + fmt.Sprintf("\n\t%s", v)
-		}
-		finalTypeSlice = append(finalTypeSlice, fmt.Sprintf("\n%v%v", typ, meths))
-	}
 
-	return paki{
-		name: pkg.Name,
-		path: pkg.PkgPath,
-
-		constants: constantSlice,
-		variables: varSlice,
-		functions: funcSlice,
-		types:     finalTypeSlice,
+	return pak{
+		Name:      pkg.PkgPath,
+		Constants: constantSlice,
+		Variables: varSlice,
+		Functions: funcSlice,
+		Types:     type2Methods,
 	}, nil
 }
 
@@ -144,14 +123,14 @@ func pkgScope(pkg *packages.Package) ([]string, []string, []string, []string, []
 	for _, v := range constVarTypFunc {
 		if strings.HasPrefix(v, "func") {
 			v = strings.TrimPrefix(v, "func ")
-			funcSlice = append(funcSlice, fmt.Sprintf("\n\t%v", v))
+			funcSlice = append(funcSlice, fmt.Sprintf("%v", v))
 		}
 		if strings.HasPrefix(v, "const") {
 			v = strings.TrimPrefix(v, "const ")
-			constantSlice = append(constantSlice, fmt.Sprintf("\n\t%v", v))
+			constantSlice = append(constantSlice, fmt.Sprintf("%v", v))
 		} else if strings.HasPrefix(v, "var") {
 			v = strings.TrimPrefix(v, "var ")
-			varSlice = append(varSlice, fmt.Sprintf("\n\t%v", v))
+			varSlice = append(varSlice, fmt.Sprintf("%v", v))
 		} else if strings.HasPrefix(v, "type") {
 			typeSlice = append(typeSlice, v)
 		}
@@ -161,6 +140,7 @@ func pkgScope(pkg *packages.Package) ([]string, []string, []string, []string, []
 }
 func associateTypeMethods(typeSlice, methodSlice []string) map[string][]string {
 	type2Methods := map[string][]string{}
+
 	for _, typ := range typeSlice {
 		typName := strings.Split(typ, " ")[1]
 		for _, meth := range methodSlice {
@@ -172,13 +152,15 @@ func associateTypeMethods(typeSlice, methodSlice []string) map[string][]string {
 			typSaveName := strings.Split(typ, " ")[1] + " " + strings.Split(typ, " ")[2]
 			typSaveName = strings.TrimSpace(strings.Split(typSaveName, "{")[0])
 			if methReceiverName == typName {
+				methSaveName := strings.TrimPrefix(meth, "method ")
+
 				_, exists := type2Methods[typSaveName]
 				if exists {
 					methds := type2Methods[typSaveName]
-					methds = append(methds, meth)
+					methds = append(methds, methSaveName)
 					type2Methods[typSaveName] = methds
 				} else {
-					type2Methods[typSaveName] = []string{meth}
+					type2Methods[typSaveName] = []string{methSaveName}
 				}
 			}
 		}
