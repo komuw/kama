@@ -62,3 +62,52 @@ func TestStdlibPackages(t *testing.T) {
 		}
 	}
 }
+
+func TestThirdPartyPackages(t *testing.T) {
+	tt := []struct {
+		importPath string
+		expected   paki
+	}{
+		{
+			"github.com/pkg/errors", paki{
+				Name:      "errors",
+				Path:      "github.com/pkg/errors",
+				Constants: []string{},
+				Variables: []string{},
+				Functions: []string{
+					"As(err error, target interface{}) bool",
+					"Cause(err error) error",
+					"Errorf(format string, args ...interface{}) error",
+					"Is(err error, target error) bool",
+					"New(message string) error",
+					"Unwrap(err error) error",
+					"WithMessage(err error, message string) error",
+					"WithMessagef(err error, format string, args ...interface{}) error",
+					"WithStack(err error) error",
+					"Wrap(err error, message string) error",
+					"Wrapf(err error, format string, args ...interface{}) error",
+				},
+				Types: map[string][]string{
+					"Frame uintptr": {
+						"(Frame) Format(s fmt.State, verb rune)",
+						"(Frame) MarshalText() ([]byte, error)",
+					},
+					"StackTrace []Frame": {
+						"(StackTrace) Format(s fmt.State, verb rune)",
+					},
+				},
+			},
+		},
+	}
+
+	for _, v := range tt {
+		pak, err := newPaki(v.importPath)
+		if err != nil {
+			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
+		}
+
+		if !cmp.Equal(pak, v.expected) {
+			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", pak, v.expected)
+		}
+	}
+}
