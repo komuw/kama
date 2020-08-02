@@ -79,9 +79,7 @@ func TestBasicVariables(t *testing.T) {
 				Kind:      reflect.Uint16,
 				Signature: "main.customerID",
 				Fields:    []string{},
-				// TODO: this should only be `Id func(main.customerID) uint16`
-				// If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
-				Methods: []string{"Id func(main.customerID) uint16"},
+				Methods:   []string{"Id func(main.customerID) uint16"},
 			},
 		},
 	}
