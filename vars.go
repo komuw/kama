@@ -51,7 +51,7 @@ func newVari(i interface{}) vari {
 			Signature: "nil"}
 	}
 
-	typeKind := iType.Kind()
+	typeKind := getKind(i)
 	typeName := iType.PkgPath() + "." + iType.Name()
 	typeSig := iType.String()
 	if typeName == "." {
@@ -66,7 +66,6 @@ func newVari(i interface{}) vari {
 
 	return vari{
 		Name: typeName,
-		// TODO: the kind of `*T` should not be displayed as `ptr`
 		Kind: typeKind,
 		// TODO: for type `T`, signature should be both `T` and `*T`
 		Signature: typeSig,
@@ -74,6 +73,21 @@ func newVari(i interface{}) vari {
 		Methods:   methods,
 	}
 
+}
+
+func getKind(i interface{}) reflect.Kind {
+	iType := reflect.TypeOf(i)
+	typeKind := iType.Kind()
+
+	if typeKind != reflect.Ptr {
+		return typeKind
+	} else {
+		// the passed in type maybe be a `*T` so lets find the kind of `T`
+		valueI := reflect.ValueOf(i).Elem()
+		iType := valueI.Type()
+		typeKind := iType.Kind()
+		return typeKind
+	}
 }
 
 // getFields finds all the fields(if any) of type `T` and `*T`

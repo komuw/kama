@@ -49,7 +49,7 @@ func TestBasicVariables(t *testing.T) {
 
 			&Person{Name: "Jane"}, vari{
 				Name:      ".Person",
-				Kind:      reflect.Ptr,
+				Kind:      reflect.Struct,
 				Signature: "*main.Person",
 				Fields:    []string{"Name", "Age", "Height"},
 				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
