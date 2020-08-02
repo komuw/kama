@@ -65,8 +65,10 @@ func newVari(i interface{}) vari {
 	var methods = trimMethods(getAllMethods(i))
 
 	return vari{
-		Name:      typeName,
-		Kind:      typeKind,
+		Name: typeName,
+		// TODO: the kind of `*T` should not be displayed as `ptr`
+		Kind: typeKind,
+		// TODO: for type `T`, signature should be both `T` and `*T`
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
