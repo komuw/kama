@@ -10,16 +10,9 @@ import (
 )
 
 const (
-	// TODO: whittle this down to only what we need(I think we only need `NeedTypes`)
 	packageNeeds = packages.NeedName |
-		packages.NeedFiles |
-		packages.NeedCompiledGoFiles |
 		packages.NeedImports |
-		packages.NeedTypes |
-		packages.NeedTypesSizes |
-		packages.NeedSyntax |
-		packages.NeedTypesInfo |
-		packages.NeedDeps
+		packages.NeedTypes
 )
 
 // paki represents a Go package
