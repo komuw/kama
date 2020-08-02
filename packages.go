@@ -15,8 +15,8 @@ const (
 		packages.NeedTypes
 )
 
-// paki represents a Go package
-type paki struct {
+// pak represents a Go package
+type pak struct {
 	Name string
 	Path string
 
@@ -26,7 +26,7 @@ type paki struct {
 	Types     map[string][]string
 }
 
-func (p paki) String() string {
+func (p pak) String() string {
 
 	return fmt.Sprintf(
 		`
@@ -47,7 +47,7 @@ TYPES: %v
 	)
 }
 
-func newPaki(pattern string) (paki, error) {
+func newPak(pattern string) (pak, error) {
 	// patterns := []string{"pattern=net/http"}
 	//patterns := []string{"pattern=os"}
 
@@ -64,7 +64,7 @@ func newPaki(pattern string) (paki, error) {
 		cfg, patterns...,
 	)
 	if err != nil {
-		return paki{}, err
+		return pak{}, err
 
 	}
 	// if packages.PrintErrors(pkgs) > 0 {
@@ -77,7 +77,7 @@ func newPaki(pattern string) (paki, error) {
 
 	type2Methods := associateTypeMethods(typeSlice, methodSlice)
 
-	return paki{
+	return pak{
 		Name: pkg.Name,
 		Path: pkg.PkgPath,
 

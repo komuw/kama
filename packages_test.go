@@ -9,10 +9,10 @@ import (
 func TestStdlibPackages(t *testing.T) {
 	tt := []struct {
 		importPath string
-		expected   paki
+		expected   pak
 	}{
 		{
-			"errors", paki{
+			"errors", pak{
 				Name:      "errors",
 				Path:      "errors",
 				Constants: []string{},
@@ -23,7 +23,7 @@ func TestStdlibPackages(t *testing.T) {
 		},
 
 		{
-			"archive/tar", paki{
+			"archive/tar", pak{
 				Name:      "tar",
 				Path:      "archive/tar",
 				Constants: []string{"FormatGNU Format", "FormatPAX Format", "FormatUSTAR Format", "FormatUnknown Format", "TypeBlock untyped rune", "TypeChar untyped rune", "TypeCont untyped rune", "TypeDir untyped rune", "TypeFifo untyped rune", "TypeGNULongLink untyped rune", "TypeGNULongName untyped rune", "TypeGNUSparse untyped rune", "TypeLink untyped rune", "TypeReg untyped rune", "TypeRegA untyped rune", "TypeSymlink untyped rune", "TypeXGlobalHeader untyped rune", "TypeXHeader untyped rune"},
@@ -52,7 +52,7 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		pak, err := newPaki(v.importPath)
+		pak, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
@@ -66,10 +66,10 @@ func TestStdlibPackages(t *testing.T) {
 func TestThirdPartyPackages(t *testing.T) {
 	tt := []struct {
 		importPath string
-		expected   paki
+		expected   pak
 	}{
 		{
-			"github.com/pkg/errors", paki{
+			"github.com/pkg/errors", pak{
 				Name:      "errors",
 				Path:      "github.com/pkg/errors",
 				Constants: []string{},
@@ -101,7 +101,7 @@ func TestThirdPartyPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		pak, err := newPaki(v.importPath)
+		pak, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}

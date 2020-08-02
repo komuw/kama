@@ -33,7 +33,7 @@ func dir(i interface{}) {
 		res = newVari(i)
 	} else if iType.Kind() == reflect.String {
 		i := i.(string)
-		res, err = newPaki(i)
+		res, err = newPak(i)
 		if err != nil {
 			res = newVari(i)
 		}
