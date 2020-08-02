@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"strings"
 
 	"reflect"
 )
@@ -64,7 +65,7 @@ func newVari(i interface{}) vari {
 	var fields = getAllFields(i)
 
 	// TODO: If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
-	var methods = getAllMethods(i)
+	var methods = trimMethods(getAllMethods(i))
 
 	return vari{
 		Name:      typeName,
@@ -162,4 +163,42 @@ func getMethods(iType reflect.Type) []string {
 	}
 
 	return methods
+}
+
+// trimMethods removes any duplicated methods.
+// if a method is applicable for both type `T` and `*T`, then `trimMethods` will
+// just remove the one for `*T`
+func trimMethods(methods []string) (trimmedMethods []string) {
+
+	// contains tells whether a contains x.
+	contains := func(a []string, x string) bool {
+		for _, n := range a {
+			if x == n {
+				return true
+			}
+		}
+		return false
+	}
+
+	var TmethNames []string
+
+	// first add all methods for type `T`
+	for _, meth := range methods {
+		if !strings.Contains(meth, "*") {
+			trimmedMethods = append(trimmedMethods, meth)
+			methName := strings.Split(meth, " ")[0]
+			TmethNames = append(TmethNames, methName)
+		}
+	}
+	// then add methods for `*T` but only if they do not exist for `T`
+	for _, meth := range methods {
+		if strings.Contains(meth, "*") {
+			methName := strings.Split(meth, " ")[0]
+			if !contains(TmethNames, methName) {
+				trimmedMethods = append(trimmedMethods, meth)
+			}
+		}
+	}
+
+	return trimmedMethods
 }
