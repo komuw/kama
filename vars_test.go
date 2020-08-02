@@ -38,7 +38,7 @@ func TestBasicVariables(t *testing.T) {
 	}{
 		{
 			Person{Name: "John"}, vari{
-				Name:      "github.com/komuw/dir.Person",
+				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"main.Person", "*main.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
@@ -57,7 +57,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			ThisFunction, vari{
-				Name:      "github.com/komuw/dir.ThisFunction",
+				Name:      "github.com/komuw/kama.ThisFunction",
 				Kind:      reflect.Func,
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
@@ -66,7 +66,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			thisFunctionVar, vari{
-				Name:      "github.com/komuw/dir.ThisFunction",
+				Name:      "github.com/komuw/kama.ThisFunction",
 				Kind:      reflect.Func,
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
@@ -75,7 +75,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			customerID(9), vari{
-				Name:      "github.com/komuw/dir.customerID",
+				Name:      "github.com/komuw/kama.customerID",
 				Kind:      reflect.Uint16,
 				Signature: []string{"main.customerID"},
 				Fields:    []string{},
