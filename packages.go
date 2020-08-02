@@ -53,10 +53,7 @@ TYPES: %v
 }
 
 func newPak(pattern string) (pak, error) {
-	// patterns := []string{"pattern=net/http"}
-	//patterns := []string{"pattern=os"}
-
-	// Although `packages.Load` accepts a slice of multiple items, for `dir` we only accept one.
+	// Although `packages.Load` accepts a slice of multiple items, for `kama` we only accept one.
 	patterns := []string{fmt.Sprintf("pattern=%s", pattern)}
 
 	// A higher numbered modes cause Load to return more information,

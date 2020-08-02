@@ -13,10 +13,10 @@ coverage.html
 /dist/
 
 # binary
-dir
+kama
 
 # debug stuff
 debug.test
-dir.test
+kama.test
 mem.prof
 cpu.prof

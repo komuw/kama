@@ -16,14 +16,12 @@ import (
 
 // TODO: fuzz test
 
-// TODO: add documentation for `dir`
+// TODO: add documentation for `kama`
 
 // TODO: add a command line api.
-//   eg; `dir http.Request` or `dir http`
+//   eg; `kama http.Request` or `kama http`
 // have a look at `golang.org/x/tools/cmd/godex`
 
-// TODO: this will stutter; `dir.dir(23)`
-// maybe it is okay??
 func dir(i interface{}) {
 	var res interface{}
 	var err error
