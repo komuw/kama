@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"reflect"
 	"testing"
 
@@ -80,6 +81,126 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"main.customerID"},
 				Fields:    []string{},
 				Methods:   []string{"Id func(main.customerID) uint16"},
+			},
+		},
+	}
+
+	for _, v := range tt {
+		res := newVari(v.variable)
+
+		if !cmp.Equal(res, v.expected) {
+			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", res, v.expected)
+		}
+	}
+}
+
+func TestStdlibVariables(t *testing.T) {
+	tt := []struct {
+		variable interface{}
+		expected vari
+	}{
+		{
+			http.Request{}, vari{
+				Name:      "net/http.Request",
+				Kind:      reflect.Struct,
+				Signature: []string{"http.Request", "*http.Request"},
+				Fields: []string{
+					"Method",
+					"URL",
+					"Proto",
+					"ProtoMajor",
+					"ProtoMinor",
+					"Header",
+					"Body",
+					"GetBody",
+					"ContentLength",
+					"TransferEncoding",
+					"Close",
+					"Host",
+					"Form",
+					"PostForm",
+					"MultipartForm",
+					"Trailer",
+					"RemoteAddr",
+					"RequestURI",
+					"TLS",
+					"Cancel",
+					"Response",
+				},
+				Methods: []string{
+					"AddCookie func(*http.Request, *http.Cookie)",
+					"BasicAuth func(*http.Request) (string, string, bool)",
+					"Clone func(*http.Request, context.Context) *http.Request",
+					"Context func(*http.Request) context.Context",
+					"Cookie func(*http.Request, string) (*http.Cookie, error)",
+					"Cookies func(*http.Request) []*http.Cookie",
+					"FormFile func(*http.Request, string) (multipart.File, *multipart.FileHeader, error)",
+					"FormValue func(*http.Request, string) string",
+					"MultipartReader func(*http.Request) (*multipart.Reader, error)",
+					"ParseForm func(*http.Request) error",
+					"ParseMultipartForm func(*http.Request, int64) error",
+					"PostFormValue func(*http.Request, string) string",
+					"ProtoAtLeast func(*http.Request, int, int) bool",
+					"Referer func(*http.Request) string",
+					"SetBasicAuth func(*http.Request, string, string)",
+					"UserAgent func(*http.Request) string",
+					"WithContext func(*http.Request, context.Context) *http.Request",
+					"Write func(*http.Request, io.Writer) error",
+					"WriteProxy func(*http.Request, io.Writer) error",
+				},
+			},
+		},
+
+		{
+			&http.Request{}, vari{
+				// TODO: This name should be the same as that of `http.Request{}`
+				Name:      ".Request",
+				Kind:      reflect.Struct,
+				Signature: []string{"*http.Request", "http.Request"},
+				Fields: []string{
+					"Method",
+					"URL",
+					"Proto",
+					"ProtoMajor",
+					"ProtoMinor",
+					"Header",
+					"Body",
+					"GetBody",
+					"ContentLength",
+					"TransferEncoding",
+					"Close",
+					"Host",
+					"Form",
+					"PostForm",
+					"MultipartForm",
+					"Trailer",
+					"RemoteAddr",
+					"RequestURI",
+					"TLS",
+					"Cancel",
+					"Response",
+				},
+				Methods: []string{
+					"AddCookie func(*http.Request, *http.Cookie)",
+					"BasicAuth func(*http.Request) (string, string, bool)",
+					"Clone func(*http.Request, context.Context) *http.Request",
+					"Context func(*http.Request) context.Context",
+					"Cookie func(*http.Request, string) (*http.Cookie, error)",
+					"Cookies func(*http.Request) []*http.Cookie",
+					"FormFile func(*http.Request, string) (multipart.File, *multipart.FileHeader, error)",
+					"FormValue func(*http.Request, string) string",
+					"MultipartReader func(*http.Request) (*multipart.Reader, error)",
+					"ParseForm func(*http.Request) error",
+					"ParseMultipartForm func(*http.Request, int64) error",
+					"PostFormValue func(*http.Request, string) string",
+					"ProtoAtLeast func(*http.Request, int, int) bool",
+					"Referer func(*http.Request) string",
+					"SetBasicAuth func(*http.Request, string, string)",
+					"UserAgent func(*http.Request) string",
+					"WithContext func(*http.Request, context.Context) *http.Request",
+					"Write func(*http.Request, io.Writer) error",
+					"WriteProxy func(*http.Request, io.Writer) error",
+				},
 			},
 		},
 	}
