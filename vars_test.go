@@ -42,8 +42,7 @@ func TestBasicVariables(t *testing.T) {
 				Kind:      reflect.Struct,
 				Signature: "main.Person",
 				Fields:    []string{"Name", "Age", "Height"},
-				// TODO: `Methods` should include `PtrMethodOne`
-				Methods: []string{"PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)", "ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)"},
+				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
 			},
 		},
 		{
@@ -53,8 +52,7 @@ func TestBasicVariables(t *testing.T) {
 				Kind:      reflect.Ptr,
 				Signature: "*main.Person",
 				Fields:    []string{"Name", "Age", "Height"},
-				// TODO: `Methods` should be unified with that of Person{} above
-				Methods: []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32", "ValueMethodOne func(*main.Person)", "ValueMethodTwo func(*main.Person)"},
+				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
 			},
 		},
 		{
@@ -83,7 +81,7 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				// TODO: this should only be `Id func(main.customerID) uint16`
 				// If there is a method whose name is reported for both type `T` and `*T` we should only chose the method for `T`
-				Methods: []string{"Id func(*main.customerID) uint16", "Id func(main.customerID) uint16"},
+				Methods: []string{"Id func(main.customerID) uint16"},
 			},
 		},
 	}
@@ -92,7 +90,7 @@ func TestBasicVariables(t *testing.T) {
 		res := newVari(v.variable)
 
 		if !cmp.Equal(res, v.expected) {
-			t.Errorf("\ngot %#+v \nwanted %#+v", res, v.expected)
+			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", res, v.expected)
 		}
 	}
 }
