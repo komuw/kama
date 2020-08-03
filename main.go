@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
 	"reflect"
 )
@@ -47,8 +46,8 @@ func main() {
 	defer panicHandler()
 
 	dir("archive/tar")
-	dir("compress/flate")
-	dir(&http.Request{})
-	dir(http.Request{})
-	dir("github.com/pkg/errors")
+	// dir("compress/flate")
+	// dir(&http.Request{})
+	// dir(http.Request{})
+	// dir("github.com/pkg/errors")
 }
