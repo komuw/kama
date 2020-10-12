@@ -48,7 +48,7 @@ jobs:
 
   run_tests:
     name: run_tests
-    timeout-minutes: 1
+    timeout-minutes: 2
     strategy:
       matrix:
         go-version: [1.15]
@@ -77,8 +77,10 @@ jobs:
 
       - name: check can run
         run: |
-          go build --race -trimpath -o kama .
+          pwd; ls -lsha
+          go build --race -trimpath -o kama $HOME/work/kama/kama/cmd/kama
           ./kama
+        if: matrix.platform != 'windows-latest'
 
 
   run_analysis:

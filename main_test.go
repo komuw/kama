@@ -1,4 +1,4 @@
-package main
+package kama
 
 import (
 	"errors"
@@ -89,7 +89,7 @@ func TestPrimitives(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		dir(v)
+		Dir(v)
 
 	}
 }
@@ -109,7 +109,7 @@ func TestStdlibTypes(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		dir(v)
+		Dir(v)
 
 	}
 }
@@ -120,6 +120,6 @@ func TestThirdPartyTypes(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		dir(v)
+		Dir(v)
 	}
 }
