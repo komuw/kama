@@ -25,6 +25,10 @@ type vari struct {
 func (v vari) String() string {
 	nLf := func(x []string) []string {
 		var fm = []string{}
+		if len(x) <= 1 {
+			return fm
+		}
+
 		for _, c := range x {
 			fm = append(fm, "\n\t"+c)
 		}
