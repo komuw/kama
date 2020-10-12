@@ -80,7 +80,8 @@ jobs:
           pwd
           ls
           ls -lsha
-          go build --race -trimpath -o kama /home/runner/work/kama/kama/cmd/kama
+          echo "home: " $HOME
+          go build --race -trimpath -o kama $HOME/work/kama/kama/cmd/kama
           ./kama
 
 
