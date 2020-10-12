@@ -25,7 +25,7 @@ type vari struct {
 func (v vari) String() string {
 	nLf := func(x []string) []string {
 		var fm = []string{}
-		if len(x) <= 1 {
+		if len(x) <= 0 {
 			return fm
 		}
 
