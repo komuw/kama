@@ -24,59 +24,32 @@ type pak struct {
 	Types     map[string][]string
 }
 
-var sliceTypeMeths []string
-
 func (p pak) String() string {
 
-	//format slices
-	// fs := func(x []string) []string {
-	// 	var fm = []string{}
-	// 	for _, c := range x {
-	// 		fm = append(fm, "\n\t"+c)
-	// 	}
-	// 	fm = append(fm, "\n\t")
-	// 	return fm
-	// }
-
-	var babb string
-	for typ, meths := range p.Types {
-		var typ = typ
-		var meths = meths
-
-		t := typ
-		for _, met := range meths {
-			t = t + "\n\t" + met
+	nLf := func(x []string) []string {
+		var fm = []string{}
+		for _, c := range x {
+			fm = append(fm, "\n\t"+c)
 		}
-		// fmt.Println("typ, meths: ", typ, meths)
-		fmt.Println("t: ")
-		fmt.Println(t)
-		sliceTypeMeths = append(sliceTypeMeths, t)
-		// fmt.Println("sliceTypeMeths: ")
-		// fmt.Println(sliceTypeMeths)
-
-		babb = babb + t
+		fm = append(fm, "\n\t")
+		return fm
 	}
 
-	// fmt.Println("sliceTypeMeths: ")
-	// fmt.Println(sliceTypeMeths)
-
-	fmt.Println("babb: ", babb)
-	return "OKKK"
-	// 	return fmt.Sprintf(
-	// 		`
-	// [
-	// NAME: %v
-	// CONSTANTS: %v
-	// VARIABLES: %v
-	// FUNCTIONS: %v
-	// TYPES: %v
-	// ]`,
-	// 		p.Name,
-	// 		fs(p.Constants),
-	// 		fs(p.Variables),
-	// 		fs(p.Functions),
-	// 		p.Types,
-	// 	)
+	return fmt.Sprintf(
+		`
+[
+NAME: %v
+CONSTANTS: %v
+VARIABLES: %v
+FUNCTIONS: %v
+TYPES: %v
+]`,
+		p.Name,
+		nLf(p.Constants),
+		nLf(p.Variables),
+		nLf(p.Functions),
+		p.Types,
+	)
 }
 
 func newPak(pattern string) (pak, error) {
