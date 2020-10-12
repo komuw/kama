@@ -77,12 +77,10 @@ jobs:
 
       - name: check can run
         run: |
-          pwd
-          ls
-          ls -lsha
-          echo "home: " $HOME
+          pwd; ls -lsha
           go build --race -trimpath -o kama $HOME/work/kama/kama/cmd/kama
           ./kama
+        if: matrix.platform != 'windows-latest'
 
 
   run_analysis:

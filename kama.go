@@ -2,6 +2,12 @@
 //
 // It can be used to aid debugging and testing.
 //
+//     import "github.com/komuw/kama"
+//
+//     kama.Dirp("compress/flate")
+//     kama.Dirp(&http.Request{})
+//     kama.Dirp("github.com/pkg/errors")
+//
 package kama
 
 import (
@@ -24,7 +30,7 @@ import (
 //   eg; `kama http.Request` or `kama http`
 // have a look at `golang.org/x/tools/cmd/godex`
 
-// Dir returns exported information of types, variables, packages, modules, imports
+// Dirp prints exported information of types, variables, packages, modules, imports
 //
 // It is almost similar to Python's builtin dir function
 //
@@ -32,10 +38,16 @@ import (
 //
 //     import "github.com/komuw/kama"
 //
-//     kama.Dir("compress/flate")
-//     kama.Dir(&http.Request{})
-//     kama.Dir("github.com/pkg/errors")
-//     kama.Dir(http.Request{})
+//     kama.Dirp("compress/flate")
+//     kama.Dirp(&http.Request{})
+//     kama.Dirp("github.com/pkg/errors")
+//     kama.Dirp(http.Request{})
+//
+func Dirp(i interface{}) {
+	fmt.Println(Dir(i))
+}
+
+// Dir returns exported information of types, variables, packages, modules, imports
 //
 func Dir(i interface{}) string {
 	iType := reflect.TypeOf(i)
@@ -54,9 +66,4 @@ func Dir(i interface{}) string {
 		res := newVari(i)
 		return res.String()
 	}
-}
-
-// Dirp prints exported information of types, variables, packages, modules, imports
-func Dirp(i interface{}) {
-	fmt.Println(Dir(i))
 }
