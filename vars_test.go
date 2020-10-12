@@ -9,17 +9,29 @@ import (
 )
 
 type Person struct {
-	Name             string
-	Age              int
-	Height           float32
+	Name   string
+	Age    int
+	Height float32
+	//lint:ignore U1001 used for tests
 	somePrivateField string
 }
 
-func (p Person) somePrivateMethodOne()  {}
+//lint:ignore U1001 used for tests
+func (p Person) somePrivateMethodOne() {}
+
+//lint:ignore U1001 used for tests
 func (p *Person) somePrivateMethodTwo() {}
-func (p Person) ValueMethodOne()        {}
-func (p *Person) PtrMethodOne()         {}
-func (p Person) ValueMethodTwo()        {}
+
+//lint:ignore U1001 used for tests
+func (p Person) ValueMethodOne() {}
+
+//lint:ignore U1001 used for tests
+func (p *Person) PtrMethodOne() {}
+
+//lint:ignore U1001 used for tests
+func (p Person) ValueMethodTwo() {}
+
+//lint:ignore U1001 used for tests
 func (p *Person) PtrMethodTwo() float32 { return p.Height }
 
 func ThisFunction(arg1 string, arg2 int) (string, error) {
@@ -30,6 +42,7 @@ var thisFunctionVar = ThisFunction
 
 type customerID uint16
 
+//lint:ignore U1001 used for tests
 func (c customerID) Id() uint16 { return uint16(c) }
 
 func TestBasicVariables(t *testing.T) {

@@ -28,11 +28,27 @@ func (p pak) String() string {
 
 	nLf := func(x []string) []string {
 		var fm = []string{}
+		if len(x) <= 1 {
+			return fm
+		}
+
 		for _, c := range x {
 			fm = append(fm, "\n\t"+c)
 		}
 		fm = append(fm, "\n\t")
 		return fm
+	}
+
+	var sliceTypeMeths []string
+	for typ, meths := range p.Types {
+		var typ = typ
+		var meths = meths
+
+		t := "\n\t" + typ
+		for _, met := range meths {
+			t = t + "\n\t\t" + met
+		}
+		sliceTypeMeths = append(sliceTypeMeths, t)
 	}
 
 	return fmt.Sprintf(
@@ -48,7 +64,7 @@ TYPES: %v
 		nLf(p.Constants),
 		nLf(p.Variables),
 		nLf(p.Functions),
-		p.Types,
+		sliceTypeMeths,
 	)
 }
 
