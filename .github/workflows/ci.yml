@@ -66,14 +66,20 @@ jobs:
       - name: tests and benchmarks
         run: |
           go test -timeout 1m -race -run=XXXX -bench=. ./...
+          go test -timeout 1m -v -race ./...
+
+      - name: test coverage
+        run: |
           go test -timeout 1m -v -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
+        if: matrix.platform != 'windows-latest'
 
       - name: check can run
         run: |
           go build --race -trimpath -o kama .
           ./kama
+
 
   run_analysis:
     name: run_analysis
