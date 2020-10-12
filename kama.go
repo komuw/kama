@@ -1,9 +1,7 @@
-package main
+package kama
 
 import (
 	"fmt"
-	"net/http"
-
 	"reflect"
 )
 
@@ -22,7 +20,7 @@ import (
 //   eg; `kama http.Request` or `kama http`
 // have a look at `golang.org/x/tools/cmd/godex`
 
-func dir(i interface{}) {
+func Dir(i interface{}) {
 	var res interface{}
 	var err error
 
@@ -41,14 +39,4 @@ func dir(i interface{}) {
 
 	fmt.Println(res)
 
-}
-
-func main() {
-	defer panicHandler()
-
-	dir("archive/tar")
-	dir("compress/flate")
-	dir(&http.Request{})
-	dir(http.Request{})
-	dir("github.com/pkg/errors")
 }

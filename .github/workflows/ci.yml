@@ -77,7 +77,7 @@ jobs:
 
       - name: check can run
         run: |
-          go build --race -trimpath -o kama .
+          go build --race -trimpath -o kama cmd/kama/main.go
           ./kama
 
 
