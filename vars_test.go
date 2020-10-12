@@ -54,9 +54,9 @@ func TestBasicVariables(t *testing.T) {
 			Person{Name: "John"}, vari{
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
-				Signature: []string{"main.Person", "*main.Person"},
+				Signature: []string{"kama.Person", "*kama.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
-				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
+				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 			},
 		},
 		{
@@ -64,9 +64,9 @@ func TestBasicVariables(t *testing.T) {
 			&Person{Name: "Jane"}, vari{
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
-				Signature: []string{"*main.Person", "main.Person"},
+				Signature: []string{"*kama.Person", "kama.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
-				Methods:   []string{"ValueMethodOne func(main.Person)", "ValueMethodTwo func(main.Person)", "PtrMethodOne func(*main.Person)", "PtrMethodTwo func(*main.Person) float32"},
+				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 			},
 		},
 		{
@@ -91,9 +91,9 @@ func TestBasicVariables(t *testing.T) {
 			customerID(9), vari{
 				Name:      "github.com/komuw/kama.customerID",
 				Kind:      reflect.Uint16,
-				Signature: []string{"main.customerID"},
+				Signature: []string{"kama.customerID"},
 				Fields:    []string{},
-				Methods:   []string{"Id func(main.customerID) uint16"},
+				Methods:   []string{"Id func(kama.customerID) uint16"},
 			},
 		},
 	}
