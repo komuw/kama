@@ -23,6 +23,15 @@ type vari struct {
 }
 
 func (v vari) String() string {
+	nLf := func(x []string) []string {
+		var fm = []string{}
+		for _, c := range x {
+			fm = append(fm, "\n\t"+c)
+		}
+		fm = append(fm, "\n\t")
+		return fm
+	}
+
 	return fmt.Sprintf(
 		`
 [
@@ -36,8 +45,8 @@ METHODS: %v
 		v.Name,
 		v.Kind,
 		v.Signature,
-		v.Fields,
-		v.Methods,
+		nLf(v.Fields),
+		nLf(v.Methods),
 	)
 }
 
