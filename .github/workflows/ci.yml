@@ -77,6 +77,9 @@ jobs:
 
       - name: check can run
         run: |
+          pwd
+          ls
+          ls -lsha
           go build --race -trimpath -o kama /home/runner/work/kama/kama/cmd/kama
           ./kama
 
