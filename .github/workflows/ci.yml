@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        go-version: [1.14]
+        go-version: [1.15]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -51,14 +51,14 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        go-version: [1.14]
+        go-version: [1.15]
         platform: [ubuntu-18.04, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.14
+          go-version: 1.15
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
@@ -70,20 +70,24 @@ jobs:
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
 
+      - name: tests and benchmarks
+        run: |
+          go build -trimpath -o kama .
+          ./kama
 
   run_analysis:
     name: run_analysis
     timeout-minutes: 1
     strategy:
       matrix:
-        go-version: [1.14]
+        go-version: [1.15]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.14
+          go-version: 1.15
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v1
@@ -102,11 +106,11 @@ jobs:
           /tmp/gobin honnef.co/go/tools/cmd/staticcheck@$STATICCHECK_VERSION
           /tmp/gobin github.com/securego/gosec/cmd/gosec
         env:
-          GOBIN_VERSION: 'v0.0.11'
-          STATICCHECK_VERSION: '2020.1.4'
+          GOBIN_VERSION: 'v0.0.14'
+          STATICCHECK_VERSION: '2020.1.6'
 
       - name: static analysis
         run: |
           go vet -v -all ./...
-          /home/runner/go/bin/staticcheck -tests -show-ignored -go 1.14 -unused.whole-program ./...
+          /home/runner/go/bin/staticcheck -tests -show-ignored -go 1.15 -unused.whole-program ./...
           gosec ./...
