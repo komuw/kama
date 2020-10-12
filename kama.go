@@ -1,3 +1,7 @@
+// kama: prints exported information of types, variables, packages, modules, imports etc
+//
+// It can be used to aid debugging and testing.
+//
 package kama
 
 import (
@@ -20,6 +24,19 @@ import (
 //   eg; `kama http.Request` or `kama http`
 // have a look at `golang.org/x/tools/cmd/godex`
 
+// Dir prints exported information of types, variables, packages, modules, imports
+//
+// It is almost similar to Python's builtin dir function
+//
+// examples:
+//
+//     import "github.com/komuw/kama"
+//
+//     kama.Dir("compress/flate")
+//     kama.Dir(&http.Request{})
+//     kama.Dir("github.com/pkg/errors")
+//     kama.Dir(http.Request{})
+//
 func Dir(i interface{}) {
 	var res interface{}
 	var err error
@@ -38,5 +55,4 @@ func Dir(i interface{}) {
 	}
 
 	fmt.Println(res)
-
 }
