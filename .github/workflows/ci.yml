@@ -70,9 +70,9 @@ jobs:
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
 
-      - name: tests and benchmarks
+      - name: check can run
         run: |
-          go build -trimpath -o kama .
+          go build --race -trimpath -o kama .
           ./kama
 
   run_analysis:
