@@ -23,7 +23,7 @@ type vari struct {
 	Signature []string
 	Fields    []string
 	Methods   []string
-	Val       interface{}
+	Val       string
 }
 
 func newVari(i interface{}) vari {
@@ -34,7 +34,7 @@ func newVari(i interface{}) vari {
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       i}
+			Val:       dump(i)}
 	}
 
 	typeKind := getKind(i)
@@ -56,7 +56,7 @@ func newVari(i interface{}) vari {
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
-		Val:       i,
+		Val:       dump(i),
 	}
 
 }
@@ -91,11 +91,11 @@ SNIPPET: %s
 		v.Signature,
 		nLf(v.Fields),
 		nLf(v.Methods),
-		v.dump(),
+		v.Val,
 	)
 }
 
-func (v vari) dump() string {
+func dump(i interface{}) string {
 	sq := litter.Options{
 		Compact:           false,
 		StripPackageNames: true,
@@ -105,7 +105,7 @@ func (v vari) dump() string {
 		Separator:         " "}
 
 	maxL := 120
-	s := sq.Sdump(v.Val)
+	s := sq.Sdump(i)
 	if len(s) <= maxL {
 		maxL = len(s)
 		return s[:maxL]

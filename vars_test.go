@@ -44,7 +44,7 @@ var thisFunctionVar = ThisFunction
 type customerID uint16
 
 //lint:ignore U1001 used for tests
-func (c customerID) Id() uint16 { return uint16(c) }
+func (c customerID) ID() uint16 { return uint16(c) }
 
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
@@ -58,6 +58,11 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"kama.Person", "*kama.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
+				Val: `Person{
+  Name: "John",
+  Age: 0,
+  Height: 0,
+}`,
 			},
 		},
 		{
@@ -68,6 +73,11 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"*kama.Person", "kama.Person"},
 				Fields:    []string{"Name", "Age", "Height"},
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
+				Val: `&Person{
+  Name: "Jane",
+  Age: 0,
+  Height: 0,
+}`,
 			},
 		},
 		{
@@ -77,6 +87,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
+				Val:       "ThisFunction",
 			},
 		},
 		{
@@ -86,6 +97,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
+				Val:       "ThisFunction",
 			},
 		},
 		{
@@ -94,17 +106,22 @@ func TestBasicVariables(t *testing.T) {
 				Kind:      reflect.Uint16,
 				Signature: []string{"kama.customerID"},
 				Fields:    []string{},
-				Methods:   []string{"Id func(kama.customerID) uint16"},
+				Methods:   []string{"ID func(kama.customerID) uint16"},
+				Val:       "9",
 			},
 		},
 	}
 
 	for _, v := range tt {
-		res := newVari(v.variable)
+		v := v
+		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+			res := newVari(v.variable)
 
-		if !cmp.Equal(res, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", res, v.expected)
-		}
+			if !cmp.Equal(res, v.expected) {
+				diff := cmp.Diff(v.expected, res)
+				t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
+			}
+		})
 	}
 }
 
@@ -222,37 +239,40 @@ func TestStdlibVariables(t *testing.T) {
 		res := newVari(v.variable)
 
 		if !cmp.Equal(res, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", res, v.expected)
+			diff := cmp.Diff(v.expected, res)
+			t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
 		}
 	}
 }
 
-func TestCool(t *testing.T) {
-	// tt := []struct {
-	// 	variable interface{}
-	// 	expected vari
-	// }{
-	// 	// {
-	// 	// 	Person{Name: "John", Age: 34, Height: 88}, vari{
-	// 	// 		Name:      "github.com/komuw/kama.Person",
-	// 	// 		Kind:      reflect.Struct,
-	// 	// 		Signature: []string{"kama.Person", "*kama.Person"},
-	// 	// 		Fields:    []string{"Name", "Age", "Height"},
-	// 	// 		Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
-	// 	// 		// Val:       Person{Name: "John", Age: 34, Height: 88},
-	// 	// 	},
-	// 	// },
-	// }
+// func TestCool(t *testing.T) {
+// 	tt := []struct {
+// 		variable interface{}
+// 		expected vari
+// 	}{
+// 		{
+// 			Person{Name: "John", Age: 34, Height: 88}, vari{
+// 				Name:      "github.com/komuw/kama.Person",
+// 				Kind:      reflect.Struct,
+// 				Signature: []string{"kama.Person", "*kama.Person"},
+// 				Fields:    []string{"Name", "Age", "Height"},
+// 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
+// 				Val: `Person{
+//   Name: "John",
+//   Age: 34,
+//   Height: 88,
+// }`,
+// 			},
+// 		},
+// 	}
 
-	// for range tt {
-	// res := newVari(Person{Name: "John", Age: 34, Height: 88})
-	// res := newVari(http.Request{Proto: "https", Close: true})
-	res := newVari(map[int]string{2: "komuw", 4: "komuw", 55: "komuw", 299301: "ad"})
-	fmt.Println("res: ", res)
+// 	for _, v := range tt {
+// 		res := newVari(v.variable)
+// 		fmt.Println("res: ", res)
 
-	// if !cmp.Equal(res, v.expected) {
-	// 	diff := cmp.Diff(v.expected, res)
-	// 	t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
-	// }
-	// }
-}
+// 		if !cmp.Equal(res, v.expected) {
+// 			diff := cmp.Diff(v.expected, res)
+// 			t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
+// 		}
+// 	}
+// }
