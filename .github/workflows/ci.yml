@@ -70,7 +70,7 @@ jobs:
 
       - name: test coverage
         run: |
-          go test -timeout 1m -v -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
+          go test -timeout 2m -v -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
         if: matrix.platform != 'windows-latest'
