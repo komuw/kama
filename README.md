@@ -66,7 +66,7 @@ TYPES: [
 ```   
    
   
-whereas;   
+whereas this;   
 ```go
 import "github.com/komuw/kama"
 
