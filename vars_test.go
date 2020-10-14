@@ -188,8 +188,8 @@ func TestStdlibVariables(t *testing.T) {
   Header: Header{
   },
   Body: nil,
-
-  ...<snipped>..`,
+  
+...<snipped>..`,
 			},
 		},
 
