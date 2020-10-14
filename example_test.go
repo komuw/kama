@@ -53,6 +53,9 @@ METHODS: [
 	ServeHTTP func(*kama_test.myHandler, http.ResponseWriter, *http.Request) 
 	ServeHTTP func(kama_test.myHandler, http.ResponseWriter, *http.Request) 
 	]
+SNIPPET: myHandler{
+  Logger: &Logger{},
+}
 ]
 `,
 		},
@@ -62,7 +65,8 @@ METHODS: [
 		res := kama.Dir(v.variable)
 
 		if !cmp.Equal(res, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", res, v.expected)
+			diff := cmp.Diff(v.expected, res)
+			t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
 		}
 	}
 }

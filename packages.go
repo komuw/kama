@@ -24,6 +24,42 @@ type pak struct {
 	Types     map[string][]string
 }
 
+func newPak(pattern string) (pak, error) {
+	// Although `packages.Load` accepts a slice of multiple items, for `kama` we only accept one.
+	patterns := []string{fmt.Sprintf("pattern=%s", pattern)}
+
+	// A higher numbered modes cause Load to return more information,
+	cfg := &packages.Config{Mode: packageNeeds}
+	pkgs, err := packages.Load(
+		// Load passes most patterns directly to the underlying build tool, but all patterns with the prefix "query=",
+		// where query is a non-empty string of letters from [a-z], are reserved and may be interpreted as query operators.
+		// Two query operators are currently supported: "file" and "pattern".
+		// See: https://pkg.go.dev/golang.org/x/tools/go/packages?tab=doc#pkg-overview
+		cfg, patterns...,
+	)
+	if err != nil {
+		return pak{}, err
+
+	}
+	// if packages.PrintErrors(pkgs) > 0 {
+	// 	// TODO: maybe we do not need this
+	// 	log.Fatal("PrintErrors")
+	// }
+
+	pkg := pkgs[0]
+	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := pkgScope(pkg)
+
+	type2Methods := associateTypeMethods(typeSlice, methodSlice)
+
+	return pak{
+		Name:      pkg.PkgPath,
+		Constants: constantSlice,
+		Variables: varSlice,
+		Functions: funcSlice,
+		Types:     type2Methods,
+	}, nil
+}
+
 func (p pak) String() string {
 
 	nLf := func(x []string) []string {
@@ -66,42 +102,6 @@ TYPES: %v
 		nLf(p.Functions),
 		sliceTypeMeths,
 	)
-}
-
-func newPak(pattern string) (pak, error) {
-	// Although `packages.Load` accepts a slice of multiple items, for `kama` we only accept one.
-	patterns := []string{fmt.Sprintf("pattern=%s", pattern)}
-
-	// A higher numbered modes cause Load to return more information,
-	cfg := &packages.Config{Mode: packageNeeds}
-	pkgs, err := packages.Load(
-		// Load passes most patterns directly to the underlying build tool, but all patterns with the prefix "query=",
-		// where query is a non-empty string of letters from [a-z], are reserved and may be interpreted as query operators.
-		// Two query operators are currently supported: "file" and "pattern".
-		// See: https://pkg.go.dev/golang.org/x/tools/go/packages?tab=doc#pkg-overview
-		cfg, patterns...,
-	)
-	if err != nil {
-		return pak{}, err
-
-	}
-	// if packages.PrintErrors(pkgs) > 0 {
-	// 	// TODO: maybe we do not need this
-	// 	log.Fatal("PrintErrors")
-	// }
-
-	pkg := pkgs[0]
-	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := pkgScope(pkg)
-
-	type2Methods := associateTypeMethods(typeSlice, methodSlice)
-
-	return pak{
-		Name:      pkg.PkgPath,
-		Constants: constantSlice,
-		Variables: varSlice,
-		Functions: funcSlice,
-		Types:     type2Methods,
-	}, nil
 }
 
 func pkgScope(pkg *packages.Package) ([]string, []string, []string, []string, []string) {

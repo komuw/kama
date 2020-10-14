@@ -1,4 +1,5 @@
-// kama: exposes exported information of types, variables, packages, modules, imports etc
+// Package kama exposes exported information of types, variables, packages, modules, imports etc
+// It also pretty prints data structures.
 //
 // It can be used to aid debugging and testing.
 //
@@ -15,22 +16,8 @@ import (
 	"reflect"
 )
 
-// TODO: If someone passes in, say a struct;
-// we should show them its type, methods etc
-// but also print it out and its contents
-// basically, do what `litter.Dump` would have done
-
-// TODO: clean up
-
-// TODO: fuzz test
-
-// TODO: add documentation for `kama`
-
-// TODO: add a command line api.
-//   eg; `kama http.Request` or `kama http`
-// have a look at `golang.org/x/tools/cmd/godex`
-
 // Dirp prints exported information of types, variables, packages, modules, imports
+// It also pretty prints data structures.
 //
 // It is almost similar to Python's builtin dir function
 //
