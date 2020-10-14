@@ -236,43 +236,13 @@ func TestStdlibVariables(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		res := newVari(v.variable)
-
-		if !cmp.Equal(res, v.expected) {
-			diff := cmp.Diff(v.expected, res)
-			t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
-		}
+		v := v
+		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+			res := newVari(v.variable)
+			if !cmp.Equal(res, v.expected) {
+				diff := cmp.Diff(v.expected, res)
+				t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
+			}
+		})
 	}
 }
-
-// func TestCool(t *testing.T) {
-// 	tt := []struct {
-// 		variable interface{}
-// 		expected vari
-// 	}{
-// 		{
-// 			Person{Name: "John", Age: 34, Height: 88}, vari{
-// 				Name:      "github.com/komuw/kama.Person",
-// 				Kind:      reflect.Struct,
-// 				Signature: []string{"kama.Person", "*kama.Person"},
-// 				Fields:    []string{"Name", "Age", "Height"},
-// 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
-// 				Val: `Person{
-//   Name: "John",
-//   Age: 34,
-//   Height: 88,
-// }`,
-// 			},
-// 		},
-// 	}
-
-// 	for _, v := range tt {
-// 		res := newVari(v.variable)
-// 		fmt.Println("res: ", res)
-
-// 		if !cmp.Equal(res, v.expected) {
-// 			diff := cmp.Diff(v.expected, res)
-// 			t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
-// 		}
-// 	}
-// }
