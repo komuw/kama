@@ -15,25 +15,27 @@ type myHandler struct{ Logger *log.Logger }
 func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 }
 
-// func ExampleDir() {
-// 	h := myHandler{Logger: log.New(os.Stderr, "", 0)}
-// 	kama.Dir(h)
-// 	// kama.Dir("compress/flate")
-// 	// kama.Dir(&http.Request{})
-// 	// kama.Dir(http.Request{})
-// 	// kama.Dir("github.com/pkg/errors")
+func ExampleDirp() {
+	h := myHandler{Logger: log.New(os.Stderr, "", 0)}
+	kama.Dirp(h)
 
-// 	// Output:
-// 	//[
-// 	//NAME: github.com/komuw/kama_test.myHandler
-// 	//KIND: struct
-// 	//SIGNATURE: [kama_test.myHandler *kama_test.myHandler]
-// 	//FIELDS: [
-// 	//	Logger
-// 	//	]
-// 	//METHODS: []
-// 	//]
-// }
+	// Output:
+	// [
+	// NAME: github.com/komuw/kama_test.myHandler
+	// KIND: struct
+	// SIGNATURE: [kama_test.myHandler *kama_test.myHandler]
+	// FIELDS: [
+	// 	Logger
+	// 	]
+	// METHODS: [
+	// 	ServeHTTP func(*kama_test.myHandler, http.ResponseWriter, *http.Request)
+	// 	ServeHTTP func(kama_test.myHandler, http.ResponseWriter, *http.Request)
+	// 	]
+	// SNIPPET: myHandler{
+	//    Logger: &Logger{},
+	// }
+	// ]
+}
 
 func TestVars(t *testing.T) {
 	tt := []struct {
