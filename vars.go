@@ -111,7 +111,7 @@ func dump(i interface{}) string {
 		return s[:maxL]
 	}
 
-	snipped := "\n ...<snipped>.."
+	snipped := "\n...<snipped>.."
 	if sq.Compact {
 		snipped = " ...<snipped>.."
 	}

@@ -179,6 +179,17 @@ func TestStdlibVariables(t *testing.T) {
 					"Write func(*http.Request, io.Writer) error",
 					"WriteProxy func(*http.Request, io.Writer) error",
 				},
+				Val: `Request{
+  Method: "",
+  URL: nil,
+  Proto: "",
+  ProtoMajor: 0,
+  ProtoMinor: 0,
+  Header: Header{
+  },
+  Body: nil,
+
+  ...<snipped>..`,
 			},
 		},
 
@@ -231,6 +242,17 @@ func TestStdlibVariables(t *testing.T) {
 					"Write func(*http.Request, io.Writer) error",
 					"WriteProxy func(*http.Request, io.Writer) error",
 				},
+				Val: `&Request{
+  Method: "",
+  URL: nil,
+  Proto: "",
+  ProtoMajor: 0,
+  ProtoMinor: 0,
+  Header: Header{
+  },
+  Body: nil,
+ 
+...<snipped>..`,
 			},
 		},
 	}
