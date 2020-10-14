@@ -1,4 +1,5 @@
-// kama: exposes exported information of types, variables, packages, modules, imports etc
+// Package kama exposes exported information of types, variables, packages, modules, imports etc
+// It also pretty prints data structures.
 //
 // It can be used to aid debugging and testing.
 //
@@ -31,6 +32,7 @@ import (
 // have a look at `golang.org/x/tools/cmd/godex`
 
 // Dirp prints exported information of types, variables, packages, modules, imports
+// It also pretty prints data structures.
 //
 // It is almost similar to Python's builtin dir function
 //
