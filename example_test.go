@@ -23,7 +23,7 @@ func ExampleDirp() {
 	// KIND: struct
 	// SIGNATURE: [kama_test.myHandler *kama_test.myHandler]
 	// FIELDS: [
-	// 	Logger 
+	// 	Logger
 	// 	]
 	// METHODS: [
 	// 	ServeHTTP func(*kama_test.myHandler, http.ResponseWriter, *http.Request)
