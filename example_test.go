@@ -1,14 +1,14 @@
 package kama_test
 
-import (
-	"log"
-	"net/http"
-)
+// import (
+// 	"log"
+// 	"net/http"
+// )
 
-type myHandler struct{ Logger *log.Logger }
+// type myHandler struct{ Logger *log.Logger }
 
-func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
-}
+// func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
+// }
 
 // This is blocked on:
 // 1. https://github.com/golang/go/issues/41980
