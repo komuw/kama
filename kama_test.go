@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"testing"
 
+	"go.uber.org/goleak"
+
 	pkgErrors "github.com/pkg/errors"
 )
 
@@ -25,6 +27,8 @@ const acceptableCodeCoverage = 0.8 // 80%
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
+
+	goleak.VerifyTestMain(m)
 
 	eCode := m.Run()
 
