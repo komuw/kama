@@ -34,7 +34,6 @@ kama.Dirp("github.com/pkg/errors")
 kama.Dirp(http.Request{})
 ```
 
-## Basic example
 This;   
 ```go
 import "github.com/komuw/kama"
