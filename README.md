@@ -16,11 +16,15 @@ Comprehensive documetion is available -> [Documentation](https://pkg.go.dev/gith
 ## Installation
 
 ```shell
-TODO: add here
+go get github.com/komuw/kama # library
+go get github.com/komuw/kama/cmd/kama # cli app
 ```           
 
 
 ## Usage
+
+#### 1. As a library
+
 ```go
 import "github.com/komuw/kama"
 
@@ -99,6 +103,16 @@ SNIPPET: Header{
 ]
 ```
 
+#### 2. As a cli app    
+`kama` also has a commandline app, which you can install as;
+```shell
+go get github.com/komuw/kama/cmd/kama
+```
+and use as;
+```shell
+kama --help
+kama github.com/pkg/errors
+```
 
 
 ## Inspiration
