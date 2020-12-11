@@ -28,22 +28,31 @@ const acceptableCodeCoverage = 0.8 // 80%
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
 
-	goleak.VerifyTestMain(m)
-
-	eCode := m.Run()
-
-	if eCode == 0 && testing.CoverMode() != "" {
+	exitCode := m.Run()
+	if exitCode == 0 && testing.CoverMode() != "" {
 		coverage := testing.Coverage()
 		// note: for some reason the value of `coverage` is always less
 		// than the one reported on the terminal by go test
-
 		if coverage < acceptableCodeCoverage {
 			fmt.Printf("\n\tThe test code coverage has fallen below the acceptable value of %v. The current value is %v. \n", acceptableCodeCoverage, coverage)
-			eCode = -1
+			exitCode = -1
 		}
 	}
 
-	os.Exit(eCode)
+	exitCode = leakDetector(exitCode)
+	os.Exit(exitCode)
+}
+
+// see:
+// https://github.com/uber-go/goleak/blob/v1.1.10/testmain.go#L40-L52
+func leakDetector(exitCode int) int {
+	if exitCode == 0 {
+		if err := goleak.Find(); err != nil {
+			fmt.Fprintf(os.Stderr, "goleak: Errors on successful test run: %v\n", err)
+			exitCode = 1
+		}
+	}
+	return exitCode
 }
 
 type BlankStruct struct{}
