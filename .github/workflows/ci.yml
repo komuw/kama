@@ -142,6 +142,8 @@ jobs:
           goimports -w .
           go test -timeout 1m -v -race ./...
           
+          # TODO: add https://github.com/system-pclub/GCatch
+          
       - name: stress test
         run: |
           go test -o ote.test -c -race
