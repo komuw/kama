@@ -13,14 +13,14 @@ type Person struct {
 	Name   string
 	Age    int
 	Height float32
-	//lint:ignore U1001 used for tests
+	//lint:ignore U1001,U1000 used for tests
 	somePrivateField string
 }
 
-//lint:ignore U1001 used for tests
+//lint:ignore U1001,U1000 used for tests
 func (p Person) somePrivateMethodOne() {}
 
-//lint:ignore U1001 used for tests
+//lint:ignore U1001,U1000 used for tests
 func (p *Person) somePrivateMethodTwo() {}
 
 //lint:ignore U1001 used for tests
@@ -56,7 +56,7 @@ func TestBasicVariables(t *testing.T) {
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"kama.Person", "*kama.Person"},
-				Fields:    []string{"Name", "Age", "Height"},
+				Fields:    []string{"Name string", "Age int", "Height float32"},
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `Person{
   Name: "John",
@@ -71,7 +71,7 @@ func TestBasicVariables(t *testing.T) {
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"*kama.Person", "kama.Person"},
-				Fields:    []string{"Name", "Age", "Height"},
+				Fields:    []string{"Name string", "Age int", "Height float32"},
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `&Person{
   Name: "Jane",
@@ -136,27 +136,27 @@ func TestStdlibVariables(t *testing.T) {
 				Kind:      reflect.Struct,
 				Signature: []string{"http.Request", "*http.Request"},
 				Fields: []string{
-					"Method",
-					"URL",
-					"Proto",
-					"ProtoMajor",
-					"ProtoMinor",
-					"Header",
-					"Body",
-					"GetBody",
-					"ContentLength",
-					"TransferEncoding",
-					"Close",
-					"Host",
-					"Form",
-					"PostForm",
-					"MultipartForm",
-					"Trailer",
-					"RemoteAddr",
-					"RequestURI",
-					"TLS",
-					"Cancel",
-					"Response",
+					"Method string",
+					"URL *url.URL",
+					"Proto string",
+					"ProtoMajor int",
+					"ProtoMinor int",
+					"Header http.Header",
+					"Body io.ReadCloser",
+					"GetBody func() (io.ReadCloser, error)",
+					"ContentLength int64",
+					"TransferEncoding []string",
+					"Close bool",
+					"Host string",
+					"Form url.Values",
+					"PostForm url.Values",
+					"MultipartForm *multipart.Form",
+					"Trailer http.Header",
+					"RemoteAddr string",
+					"RequestURI string",
+					"TLS *tls.ConnectionState",
+					"Cancel <-chan struct {}",
+					"Response *http.Response",
 				},
 				Methods: []string{
 					"AddCookie func(*http.Request, *http.Cookie)",
@@ -185,10 +185,8 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: 0,
   ProtoMinor: 0,
-  Header: Header{
-  },
+  Header: Header{}, // p0
   Body: nil,
-  
 ...<snipped>..`,
 			},
 		},
@@ -199,27 +197,27 @@ func TestStdlibVariables(t *testing.T) {
 				Kind:      reflect.Struct,
 				Signature: []string{"*http.Request", "http.Request"},
 				Fields: []string{
-					"Method",
-					"URL",
-					"Proto",
-					"ProtoMajor",
-					"ProtoMinor",
-					"Header",
-					"Body",
-					"GetBody",
-					"ContentLength",
-					"TransferEncoding",
-					"Close",
-					"Host",
-					"Form",
-					"PostForm",
-					"MultipartForm",
-					"Trailer",
-					"RemoteAddr",
-					"RequestURI",
-					"TLS",
-					"Cancel",
-					"Response",
+					"Method string",
+					"URL *url.URL",
+					"Proto string",
+					"ProtoMajor int",
+					"ProtoMinor int",
+					"Header http.Header",
+					"Body io.ReadCloser",
+					"GetBody func() (io.ReadCloser, error)",
+					"ContentLength int64",
+					"TransferEncoding []string",
+					"Close bool",
+					"Host string",
+					"Form url.Values",
+					"PostForm url.Values",
+					"MultipartForm *multipart.Form",
+					"Trailer http.Header",
+					"RemoteAddr string",
+					"RequestURI string",
+					"TLS *tls.ConnectionState",
+					"Cancel <-chan struct {}",
+					"Response *http.Response",
 				},
 				Methods: []string{
 					"AddCookie func(*http.Request, *http.Cookie)",
@@ -248,10 +246,8 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: 0,
   ProtoMinor: 0,
-  Header: Header{
-  },
-  Body: nil,
- 
+  Header: Header{}, // p0
+  Body: nil
 ...<snipped>..`,
 			},
 		},

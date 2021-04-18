@@ -151,8 +151,8 @@ func getSignature(i interface{}) []string {
 	if typeKind == reflect.Ptr {
 		// the passed in type maybe be a `*T` so lets find the signature of `T`
 		valueI := reflect.ValueOf(i).Elem()
-		iType := valueI.Type()
-		sig := iType.String()
+		vType := valueI.Type()
+		sig := vType.String()
 		allSignatures = append(allSignatures, sig)
 	} else if typeKind == reflect.Struct {
 		// the passed in type is a `T` so lets also find the signature of `*T`
@@ -195,7 +195,7 @@ func getFields(iType reflect.Type) []string {
 				// private field
 				continue
 			}
-			fields = append(fields, f.Name)
+			fields = append(fields, f.Name+" "+f.Type.String())
 		}
 	}
 

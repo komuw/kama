@@ -108,6 +108,7 @@ jobs:
 
       - name: install tools
         run: |
+          set -x
           go install honnef.co/go/tools/cmd/staticcheck@latest
           go install github.com/securego/gosec/cmd/gosec@latest
           go install github.com/quasilyte/go-ruleguard/cmd/ruleguard@latest
@@ -115,37 +116,61 @@ jobs:
           go install github.com/orijtech/httperroryzer/cmd/httperroryzer@latest
           go install golang.org/x/tools/cmd/stress@latest
           go install golang.org/x/tools/cmd/goimports@latest
+          go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-          which staticcheck
-          which structslop
+          /home/runner/go/bin/staticcheck -version
         env:
           SOME_ENV_VAR: '2020.1.6'
 
       - name: static analysis
         run: |
           diff <(gofmt -d .) <(printf "")
-          go vet -v -all ./...
-          /home/runner/go/bin/staticcheck -tests -go 1.16 -unused.whole-program ./...
+          go vet -all ./...
+          go vet -vettool=/home/runner/go/bin/shadow ./...
+          /home/runner/go/bin/staticcheck -tests -go 1.16 ./...
           /home/runner/go/bin/gosec ./...
           /home/runner/go/bin/structslop ./...
           /home/runner/go/bin/httperroryzer ./...
+          # /home/runner/go/bin/golangci-lint run --no-config --enable=bodyclose,exhaustive,exhaustivestruct,exportloopref,gochecknoglobals,tparallel,unparam,wrapcheck ./...
 
-          mkdir -p /tmp/dgryski/semgrep-go && \
-          wget -nc --output-document=/tmp/dgryski/semgrep-go/rules.go https://raw.githubusercontent.com/dgryski/semgrep-go/master/ruleguard.rules.go && \
+          mkdir -p /tmp/dgryski/semgrep-go
+          wget -nc --output-document=/tmp/dgryski/semgrep-go/rules.go https://raw.githubusercontent.com/dgryski/semgrep-go/master/ruleguard.rules.go
+          go get github.com/quasilyte/go-ruleguard/dsl
           /home/runner/go/bin/ruleguard -c 1 -rules /tmp/dgryski/semgrep-go/rules.go ./...
+          go mod tidy
 
           # deadlock detection
           # https://github.com/cockroachdb/cockroach/issues/7972
           go get github.com/sasha-s/go-deadlock
-          find . -name "*.go" | xargs -n 1 sed -i '' 's/sync.RWMutex/deadlock.RWMutex/'
-          find . -name "*.go" | xargs -n 1 sed -i '' 's/sync.Mutex/deadlock.Mutex/'
-          goimports -w .
+          find . -name "*.go" | xargs -n 1 sed -i.backup 's/sync.RWMutex/deadlock.RWMutex/'
+          find . -name "*.go" | xargs -n 1 sed -i.backup 's/sync.Mutex/deadlock.Mutex/'
+          find . -name '*.backup' -delete
+          /home/runner/go/bin/goimports -w .
           go test -timeout 1m -v -race ./...
+          go mod tidy
           
           # TODO: add https://github.com/system-pclub/GCatch
-          
-      - name: stress test
-        run: |
-          go test -o ote.test -c -race
-          /home/runner/go/bin/stress -timeout 10s ./ote.test
+       
+  # run_stress_test:
+  #   name: run_stress_test
+  #   timeout-minutes: 2
+  #   strategy:
+  #     matrix:
+  #       go-version: [1.16]
+  #       platform: [ubuntu-18.04]
+  #   runs-on: ${{ matrix.platform }}
+  #   steps:
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v1
+  #       with:
+  #         go-version: 1.16
 
+  #     - name: Check out code into the Go module directory
+  #       uses: actions/checkout@v1
+
+  #     - name: stress test
+  #       run: |
+  #         go install golang.org/x/tools/cmd/stress@latest
+  #         go test -o ote.test -c -race
+  #         /home/runner/go/bin/stress -timeout 10s ./ote.test
