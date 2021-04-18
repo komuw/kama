@@ -195,7 +195,7 @@ func getFields(iType reflect.Type) []string {
 				// private field
 				continue
 			}
-			fields = append(fields, f.Name)
+			fields = append(fields, f.Name+" "+f.Type.String())
 		}
 	}
 
