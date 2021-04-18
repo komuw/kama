@@ -13,14 +13,14 @@ type Person struct {
 	Name   string
 	Age    int
 	Height float32
-	//lint:ignore U1001 used for tests
+	//lint:ignore U1001,U1000 used for tests
 	somePrivateField string
 }
 
-//lint:ignore U1001 used for tests
+//lint:ignore U1001,U1000 used for tests
 func (p Person) somePrivateMethodOne() {}
 
-//lint:ignore U1001 used for tests
+//lint:ignore U1001,U1000 used for tests
 func (p *Person) somePrivateMethodTwo() {}
 
 //lint:ignore U1001 used for tests
