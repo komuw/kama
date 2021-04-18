@@ -85,7 +85,7 @@ jobs:
 
   run_analysis:
     name: run_analysis
-    timeout-minutes: 2
+    timeout-minutes: 3
     strategy:
       matrix:
         go-version: [1.16]
