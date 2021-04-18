@@ -27,13 +27,13 @@ func TestStdlibPackages(t *testing.T) {
 				Name:      "archive/tar",
 				Constants: []string{"FormatGNU Format", "FormatPAX Format", "FormatUSTAR Format", "FormatUnknown Format", "TypeBlock untyped rune", "TypeChar untyped rune", "TypeCont untyped rune", "TypeDir untyped rune", "TypeFifo untyped rune", "TypeGNULongLink untyped rune", "TypeGNULongName untyped rune", "TypeGNUSparse untyped rune", "TypeLink untyped rune", "TypeReg untyped rune", "TypeRegA untyped rune", "TypeSymlink untyped rune", "TypeXGlobalHeader untyped rune", "TypeXHeader untyped rune"},
 				Variables: []string{"ErrFieldTooLong error", "ErrHeader error", "ErrWriteAfterClose error", "ErrWriteTooLong error"},
-				Functions: []string{"FileInfoHeader(fi os.FileInfo, link string) (*Header, error)", "NewReader(r io.Reader) *Reader", "NewWriter(w io.Writer) *Writer"},
+				Functions: []string{"FileInfoHeader(fi io/fs.FileInfo, link string) (*Header, error)", "NewReader(r io.Reader) *Reader", "NewWriter(w io.Writer) *Writer"},
 				Types: map[string][]string{
 					"Format int": {
 						"(Format) String() string",
 					},
 					"Header struct": {
-						"(*Header) FileInfo() os.FileInfo",
+						"(*Header) FileInfo() io/fs.FileInfo",
 					},
 					"Reader struct": {
 						"(*Reader) Next() (*Header, error)",
@@ -57,7 +57,7 @@ func TestStdlibPackages(t *testing.T) {
 		}
 
 		if !cmp.Equal(pak, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", pak, v.expected)
+			t.Error(cmp.Diff(v.expected, pak))
 		}
 	}
 }
@@ -105,7 +105,7 @@ func TestThirdPartyPackages(t *testing.T) {
 		}
 
 		if !cmp.Equal(pak, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", pak, v.expected)
+			t.Error(cmp.Diff(v.expected, pak))
 		}
 	}
 }
