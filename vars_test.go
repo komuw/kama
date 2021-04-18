@@ -56,7 +56,7 @@ func TestBasicVariables(t *testing.T) {
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"kama.Person", "*kama.Person"},
-				Fields:    []string{"Name", "Age", "Height"},
+				Fields:    []string{"Name string", "Age int", "Height float32"},
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `Person{
   Name: "John",
@@ -71,7 +71,7 @@ func TestBasicVariables(t *testing.T) {
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"*kama.Person", "kama.Person"},
-				Fields:    []string{"Name", "Age", "Height"},
+				Fields:    []string{"Name string", "Age int", "Height float32"},
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `&Person{
   Name: "Jane",
