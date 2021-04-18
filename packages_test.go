@@ -51,13 +51,13 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		pak, err := newPak(v.importPath)
+		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(pak, v.expected) {
-			t.Error(cmp.Diff(v.expected, pak))
+		if !cmp.Equal(p, v.expected) {
+			t.Error(cmp.Diff(v.expected, p))
 		}
 	}
 }
