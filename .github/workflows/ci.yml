@@ -172,5 +172,5 @@ jobs:
   #     - name: stress test
   #       run: |
   #         go install golang.org/x/tools/cmd/stress@latest
-  #         go test -o ote.test -c -race
-  #         /home/runner/go/bin/stress -timeout 10s ./ote.test
+  #         go test -o kama.test -c -race
+  #         /home/runner/go/bin/stress -timeout 10s ./kama.test
