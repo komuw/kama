@@ -95,11 +95,6 @@ jobs:
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
 
-      - name: dummy run
-        run: |
-          go build -trimpath -race -o kama .
-          ./kama -h
-          ./kama -f testdata/mod1 -r
 
   run_analysis:
     name: run_analysis
@@ -195,39 +190,12 @@ jobs:
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
+      
 
-      - name: Checkout hashicorp/nomad
-        uses: actions/checkout@v2
-        with:
-          repository: hashicorp/nomad
-          ref: v1.1.0-beta1
-          path: stuff_to_test/nomad
-
-      - name: Checkout juju/juju
-        uses: actions/checkout@v2
-        with:
-          repository: juju/juju
-          ref: juju-2.9.0
-          path: stuff_to_test/juju
-
-      - name: do acceptance
+      - name: dummy run
         run: |
-          set -x
-
-          ls -lsha stuff_to_test/
-          go build -trimpath -race -o kama .
-
-          num_nomad_test_modules=$(./kama -r -f stuff_to_test/nomad/ | grep '// test' | wc -l | tr -d ' ')
-          if [ "$num_nomad_test_modules" != "4" ]; then
-            printf "\n\t wrong number of test comments reported for hashicorp/nomad. reported: ${num_nomad_test_modules} \n" && \
-            exit 77
-          fi
-
-          num_juju_test_modules=$(./kama -r -f stuff_to_test/juju | grep '// test' | wc -l | tr -d ' ')
-          if [ "$num_juju_test_modules" != "9" ]; then
-            printf "\n\t wrong number of test comments reported for juju/juju. reported: ${num_juju_test_modules}  \n" && \
-            exit 77
-          fi
+          go build -trimpath -race -o kama cmd/kama/main.go
+          ./kama -h
 
 
   # run_stress_test:
