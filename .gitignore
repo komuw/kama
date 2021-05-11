@@ -13,6 +13,9 @@ coverage.html
 # goreleaser distribution folder.
 /dist/
 
+# binary
+kama
+
 # debug stuff
 debug.test
 kama.test
