@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+## v0.0.3
+- Update CI: https://github.com/komuw/kama/pull/17
+
 ## v0.0.2
 - add test example: https://github.com/komuw/kama/pull/13
 - add types to the fields of a struct: https://github.com/komuw/kama/pull/16
