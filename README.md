@@ -1,7 +1,7 @@
 ## kama          
 
 [![ci](https://github.com/komuw/kama/workflows/kama%20ci/badge.svg)](https://github.com/komuw/kama/actions)
-[![codecov](https://codecov.io/gh/komuw/kama/branch/master/graph/badge.svg)](https://codecov.io/gh/komuw/kama)
+[![codecov](https://codecov.io/gh/komuw/kama/branch/main/graph/badge.svg)](https://codecov.io/gh/komuw/kama)
 
 
 `kama` prints exported information of types, variables, packages, modules, imports etc     
