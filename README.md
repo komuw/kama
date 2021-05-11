@@ -16,7 +16,7 @@ Comprehensive documetion is available -> [Documentation](https://pkg.go.dev/gith
 ## Installation
 
 ```shell
-TODO: add here
+go get -u github.com/komuw/kama
 ```           
 
 
