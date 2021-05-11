@@ -120,8 +120,8 @@ func getName(i interface{}) string {
 	typeName := iType.PkgPath() + "." + iType.Name()
 	if typeKind == reflect.Ptr {
 		valueI := reflect.ValueOf(i).Elem()
-		iType := valueI.Type()
-		typeName = iType.PkgPath() + "." + iType.Name()
+		valueType := valueI.Type()
+		typeName = valueType.PkgPath() + "." + valueType.Name()
 	}
 
 	return typeName
@@ -136,9 +136,9 @@ func getKind(i interface{}) reflect.Kind {
 	} else {
 		// the passed in type maybe be a `*T` so lets find the kind of `T`
 		valueI := reflect.ValueOf(i).Elem()
-		iType := valueI.Type()
-		typeKind := iType.Kind()
-		return typeKind
+		valueType := valueI.Type()
+		valueTypeKind := valueType.Kind()
+		return valueTypeKind
 	}
 }
 
