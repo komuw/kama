@@ -53,11 +53,30 @@ func getArray() [10_000]int {
 	}
 	return a
 }
+
+func getChan() chan int {
+	z := make(chan int, 10_000)
+	for i := 0; i < 10_000; i++ {
+		z <- i
+	}
+	return z
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
 		expected vari
 	}{
+
+		{
+			getChan(), vari{
+				Name:      "chan",
+				Kind:      reflect.Chan,
+				Signature: []string{"chan int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "0xc000240000"},
+		},
 
 		{
 			getArray(), vari{
