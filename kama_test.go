@@ -99,6 +99,10 @@ func TestPrimitives(t *testing.T) {
 		func(arg string) (bool, error) { return false, nil },
 		nil,
 		interface{}(nil),
+		make(chan int, 10_000),
+		map[int]string{},
+		[10_000]int{},
+		[]uint16{},
 	}
 
 	for _, v := range tt {
