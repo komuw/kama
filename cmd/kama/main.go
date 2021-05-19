@@ -86,6 +86,9 @@ func main() {
 	kama.Dirp("github.com/pkg/NoSuchModule")
 	kama.Dirp(sawyer)
 	kama.Dirp(&http.Request{})
+
+	hReq, _ := http.NewRequest("POST", "https://example.com", nil)
+	kama.Dirp(hReq)
 }
 
 // TODO: clean up
