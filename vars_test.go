@@ -46,11 +46,29 @@ type customerID uint16
 //lint:ignore U1001 used for tests
 func (c customerID) ID() uint16 { return uint16(c) }
 
+func getArray() [10_000]int {
+	a := [10_000]int{}
+	for i := 0; i < 10_000; i++ {
+		a[i] = i
+	}
+	return a
+}
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
 		expected vari
 	}{
+
+		{
+			getArray(), vari{
+				Name:      "array",
+				Kind:      reflect.Array,
+				Signature: []string{"[10000]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[10000]int{\n  0,\n  1,\n  2,\n  3,\n  4,\n  5,\n  6,\n  7,\n  8,\n  9,\n  10,\n  11,\n  12,\n  13,\n  14,\n  15,\n  16,\n  17,\n  18,\n  19\n...<snipped>.."},
+		},
+
 		{
 			Person{Name: "John"}, vari{
 				Name:      "github.com/komuw/kama.Person",

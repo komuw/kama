@@ -36,9 +36,13 @@ func newVari(i interface{}) vari {
 	typeName := getName(i)
 	typeSig := getSignature(i)
 	if typeName == "." {
-		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
-		if typeName == "" {
-			typeName = "." + iType.Elem().Name()
+		if typeKind == reflect.Func {
+			typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+			if typeName == "" {
+				typeName = "." + iType.Elem().Name()
+			}
+		} else {
+			typeName = typeKind.String()
 		}
 	}
 
