@@ -98,10 +98,12 @@ func dump(i interface{}, iType reflect.Type) string {
 	maxL := 720
 	compact := false
 
-	switch iType.Kind() {
-	case reflect.Array, reflect.Slice, reflect.Map, reflect.String:
-		maxL = 50
-		compact = true
+	if iType != nil {
+		switch iType.Kind() {
+		case reflect.Array, reflect.Slice, reflect.Map, reflect.String:
+			maxL = 50
+			compact = true
+		}
 	}
 
 	sq := litter.Options{
