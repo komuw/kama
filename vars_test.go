@@ -185,8 +185,8 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: 0,
   ProtoMinor: 0,
-  Header: Header{}, // p0
-  Body: nil,
+  Header: Header(nil), // p0
+  Body: n
 ...<snipped>..`,
 			},
 		},
@@ -246,8 +246,8 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: 0,
   ProtoMinor: 0,
-  Header: Header{}, // p0
-  Body: nil
+  Header: Header(nil), // p0
+  Body: 
 ...<snipped>..`,
 			},
 		},
