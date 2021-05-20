@@ -94,37 +94,54 @@ SNIPPET: %s
 	)
 }
 
-func dumpStruct(i interface{}, sName string) string {
-	v := reflect.ValueOf(i)
-	vt := v.Type()
-
-	s := fmt.Sprintf("%s{\n", sName)
-	numFields := v.NumField()
-	for i := 0; i < numFields; i++ {
-		vtf := vt.Field(i)
-		fieldd := v.Field(i)
-		val := dump(fieldd.Interface(), fieldd.Type())
-		s = s + "  " + vtf.Name + ": " + val + ",\n"
-	}
-	s = s + "}"
-	return s
-}
-
 func dump(i interface{}, iType reflect.Type) string {
-	maxL := 20 // 720 // TODO: restore
+
+	dumpStruct := func(v reflect.Value, sName string) string {
+		// This logic is only required until similar logic is implemented in sanity-io/litter
+		// see:
+		// - https://github.com/sanity-io/litter/issues/34
+		// - https://github.com/sanity-io/litter/pull/43
+		vt := v.Type()
+		s := fmt.Sprintf("%s{\n", sName)
+		numFields := v.NumField()
+		for i := 0; i < numFields; i++ {
+			vtf := vt.Field(i)
+			fieldd := v.Field(i)
+			val := dump(fieldd.Interface(), fieldd.Type())
+			s = s + "  " + vtf.Name + ": " + val + ",\n"
+		}
+		s = s + "}"
+		return s
+	}
+
+	maxL := 720
 	compact := false
 
 	if iType != nil {
 		switch iType.Kind() {
 		case reflect.Array, reflect.Slice, reflect.Map, reflect.String:
+			// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+			// see: https://github.com/sanity-io/litter/pull/43
 			maxL = 50
 			compact = true
 		case reflect.Struct:
-			return dumpStruct(i, iType.Name())
+			// the reason we are doing this is because sanity-io/litter has no way to compact
+			// arrays/slices/maps that are inside structs.
+			// This logic can be discarded if sanity-io/litter implements similar.
+			// see: https://github.com/sanity-io/litter/pull/43
+			v := reflect.ValueOf(i)
+			return dumpStruct(v, iType.Name())
 		case reflect.Ptr:
-			// TODO: check for a struct that is a pointer
-			fmt.Println("pointer... ")
-			_ = 90
+			val := reflect.ValueOf(i)
+			v := val.Elem()
+			if v.Type().Kind() == reflect.Struct {
+				// the reason we are doing this is because sanity-io/litter has no way to compact
+				// arrays/slices/maps that are inside structs.
+				// This logic can be discarded if sanity-io/litter implements similar.
+				// see: https://github.com/sanity-io/litter/pull/43
+				typeName := "&" + v.Type().Name()
+				return dumpStruct(v, typeName)
+			}
 		}
 	}
 
