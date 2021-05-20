@@ -42,6 +42,11 @@ type myHandler struct{ Logger *log.Logger }
 func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 }
 
+type House struct {
+	Name   string
+	Chairs []int
+}
+
 func main() {
 	x := []int{}
 	for i := 0; i < 10_000; i++ {
@@ -89,6 +94,9 @@ func main() {
 
 	hReq, _ := http.NewRequest("POST", "https://example.com", nil)
 	kama.Dirp(hReq)
+
+	house := House{Name: "KICC", Chairs: x}
+	kama.Dirp(house)
 }
 
 // TODO: clean up
