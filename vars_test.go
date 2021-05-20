@@ -75,7 +75,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"chan int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "0xc000240000"},
+				Val:       "chan int"},
 		},
 
 		{
