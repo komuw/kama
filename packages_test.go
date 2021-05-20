@@ -51,6 +51,7 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
 		c := qt.New(t)
 
 		p, err := newPak(v.importPath)
@@ -99,6 +100,7 @@ func TestThirdPartyPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
 		c := qt.New(t)
 
 		p, err := newPak(v.importPath)
