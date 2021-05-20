@@ -3,7 +3,7 @@ module github.com/komuw/kama
 go 1.16
 
 require (
-	github.com/google/go-cmp v0.5.5 // test
+	github.com/frankban/quicktest v1.13.0 // test
 	github.com/pkg/errors v0.9.1 // test
 	github.com/sanity-io/litter v1.5.1
 	go.uber.org/goleak v1.1.10 // test

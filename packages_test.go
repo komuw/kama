@@ -3,7 +3,7 @@ package kama
 import (
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
+	qt "github.com/frankban/quicktest"
 )
 
 func TestStdlibPackages(t *testing.T) {
@@ -51,14 +51,14 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		c := qt.New(t)
+
 		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(p, v.expected) {
-			t.Error(cmp.Diff(v.expected, p))
-		}
+		c.Assert(p, qt.DeepEquals, v.expected)
 	}
 }
 
@@ -99,13 +99,13 @@ func TestThirdPartyPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		c := qt.New(t)
+
 		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(p, v.expected) {
-			t.Error(cmp.Diff(v.expected, p))
-		}
+		c.Assert(p, qt.DeepEquals, v.expected)
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
+	qt "github.com/frankban/quicktest"
 )
 
 type Person struct {
@@ -152,12 +152,9 @@ func TestBasicVariables(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+			c := qt.New(t)
 			res := newVari(v.variable)
-
-			if !cmp.Equal(res, v.expected) {
-				diff := cmp.Diff(v.expected, res)
-				t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
-			}
+			c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
 }
@@ -293,11 +290,9 @@ func TestStdlibVariables(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+			c := qt.New(t)
 			res := newVari(v.variable)
-			if !cmp.Equal(res, v.expected) {
-				diff := cmp.Diff(v.expected, res)
-				t.Errorf("\ngot: \n\t%#+v \nwanted: \n\t%#+v \ndiff: \n======================\n%s\n======================\n", res, v.expected, diff)
-			}
+			c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
 }
