@@ -138,13 +138,15 @@ func dump(i interface{}, iType reflect.Type) string {
 		case reflect.Ptr:
 			val := reflect.ValueOf(i)
 			v := val.Elem()
-			if v.Type().Kind() == reflect.Struct {
-				// the reason we are doing this is because sanity-io/litter has no way to compact
-				// arrays/slices/maps that are inside structs.
-				// This logic can be discarded if sanity-io/litter implements similar.
-				// see: https://github.com/sanity-io/litter/pull/43
-				typeName := "&" + v.Type().Name()
-				return dumpStruct(v, typeName)
+			if v.IsValid() {
+				if v.Type().Kind() == reflect.Struct {
+					// the reason we are doing this is because sanity-io/litter has no way to compact
+					// arrays/slices/maps that are inside structs.
+					// This logic can be discarded if sanity-io/litter implements similar.
+					// see: https://github.com/sanity-io/litter/pull/43
+					typeName := "&" + v.Type().Name()
+					return dumpStruct(v, typeName)
+				}
 			}
 		}
 	}

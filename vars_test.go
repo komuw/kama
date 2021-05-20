@@ -291,6 +291,7 @@ func TestStdlibVariables(t *testing.T) {
 		v := v
 		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
 			c := qt.New(t)
+
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})
