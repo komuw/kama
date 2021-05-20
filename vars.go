@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"unicode"
 
 	"reflect"
 
@@ -107,8 +108,11 @@ func dump(i interface{}, iType reflect.Type) string {
 		for i := 0; i < numFields; i++ {
 			vtf := vt.Field(i)
 			fieldd := v.Field(i)
-			val := dump(fieldd.Interface(), fieldd.Type())
-			s = s + "  " + vtf.Name + ": " + val + ",\n"
+			if unicode.IsUpper(rune(vtf.Name[0])) {
+				// `.Interface()` only works for exported fields
+				val := dump(fieldd.Interface(), fieldd.Type())
+				s = s + "  " + vtf.Name + ": " + val + ",\n"
+			}
 		}
 		s = s + "}"
 		return s
