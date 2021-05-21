@@ -124,6 +124,27 @@ func dump(val reflect.Value) string {
 		return s
 	}
 
+	dumpSlice := func(v reflect.Value) string {
+		//dumps slices & arrays
+		maxL = 10
+		compact = true
+		numEntries := val.Len()
+		constraint := int(math.Min(float64(numEntries), float64(maxL)))
+		typeName := iType.String()
+
+		s := typeName + "{"
+		for i := 0; i < constraint; i++ {
+			elm := val.Index(i) // todo: call dump on this
+			s = s + dump(elm) + ","
+		}
+		if numEntries > constraint {
+			remainder := numEntries - constraint
+			s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
+		}
+		s = s + "}"
+		return s
+	}
+
 	switch iType.Kind() {
 	case reflect.String:
 		maxL = 50
@@ -164,23 +185,7 @@ func dump(val reflect.Value) string {
 		reflect.Slice:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
-		maxL = 10
-		compact = true
-		numEntries := val.Len()
-		constraint := int(math.Min(float64(numEntries), float64(maxL)))
-		typeName := iType.String()
-
-		s := typeName + "{"
-		for i := 0; i < constraint; i++ {
-			elm := val.Index(i) // todo: call dump on this
-			s = s + fmt.Sprint(elm) + ","
-		}
-		if numEntries > constraint {
-			remainder := numEntries - constraint
-			s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
-		}
-		s = s + "}"
-		return s
+		return dumpSlice(val)
 	case reflect.Map:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
