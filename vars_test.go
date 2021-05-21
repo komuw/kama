@@ -239,7 +239,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "AT last the sleepy atmosphere was stirred—and v ...<snipped>.."},
+				Val:       `"AT last the sleepy atmosphere was stirred—and v ...<snipped>..`},
 		},
 	}
 
