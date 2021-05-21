@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/komuw/kama"
 )
@@ -44,61 +42,21 @@ func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 
 type House struct {
 	Name   string
+	Age    int16
+	Alas   uintptr
 	Chairs []int
 }
 
 func main() {
-	x := []int{}
-	for i := 0; i < 10_000; i++ {
-		x = append(x, i)
-	}
+	// x := []int{}
+	// for i := 0; i < 10_000; i++ {
+	// 	x = append(x, i)
+	// }
 
-	xx := []http.Request{}
-	for i := 0; i < 10_000; i++ {
-		xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
-	}
-
-	y := map[int]string{}
-
-	for i := 0; i < 10_000; i++ {
-		y[i] = fmt.Sprintf("%d", i)
-	}
-
-	z := make(chan int, 10_000)
-	for i := 0; i < 10_000; i++ {
-		// TODO: will be fixed by https://github.com/sanity-io/litter/pull/42
-		z <- i
-	}
-
-	a := [10_000]int{}
-	for i := 0; i < 10_000; i++ {
-		a[i] = i
-	}
-
-	kama.Dirp("archive/tar")
-	kama.Dirp("compress/flate")
-	kama.Dirp(x)
-	kama.Dirp(y)
-	kama.Dirp(z)
-	kama.Dirp(a)
-	kama.Dirp(xx)
-	kama.Dirp(http.Request{})
-	kama.Dirp(&http.Request{})
-	h := myHandler{Logger: log.New(os.Stderr, "", 0)}
-	kama.Dirp(h)
-
-	kama.Dirp("github.com/pkg/errors")
-	kama.Dirp("github.com/pkg/NoSuchModule")
-	kama.Dirp(sawyer)
-	kama.Dirp(&http.Request{})
-
-	hReq, _ := http.NewRequest("POST", "https://example.com", nil)
-	kama.Dirp(hReq)
-
-	house := House{Name: "KICC", Chairs: x}
+	house := House{Name: "KICC", Alas: uintptr(8)}
 	kama.Dirp(house)
 
-	kama.Dirp(&house)
+	// kama.Dirp(&house)
 }
 
 // TODO: clean up
