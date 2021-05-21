@@ -163,26 +163,28 @@ func dump(i interface{}, iType reflect.Type) string {
 }
 
 func getName(i interface{}) string {
-	// TODO: fix getting name for slices/arrays/maps/strings
 	iType := reflect.TypeOf(i)
 	typeKind := iType.Kind()
 
-	typeName := iType.PkgPath() + "." + iType.Name()
-	if typeKind == reflect.Ptr {
+	typeName := ""
+	switch typeKind {
+	case reflect.Func:
+		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+		if typeName == "" {
+			typeName = "." + iType.Elem().Name()
+		}
+	case reflect.Array, reflect.Chan, reflect.Map, reflect.Slice, reflect.String:
+		typeName = iType.String()
+	case reflect.Ptr:
 		valueI := reflect.ValueOf(i).Elem()
 		valueType := valueI.Type()
 		typeName = valueType.PkgPath() + "." + valueType.Name()
+	default:
+		typeName = typeKind.String()
 	}
 
-	if typeName == "." {
-		if typeKind == reflect.Func {
-			typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
-			if typeName == "" {
-				typeName = "." + iType.Elem().Name()
-			}
-		} else {
-			typeName = typeKind.String()
-		}
+	if iType.PkgPath() != "" {
+		typeName = iType.PkgPath() + "." + iType.Name()
 	}
 
 	return typeName

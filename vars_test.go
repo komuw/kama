@@ -189,7 +189,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			MyBigSlice, vari{
-				Name:      "slice",
+				Name:      "[]int",
 				Kind:      reflect.Slice,
 				Signature: []string{"[]int"},
 				Fields:    []string{},
@@ -200,7 +200,7 @@ func TestBasicVariables(t *testing.T) {
 		{
 			sliceOfStruct(), vari{
 				// TODO: fix this name
-				Name:      "slice",
+				Name:      "[]http.Request",
 				Kind:      reflect.Slice,
 				Signature: []string{"[]http.Request"},
 				Fields:    []string{},
@@ -210,7 +210,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			bigMap(), vari{
-				Name:      "map",
+				Name:      "map[int]string",
 				Kind:      reflect.Map,
 				Signature: []string{"map[int]string"},
 				Fields:    []string{},
@@ -220,7 +220,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			bigChan(), vari{
-				Name:      "chan",
+				Name:      "chan int",
 				Kind:      reflect.Chan,
 				Signature: []string{"chan int"},
 				Fields:    []string{},
@@ -230,7 +230,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			bigArray(), vari{
-				Name:      "array",
+				Name:      "[10000]int",
 				Kind:      reflect.Array,
 				Signature: []string{"[10000]int"},
 				Fields:    []string{},
@@ -239,7 +239,7 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			BigString, vari{
-				Name:      ".string",
+				Name:      "string",
 				Kind:      reflect.String,
 				Signature: []string{"string"},
 				Fields:    []string{},
