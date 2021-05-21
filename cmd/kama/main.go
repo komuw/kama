@@ -42,11 +42,11 @@ func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 }
 
 type House struct {
-	Name   string
-	Age    int16
-	Alas   uintptr
-	Chairs []int
-	HTTP   []http.Request
+	// Name   string
+	// Age    int16
+	// Alas   uintptr
+	// Chairs []int
+	HTTP []http.Request
 }
 
 type Hello struct{ Age uint64 }
@@ -58,14 +58,14 @@ func main() {
 	}
 
 	h := []http.Request{}
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 1; i++ {
 		h = append(h, http.Request{Method: fmt.Sprint(i)})
 	}
 
-	house := House{Name: "KICC", Alas: uintptr(8), Chairs: x, HTTP: h}
+	house := House{HTTP: h}
 	kama.Dirp(house)
 
-	kama.Dirp(&Hello{78})
+	// kama.Dirp(&Hello{78})
 
 	// kama.Dirp(&house)
 }

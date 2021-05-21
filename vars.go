@@ -116,6 +116,7 @@ func dump(val reflect.Value, compact bool) string {
 			typeName = "&" + typeName
 		}
 
+		fmt.Println("typeName, compact: ", typeName, compact)
 		sep := "\n"
 		if compact {
 			sep = ""
@@ -140,6 +141,15 @@ func dump(val reflect.Value, compact bool) string {
 
 	dumpSlice := func(v reflect.Value, compact bool) string {
 		//dumps slices & arrays
+
+		//TODO: (BUG)
+		// inline funcs ``inherit`` variables from their enclosing func.
+		// The main func(dump) has a param called `compact` which is `false`
+		// If `dumpSlice` is called with `compact==true`; it will have `compact==false`
+		//because of the ``inheritance``.
+		// We need to kill this inline funcs
+
+		fmt.Println("dunpslie compact: ", compact)
 		maxL = 10
 		numEntries := val.Len()
 		constraint := int(math.Min(float64(numEntries), float64(maxL)))
