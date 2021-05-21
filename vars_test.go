@@ -62,6 +62,16 @@ func getChan() chan int {
 	return z
 }
 
+func bigSlice() []int {
+	x := []int{}
+	for i := 0; i < 10_000; i++ {
+		x = append(x, i)
+	}
+	return x
+}
+
+var MyBigSlice = bigSlice()
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -145,6 +155,16 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				Methods:   []string{"ID func(kama.customerID) uint16"},
 				Val:       "9",
+			},
+		},
+		{
+			MyBigSlice, vari{
+				Name:      "slice",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..",
 			},
 		},
 	}

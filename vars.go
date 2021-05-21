@@ -36,16 +36,6 @@ func newVari(i interface{}) vari {
 	typeKind := getKind(i)
 	typeName := getName(i)
 	typeSig := getSignature(i)
-	if typeName == "." {
-		if typeKind == reflect.Func {
-			typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
-			if typeName == "" {
-				typeName = "." + iType.Elem().Name()
-			}
-		} else {
-			typeName = typeKind.String()
-		}
-	}
 
 	var fields = getAllFields(i)
 	var methods = trimMethods(getAllMethods(i))
@@ -173,6 +163,7 @@ func dump(i interface{}, iType reflect.Type) string {
 }
 
 func getName(i interface{}) string {
+	// TODO: fix getting name for slices/arrays
 	iType := reflect.TypeOf(i)
 	typeKind := iType.Kind()
 
@@ -181,6 +172,17 @@ func getName(i interface{}) string {
 		valueI := reflect.ValueOf(i).Elem()
 		valueType := valueI.Type()
 		typeName = valueType.PkgPath() + "." + valueType.Name()
+	}
+
+	if typeName == "." {
+		if typeKind == reflect.Func {
+			typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+			if typeName == "" {
+				typeName = "." + iType.Elem().Name()
+			}
+		} else {
+			typeName = typeKind.String()
+		}
 	}
 
 	return typeName
