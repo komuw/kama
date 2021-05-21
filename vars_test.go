@@ -117,6 +117,11 @@ So they swore again with dread solemnities.
 The boys had a long talk, but it brought them little comfort. As the twilight drew on, they found themselves hanging about the neighborhood of the little isolated jail, perhaps with an undefined hope that something would happen that might clear away their difficulties. But nothing happened; there seemed to be no angels or fairies interested in this luckless captive.
 The boys did as they had often done before—went to the cell grating and gave Potter some tobacco and matches. He was on the ground floor and there were no guards.`
 
+type SomeStructWIthSlice struct {
+	Name      string
+	MyAwesome []int
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -240,6 +245,20 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				Methods:   []string{},
 				Val:       `"AT last the sleepy atmosphere was stirred—and v ...<snipped>..`},
+		},
+		{
+
+			SomeStructWIthSlice{Name: "Hello", MyAwesome: bigSlice()}, vari{
+				Name:      "github.com/komuw/kama.SomeStructWIthSlice",
+				Kind:      reflect.Struct,
+				Signature: []string{"kama.SomeStructWIthSlice", "*kama.SomeStructWIthSlice"},
+				Fields:    []string{"Name string", "MyAwesome []int"},
+				Methods:   []string{},
+				Val: `SomeStructWIthSlice{
+  Name: "Hello",
+  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+}`,
+			},
 		},
 	}
 
