@@ -159,7 +159,7 @@ func dump(i interface{}, iType reflect.Type) string {
 			reflect.Slice:
 			// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 			// see: https://github.com/sanity-io/litter/pull/43
-			maxL = 20
+			maxL = 10
 			compact = true
 			numEntries := valueOfi.Len()
 			constraint := int(math.Min(float64(numEntries), float64(maxL)))
