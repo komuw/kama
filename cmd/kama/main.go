@@ -49,6 +49,8 @@ type House struct {
 	HTTP   []http.Request
 }
 
+type Hello struct{ Age uint64 }
+
 func main() {
 	x := []int{}
 	for i := 0; i < 10_000; i++ {
@@ -62,6 +64,8 @@ func main() {
 
 	house := House{Name: "KICC", Alas: uintptr(8), Chairs: x, HTTP: h}
 	kama.Dirp(house)
+
+	kama.Dirp(&Hello{78})
 
 	// kama.Dirp(&house)
 }

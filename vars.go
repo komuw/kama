@@ -25,13 +25,15 @@ type vari struct {
 
 func newVari(i interface{}) vari {
 	iType := reflect.TypeOf(i)
+	valueOfi := reflect.ValueOf(i)
+
 	if iType == nil {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
 		return vari{
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       dump(i, iType)}
+			Val:       dump(valueOfi)}
 	}
 
 	typeKind := getKind(i)
@@ -47,7 +49,7 @@ func newVari(i interface{}) vari {
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
-		Val:       dump(i, iType),
+		Val:       dump(valueOfi),
 	}
 
 }
@@ -86,22 +88,35 @@ SNIPPET: %s
 	)
 }
 
-func dump(i interface{}, iType reflect.Type) string {
+func dump(val reflect.Value) string {
+	iType := val.Type()
+	maxL := 720
+	compact := false
 
-	dumpStruct := func(v reflect.Value, sName string) string {
+	if iType == nil {
+		// TODO: handle this better
+		return "Nil NotImplemented"
+	}
+
+	dumpStruct := func(v reflect.Value, fromPtr bool) string {
 		// This logic is only required until similar logic is implemented in sanity-io/litter
 		// see:
 		// - https://github.com/sanity-io/litter/issues/34
 		// - https://github.com/sanity-io/litter/pull/43
+
+		typeName := v.Type().Name()
+		if fromPtr {
+			typeName = "&" + typeName
+		}
 		vt := v.Type()
-		s := fmt.Sprintf("%s{\n", sName)
+		s := fmt.Sprintf("%s{\n", typeName)
 		numFields := v.NumField()
 		for i := 0; i < numFields; i++ {
 			vtf := vt.Field(i)
 			fieldd := v.Field(i)
 			if unicode.IsUpper(rune(vtf.Name[0])) {
 				// `.Interface()` only works for exported fields
-				val := dump(fieldd.Interface(), fieldd.Type())
+				val := dump(fieldd)
 				s = s + "  " + vtf.Name + ": " + val + ",\n"
 			}
 		}
@@ -109,78 +124,68 @@ func dump(i interface{}, iType reflect.Type) string {
 		return s
 	}
 
-	maxL := 720
-	compact := false
-
-	typeName := iType.String()
-	valueOfi := reflect.ValueOf(i)
-
-	if iType != nil {
-		switch iType.Kind() {
-		case reflect.String:
-			maxL = 50
-			compact = true
-			return fmt.Sprint(i)
-		case reflect.Int,
-			reflect.Int8,
-			reflect.Int16,
-			reflect.Int32,
-			reflect.Int64,
-			reflect.Uint,
-			reflect.Uint8,
-			reflect.Uint16,
-			reflect.Uint32,
-			reflect.Uint64,
-			reflect.Uintptr,
-			reflect.Float32,
-			reflect.Float64:
-			return fmt.Sprint(i)
-		case reflect.Struct:
-			// the reason we are doing this is because sanity-io/litter has no way to compact
-			// arrays/slices/maps that are inside structs.
-			// This logic can be discarded if sanity-io/litter implements similar.
-			// see: https://github.com/sanity-io/litter/pull/43
-			v := reflect.ValueOf(i)
-			return dumpStruct(v, iType.Name())
-		case reflect.Ptr:
-			val := reflect.ValueOf(i)
-			v := val.Elem()
-			if v.IsValid() {
-				if v.Type().Kind() == reflect.Struct {
-					// the reason we are doing this is because sanity-io/litter has no way to compact
-					// arrays/slices/maps that are inside structs.
-					// This logic can be discarded if sanity-io/litter implements similar.
-					// see: https://github.com/sanity-io/litter/pull/43
-					typeName := "&" + v.Type().Name()
-					return dumpStruct(v, typeName)
-				}
+	switch iType.Kind() {
+	case reflect.String:
+		maxL = 50
+		compact = true
+		return fmt.Sprint(val)
+	case reflect.Int,
+		reflect.Int8,
+		reflect.Int16,
+		reflect.Int32,
+		reflect.Int64,
+		reflect.Uint,
+		reflect.Uint8,
+		reflect.Uint16,
+		reflect.Uint32,
+		reflect.Uint64,
+		reflect.Uintptr,
+		reflect.Float32,
+		reflect.Float64:
+		return fmt.Sprint(val)
+	case reflect.Struct:
+		// the reason we are doing this is because sanity-io/litter has no way to compact
+		// arrays/slices/maps that are inside structs.
+		// This logic can be discarded if sanity-io/litter implements similar.
+		// see: https://github.com/sanity-io/litter/pull/43
+		return dumpStruct(val, false)
+	case reflect.Ptr:
+		v := val.Elem()
+		if v.IsValid() {
+			if v.Type().Kind() == reflect.Struct {
+				// the reason we are doing this is because sanity-io/litter has no way to compact
+				// arrays/slices/maps that are inside structs.
+				// This logic can be discarded if sanity-io/litter implements similar.
+				// see: https://github.com/sanity-io/litter/pull/43
+				return dumpStruct(v, true)
 			}
-		case reflect.Array,
-			reflect.Slice:
-			// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-			// see: https://github.com/sanity-io/litter/pull/43
-			maxL = 10
-			compact = true
-			numEntries := valueOfi.Len()
-			constraint := int(math.Min(float64(numEntries), float64(maxL)))
-
-			s := typeName + "{"
-			for i := 0; i < constraint; i++ {
-				elm := valueOfi.Index(i) // todo: call dump on this
-				s = s + fmt.Sprint(elm) + ","
-			}
-			if numEntries > constraint {
-				remainder := numEntries - constraint
-				s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
-			}
-			s = s + "}"
-			return s
-		case reflect.Map:
-			// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-			// see: https://github.com/sanity-io/litter/pull/43
-			maxL = 50
-			compact = true
 		}
+	case reflect.Array,
+		reflect.Slice:
+		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+		// see: https://github.com/sanity-io/litter/pull/43
+		maxL = 10
+		compact = true
+		numEntries := val.Len()
+		constraint := int(math.Min(float64(numEntries), float64(maxL)))
+		typeName := iType.String()
+
+		s := typeName + "{"
+		for i := 0; i < constraint; i++ {
+			elm := val.Index(i) // todo: call dump on this
+			s = s + fmt.Sprint(elm) + ","
+		}
+		if numEntries > constraint {
+			remainder := numEntries - constraint
+			s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
+		}
+		s = s + "}"
+		return s
+	case reflect.Map:
+		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+		// see: https://github.com/sanity-io/litter/pull/43
+		maxL = 50
+		compact = true
 	}
 
 	x := 9
@@ -193,7 +198,7 @@ func dump(i interface{}, iType reflect.Type) string {
 			FieldExclusions:   regexp.MustCompile(`^(XXX_.*)$`), // XXX_ is a prefix of fields generated by protoc-gen-go
 			Separator:         " "}
 
-		s := sq.Sdump(i)
+		s := sq.Sdump(val)
 		if len(s) <= maxL {
 			maxL = len(s)
 			return s[:maxL]
