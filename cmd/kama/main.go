@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -45,15 +46,21 @@ type House struct {
 	Age    int16
 	Alas   uintptr
 	Chairs []int
+	HTTP   []http.Request
 }
 
 func main() {
-	// x := []int{}
-	// for i := 0; i < 10_000; i++ {
-	// 	x = append(x, i)
-	// }
+	x := []int{}
+	for i := 0; i < 10_000; i++ {
+		x = append(x, i)
+	}
 
-	house := House{Name: "KICC", Alas: uintptr(8)}
+	h := []http.Request{}
+	for i := 0; i < 10_000; i++ {
+		h = append(h, http.Request{Method: fmt.Sprint(i)})
+	}
+
+	house := House{Name: "KICC", Alas: uintptr(8), Chairs: x, HTTP: h}
 	kama.Dirp(house)
 
 	// kama.Dirp(&house)
