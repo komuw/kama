@@ -3,7 +3,7 @@ package kama
 import (
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
+	qt "github.com/frankban/quicktest"
 )
 
 func TestStdlibPackages(t *testing.T) {
@@ -51,14 +51,15 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
+		c := qt.New(t)
+
 		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(p, v.expected) {
-			t.Error(cmp.Diff(v.expected, p))
-		}
+		c.Assert(p, qt.DeepEquals, v.expected)
 	}
 }
 
@@ -99,13 +100,25 @@ func TestThirdPartyPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
+		c := qt.New(t)
+
 		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(p, v.expected) {
-			t.Error(cmp.Diff(v.expected, p))
-		}
+		c.Assert(p, qt.DeepEquals, v.expected)
 	}
+}
+
+func TestError(t *testing.T) {
+	c := qt.New(t)
+
+	_, err := newPak("github.com/pkg/NoSuchModule")
+	if err == nil {
+		t.Errorf("got no error, yet expected an error")
+	}
+	c.Assert(err.Error(), qt.Contains, "no required module provides package")
+
 }

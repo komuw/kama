@@ -41,12 +41,11 @@ func newPak(pattern string) (pak, error) {
 		return pak{}, err
 
 	}
-	// if packages.PrintErrors(pkgs) > 0 {
-	// 	// TODO: maybe we do not need this
-	// 	log.Fatal("PrintErrors")
-	// }
 
 	pkg := pkgs[0]
+	if len(pkg.Errors) > 0 {
+		return pak{}, pkg.Errors[0]
+	}
 	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := pkgScope(pkg)
 
 	type2Methods := associateTypeMethods(typeSlice, methodSlice)

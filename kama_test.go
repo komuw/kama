@@ -92,6 +92,7 @@ func TestPrimitives(t *testing.T) {
 		BlankStruct{},
 		&BlankStruct{},
 		BasicStruct{1, 2},
+		&BasicStruct{Public: 6_913, private: 90_350},
 		IntAlias(10),
 		(func(v IntAlias) *IntAlias { return &v })(10),
 		SomeFunction,
@@ -99,11 +100,15 @@ func TestPrimitives(t *testing.T) {
 		func(arg string) (bool, error) { return false, nil },
 		nil,
 		interface{}(nil),
+		make(chan int, 10_000),
+		map[int]string{},
+		[10_000]int{},
+		[]uint16{},
 	}
 
 	for _, v := range tt {
+		v := v
 		Dir(v)
-
 	}
 }
 
@@ -122,8 +127,8 @@ func TestStdlibTypes(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
 		Dir(v)
-
 	}
 }
 
@@ -133,6 +138,7 @@ func TestThirdPartyTypes(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
 		Dir(v)
 	}
 }
