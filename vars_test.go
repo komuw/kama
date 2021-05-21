@@ -260,6 +260,20 @@ func TestBasicVariables(t *testing.T) {
 }`,
 			},
 		},
+		{
+
+			&SomeStructWIthSlice{Name: "HelloPointery", MyAwesome: bigSlice()}, vari{
+				Name:      "github.com/komuw/kama.SomeStructWIthSlice",
+				Kind:      reflect.Struct,
+				Signature: []string{"*kama.SomeStructWIthSlice", "kama.SomeStructWIthSlice"},
+				Fields:    []string{"Name string", "MyAwesome []int"},
+				Methods:   []string{},
+				Val: `&SomeStructWIthSlice{
+  Name: "HelloPointery",
+  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+}`,
+			},
+		},
 	}
 
 	for _, v := range tt {
