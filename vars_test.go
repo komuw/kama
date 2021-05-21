@@ -46,22 +46,6 @@ type customerID uint16
 //lint:ignore U1001 used for tests
 func (c customerID) ID() uint16 { return uint16(c) }
 
-func getArray() [10_000]int {
-	a := [10_000]int{}
-	for i := 0; i < 10_000; i++ {
-		a[i] = i
-	}
-	return a
-}
-
-func getChan() chan int {
-	z := make(chan int, 10_000)
-	for i := 0; i < 10_000; i++ {
-		z <- i
-	}
-	return z
-}
-
 func bigSlice() []int {
 	x := []int{}
 	for i := 0; i < 10_000; i++ {
@@ -97,31 +81,19 @@ func bigChan() chan int {
 	return z
 }
 
+func bigArray() [10_000]int {
+	a := [10_000]int{}
+	for i := 0; i < 10_000; i++ {
+		a[i] = i
+	}
+	return a
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
 		expected vari
 	}{
-
-		{
-			getChan(), vari{
-				Name:      "chan",
-				Kind:      reflect.Chan,
-				Signature: []string{"chan int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "chan int"},
-		},
-
-		{
-			getArray(), vari{
-				Name:      "array",
-				Kind:      reflect.Array,
-				Signature: []string{"[10000]int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "[10000]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1 ...<snipped>.."},
-		},
 
 		{
 			Person{Name: "John"}, vari{
@@ -222,6 +194,15 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val:       "chan int",
 			},
+		},
+		{
+			bigArray(), vari{
+				Name:      "array",
+				Kind:      reflect.Array,
+				Signature: []string{"[10000]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[10000]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1 ...<snipped>.."},
 		},
 	}
 
