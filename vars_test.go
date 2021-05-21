@@ -199,7 +199,6 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 			sliceOfStruct(), vari{
-				// TODO: fix this name
 				Name:      "[]http.Request",
 				Kind:      reflect.Slice,
 				Signature: []string{"[]http.Request"},

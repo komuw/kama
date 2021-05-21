@@ -3,6 +3,10 @@
 Most recent version is listed first.  
 
 
+## v0.0.4
+- Dump more information about variables/types: https://github.com/komuw/kama/pull/18     
+                                             : https://github.com/komuw/kama/pull/21
+
 ## v0.0.3
 - Update CI: https://github.com/komuw/kama/pull/17
 
