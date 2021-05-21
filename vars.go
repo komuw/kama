@@ -33,7 +33,7 @@ func newVari(i interface{}) vari {
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       dump(valueOfi)}
+			Val:       dump(valueOfi, false)}
 	}
 
 	typeKind := getKind(i)
@@ -49,7 +49,7 @@ func newVari(i interface{}) vari {
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
-		Val:       dump(valueOfi),
+		Val:       dump(valueOfi, false),
 	}
 
 }
@@ -88,7 +88,11 @@ SNIPPET: %s
 	)
 }
 
-func dump(val reflect.Value) string {
+func dump(val reflect.Value, compact bool) string {
+	/*
+		`compact` indicates whether the struct should be laid in one line or not
+	*/
+
 	iType := val.Type()
 	maxL := 720
 
@@ -99,8 +103,8 @@ func dump(val reflect.Value) string {
 
 	dumpStruct := func(v reflect.Value, fromPtr bool, compact bool) string {
 		/*
-			fromPtr indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
-			compact indicates whether the struct should be laid in one line or not
+			`fromPtr` indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
+			`compact` indicates whether the struct should be laid in one line or not
 		*/
 		// This logic is only required until similar logic is implemented in sanity-io/litter
 		// see:
@@ -126,7 +130,7 @@ func dump(val reflect.Value) string {
 			fieldd := v.Field(i)
 			if unicode.IsUpper(rune(vtf.Name[0])) {
 				// `.Interface()` only works for exported fields
-				val := dump(fieldd)
+				val := dump(fieldd, compact)
 				s = s + "  " + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
@@ -134,7 +138,7 @@ func dump(val reflect.Value) string {
 		return s
 	}
 
-	dumpSlice := func(v reflect.Value) string {
+	dumpSlice := func(v reflect.Value, compact bool) string {
 		//dumps slices & arrays
 		maxL = 10
 		numEntries := val.Len()
@@ -144,7 +148,7 @@ func dump(val reflect.Value) string {
 		s := typeName + "{"
 		for i := 0; i < constraint; i++ {
 			elm := val.Index(i) // todo: call dump on this
-			s = s + dump(elm) + ","
+			s = s + dump(elm, compact) + ","
 		}
 		if numEntries > constraint {
 			remainder := numEntries - constraint
@@ -198,7 +202,8 @@ func dump(val reflect.Value) string {
 		reflect.Slice:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
-		return dumpSlice(val)
+		cpt := true
+		return dumpSlice(val, cpt)
 	case reflect.Map:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
