@@ -88,6 +88,15 @@ func bigMap() map[int]string {
 	return y
 }
 
+func bigChan() chan int {
+	z := make(chan int, 10_000)
+	for i := 0; i < 10_000; i++ {
+		// TODO: will be fixed by https://github.com/sanity-io/litter/pull/42
+		z <- i
+	}
+	return z
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -194,7 +203,6 @@ func TestBasicVariables(t *testing.T) {
 				Val:       `[]Request{Request{Method:"0",URL:nil,Proto:"",Prot ...<snipped>..`,
 			},
 		},
-
 		{
 			bigMap(), vari{
 				Name:      "map",
@@ -203,6 +211,16 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				Methods:   []string{},
 				Val:       `map[int]string{0:"0",1:"1",10:"10",100:"100",1000: ...<snipped>..`,
+			},
+		},
+		{
+			bigChan(), vari{
+				Name:      "chan",
+				Kind:      reflect.Chan,
+				Signature: []string{"chan int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "chan int",
 			},
 		},
 	}
