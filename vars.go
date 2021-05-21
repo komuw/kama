@@ -171,7 +171,7 @@ func dump(i interface{}, iType reflect.Type) string {
 			}
 			if numEntries > constraint {
 				remainder := numEntries - constraint
-				s = s + fmt.Sprintf(" ...<%d more snipped>..", remainder)
+				s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
 			}
 			s = s + "}"
 			return s
