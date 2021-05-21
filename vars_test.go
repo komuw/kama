@@ -80,6 +80,14 @@ func sliceOfStruct() []http.Request {
 	return xx
 }
 
+func bigMap() map[int]string {
+	y := map[int]string{}
+	for i := 0; i < 10_000; i++ {
+		y[i] = fmt.Sprintf("%d", i)
+	}
+	return y
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -184,6 +192,17 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				Methods:   []string{},
 				Val:       `[]Request{Request{Method:"0",URL:nil,Proto:"",Prot ...<snipped>..`,
+			},
+		},
+
+		{
+			bigMap(), vari{
+				Name:      "map",
+				Kind:      reflect.Map,
+				Signature: []string{"map[int]string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       `map[int]string{0:"0",1:"1",10:"10",100:"100",1000: ...<snipped>..`,
 			},
 		},
 	}

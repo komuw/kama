@@ -163,7 +163,7 @@ func dump(i interface{}, iType reflect.Type) string {
 }
 
 func getName(i interface{}) string {
-	// TODO: fix getting name for slices/arrays
+	// TODO: fix getting name for slices/arrays/maps
 	iType := reflect.TypeOf(i)
 	typeKind := iType.Kind()
 
