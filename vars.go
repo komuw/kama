@@ -91,14 +91,17 @@ SNIPPET: %s
 func dump(val reflect.Value) string {
 	iType := val.Type()
 	maxL := 720
-	compact := false
 
 	if iType == nil {
 		// TODO: handle this better
 		return "Nil NotImplemented"
 	}
 
-	dumpStruct := func(v reflect.Value, fromPtr bool) string {
+	dumpStruct := func(v reflect.Value, fromPtr bool, compact bool) string {
+		/*
+			fromPtr indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
+			compact indicates whether the struct should be laid in one line or not
+		*/
 		// This logic is only required until similar logic is implemented in sanity-io/litter
 		// see:
 		// - https://github.com/sanity-io/litter/issues/34
@@ -108,8 +111,15 @@ func dump(val reflect.Value) string {
 		if fromPtr {
 			typeName = "&" + typeName
 		}
+
+		sep := "\n"
+		if compact {
+			sep = ""
+		}
+
 		vt := v.Type()
-		s := fmt.Sprintf("%s{\n", typeName)
+		s := fmt.Sprintf("%s{%s", typeName, sep)
+
 		numFields := v.NumField()
 		for i := 0; i < numFields; i++ {
 			vtf := vt.Field(i)
@@ -117,7 +127,7 @@ func dump(val reflect.Value) string {
 			if unicode.IsUpper(rune(vtf.Name[0])) {
 				// `.Interface()` only works for exported fields
 				val := dump(fieldd)
-				s = s + "  " + vtf.Name + ": " + val + ",\n"
+				s = s + "  " + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
 		s = s + "}"
@@ -127,7 +137,6 @@ func dump(val reflect.Value) string {
 	dumpSlice := func(v reflect.Value) string {
 		//dumps slices & arrays
 		maxL = 10
-		compact = true
 		numEntries := val.Len()
 		constraint := int(math.Min(float64(numEntries), float64(maxL)))
 		typeName := iType.String()
@@ -148,7 +157,7 @@ func dump(val reflect.Value) string {
 	switch iType.Kind() {
 	case reflect.String:
 		maxL = 50
-		compact = true
+		// TODO: constraint by maxL
 		return fmt.Sprint(val)
 	case reflect.Int,
 		reflect.Int8,
@@ -169,7 +178,9 @@ func dump(val reflect.Value) string {
 		// arrays/slices/maps that are inside structs.
 		// This logic can be discarded if sanity-io/litter implements similar.
 		// see: https://github.com/sanity-io/litter/pull/43
-		return dumpStruct(val, false)
+		fromPtr := false
+		compact := false
+		return dumpStruct(val, fromPtr, compact)
 	case reflect.Ptr:
 		v := val.Elem()
 		if v.IsValid() {
@@ -178,7 +189,9 @@ func dump(val reflect.Value) string {
 				// arrays/slices/maps that are inside structs.
 				// This logic can be discarded if sanity-io/litter implements similar.
 				// see: https://github.com/sanity-io/litter/pull/43
-				return dumpStruct(v, true)
+				fromPtr := true
+				compact := false
+				return dumpStruct(v, fromPtr, compact)
 			}
 		}
 	case reflect.Array,
@@ -190,13 +203,11 @@ func dump(val reflect.Value) string {
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
 		maxL = 50
-		compact = true
 	}
 
 	x := 9
 	if x < 5 {
 		sq := litter.Options{
-			Compact:           compact,
 			StripPackageNames: true,
 			HidePrivateFields: true,
 			HideZeroValues:    false,
@@ -211,7 +222,6 @@ func dump(val reflect.Value) string {
 	}
 
 	_ = maxL
-	_ = compact
 	return "NotImplemented"
 }
 
