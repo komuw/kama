@@ -72,6 +72,14 @@ func bigSlice() []int {
 
 var MyBigSlice = bigSlice()
 
+func sliceOfStruct() []http.Request {
+	xx := []http.Request{}
+	for i := 0; i < 10_000; i++ {
+		xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
+	}
+	return xx
+}
+
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
 		variable interface{}
@@ -165,6 +173,17 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				Methods:   []string{},
 				Val:       "[]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..",
+			},
+		},
+		{
+			sliceOfStruct(), vari{
+				// TODO: fix this name
+				Name:      "slice",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]http.Request"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       `[]Request{Request{Method:"0",URL:nil,Proto:"",Prot ...<snipped>..`,
 			},
 		},
 	}
