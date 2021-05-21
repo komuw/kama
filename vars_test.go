@@ -46,7 +46,42 @@ type customerID uint16
 //lint:ignore U1001 used for tests
 func (c customerID) ID() uint16 { return uint16(c) }
 
-func getArray() [10_000]int {
+func bigSlice() []int {
+	x := []int{}
+	for i := 0; i < 10_000; i++ {
+		x = append(x, i)
+	}
+	return x
+}
+
+var MyBigSlice = bigSlice()
+
+func sliceOfStruct() []http.Request {
+	xx := []http.Request{}
+	for i := 0; i < 10_000; i++ {
+		xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
+	}
+	return xx
+}
+
+func bigMap() map[int]string {
+	y := map[int]string{}
+	for i := 0; i < 10_000; i++ {
+		y[i] = fmt.Sprintf("%d", i)
+	}
+	return y
+}
+
+func bigChan() chan int {
+	z := make(chan int, 10_000)
+	for i := 0; i < 10_000; i++ {
+		// TODO: will be fixed by https://github.com/sanity-io/litter/pull/42
+		z <- i
+	}
+	return z
+}
+
+func bigArray() [10_000]int {
 	a := [10_000]int{}
 	for i := 0; i < 10_000; i++ {
 		a[i] = i
@@ -54,12 +89,37 @@ func getArray() [10_000]int {
 	return a
 }
 
-func getChan() chan int {
-	z := make(chan int, 10_000)
-	for i := 0; i < 10_000; i++ {
-		z <- i
-	}
-	return z
+var BigString = `AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It became the absorbing topic of village talk immediately. Tom could not get away from it. Every reference to the murder sent a shudder to his heart, for his troubled conscience and fears almost persuaded him that these remarks were put forth in his hearing as “feelers”; he did not see how he could be suspected of knowing anything about the murder, but still he could not be comfortable in the midst of this gossip. It kept him in a cold shiver all the time. He took Huck to a lonely place to have a talk with him. It would be some relief to unseal his tongue for a little while; to divide his burden of distress with another sufferer. Moreover, he wanted to assure himself that Huck had remained discreet.
+“Huck, have you ever told anybody about—that?”
+“’Bout what?”
+“You know what.”
+“Oh—’course I haven’t.”
+“Never a word?”
+“Never a solitary word, so help me. What makes you ask?”
+“Well, I was afeard.”
+“Why, Tom Sawyer, we wouldn’t be alive two days if that got found out. You know that.”
+Tom felt more comfortable. After a pause:
+“Huck, they couldn’t anybody get you to tell, could they?”
+“Get me to tell? Why, if I wanted that halfbreed devil to drownd me they could get me to tell. They ain’t no different way.”
+“Well, that’s all right, then. I reckon we’re safe as long as we keep mum. But let’s swear again, anyway. It’s more surer.”
+“I’m agreed.”
+So they swore again with dread solemnities.
+“What is the talk around, Huck? I’ve heard a power of it.”
+“Talk? Well, it’s just Muff Potter, Muff Potter, Muff Potter all the time. It keeps me in a sweat, constant, so’s I want to hide som’ers.”
+“That’s just the same way they go on round me. I reckon he’s a goner. Don’t you feel sorry for him, sometimes?”
+“Most always—most always. He ain’t no account; but then he hain’t ever done anything to hurt anybody. Just fishes a little, to get money to get drunk on—and loafs around considerable; but lord, we all do that—leastways most of us—preachers and such like. But he’s kind of good—he give me half a fish, once, when there warn’t enough for two; and lots of times he’s kind of stood by me when I was out of luck.”
+“Well, he’s mended kites for me, Huck, and knitted hooks on to my line. I wish we could get him out of there.”
+“My! we couldn’t get him out, Tom. And besides, ’twouldn’t do any good; they’d ketch him again.”
+“Yes—so they would. But I hate to hear ’em abuse him so like the dickens when he never done—that.”
+“I do too, Tom. Lord, I hear ’em say he’s the bloodiest looking villain in this country, and they wonder he wasn’t ever hung before.”
+“Yes, they talk like that, all the time. I’ve heard ’em say that if he was to get free they’d lynch him.”
+“And they’d do it, too.”
+The boys had a long talk, but it brought them little comfort. As the twilight drew on, they found themselves hanging about the neighborhood of the little isolated jail, perhaps with an undefined hope that something would happen that might clear away their difficulties. But nothing happened; there seemed to be no angels or fairies interested in this luckless captive.
+The boys did as they had often done before—went to the cell grating and gave Potter some tobacco and matches. He was on the ground floor and there were no guards.`
+
+type SomeStructWIthSlice struct {
+	Name      string
+	MyAwesome []int
 }
 
 func TestBasicVariables(t *testing.T) {
@@ -67,26 +127,6 @@ func TestBasicVariables(t *testing.T) {
 		variable interface{}
 		expected vari
 	}{
-
-		{
-			getChan(), vari{
-				Name:      "chan",
-				Kind:      reflect.Chan,
-				Signature: []string{"chan int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "chan int"},
-		},
-
-		{
-			getArray(), vari{
-				Name:      "array",
-				Kind:      reflect.Array,
-				Signature: []string{"[10000]int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "[10000]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1 ...<snipped>.."},
-		},
 
 		{
 			Person{Name: "John"}, vari{
@@ -145,6 +185,93 @@ func TestBasicVariables(t *testing.T) {
 				Fields:    []string{},
 				Methods:   []string{"ID func(kama.customerID) uint16"},
 				Val:       "9",
+			},
+		},
+		{
+			MyBigSlice, vari{
+				Name:      "slice",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..",
+			},
+		},
+		{
+			sliceOfStruct(), vari{
+				// TODO: fix this name
+				Name:      "slice",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]http.Request"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       `[]Request{Request{Method:"0",URL:nil,Proto:"",Prot ...<snipped>..`,
+			},
+		},
+		{
+			bigMap(), vari{
+				Name:      "map",
+				Kind:      reflect.Map,
+				Signature: []string{"map[int]string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       `map[int]string{0:"0",1:"1",10:"10",100:"100",1000: ...<snipped>..`,
+			},
+		},
+		{
+			bigChan(), vari{
+				Name:      "chan",
+				Kind:      reflect.Chan,
+				Signature: []string{"chan int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "chan int",
+			},
+		},
+		{
+			bigArray(), vari{
+				Name:      "array",
+				Kind:      reflect.Array,
+				Signature: []string{"[10000]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[10000]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1 ...<snipped>.."},
+		},
+		{
+			BigString, vari{
+				Name:      ".string",
+				Kind:      reflect.String,
+				Signature: []string{"string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       `"AT last the sleepy atmosphere was stirred—and v ...<snipped>..`},
+		},
+		{
+
+			SomeStructWIthSlice{Name: "Hello", MyAwesome: bigSlice()}, vari{
+				Name:      "github.com/komuw/kama.SomeStructWIthSlice",
+				Kind:      reflect.Struct,
+				Signature: []string{"kama.SomeStructWIthSlice", "*kama.SomeStructWIthSlice"},
+				Fields:    []string{"Name string", "MyAwesome []int"},
+				Methods:   []string{},
+				Val: `SomeStructWIthSlice{
+  Name: "Hello",
+  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+}`,
+			},
+		},
+		{
+
+			&SomeStructWIthSlice{Name: "HelloPointery", MyAwesome: bigSlice()}, vari{
+				Name:      "github.com/komuw/kama.SomeStructWIthSlice",
+				Kind:      reflect.Struct,
+				Signature: []string{"*kama.SomeStructWIthSlice", "kama.SomeStructWIthSlice"},
+				Fields:    []string{"Name string", "MyAwesome []int"},
+				Methods:   []string{},
+				Val: `&SomeStructWIthSlice{
+  Name: "HelloPointery",
+  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+}`,
 			},
 		},
 	}
@@ -219,9 +346,23 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: 0,
   ProtoMinor: 0,
-  Header: Header(nil), // p0
-  Body: n
-...<snipped>..`,
+  Header: Header(nil),
+  Body: nil,
+  GetBody: ,
+  ContentLength: 0,
+  TransferEncoding: nil,
+  Close: false,
+  Host: "",
+  Form: Values(nil),
+  PostForm: Values(nil),
+  MultipartForm: nil,
+  Trailer: Header(nil),
+  RemoteAddr: "",
+  RequestURI: "",
+  TLS: nil,
+  Cancel: <-chan struct {},
+  Response: nil,
+}`,
 			},
 		},
 
@@ -280,9 +421,23 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: 0,
   ProtoMinor: 0,
-  Header: Header(nil), // p0
-  Body: 
-...<snipped>..`,
+  Header: Header(nil),
+  Body: nil,
+  GetBody: ,
+  ContentLength: 0,
+  TransferEncoding: nil,
+  Close: false,
+  Host: "",
+  Form: Values(nil),
+  PostForm: Values(nil),
+  MultipartForm: nil,
+  Trailer: Header(nil),
+  RemoteAddr: "",
+  RequestURI: "",
+  TLS: nil,
+  Cancel: <-chan struct {},
+  Response: nil,
+}`,
 			},
 		},
 	}
@@ -291,6 +446,7 @@ func TestStdlibVariables(t *testing.T) {
 		v := v
 		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
 			c := qt.New(t)
+
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})

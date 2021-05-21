@@ -51,6 +51,7 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
 		c := qt.New(t)
 
 		p, err := newPak(v.importPath)
@@ -99,6 +100,7 @@ func TestThirdPartyPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
+		v := v
 		c := qt.New(t)
 
 		p, err := newPak(v.importPath)
@@ -108,4 +110,15 @@ func TestThirdPartyPackages(t *testing.T) {
 
 		c.Assert(p, qt.DeepEquals, v.expected)
 	}
+}
+
+func TestError(t *testing.T) {
+	c := qt.New(t)
+
+	_, err := newPak("github.com/pkg/NoSuchModule")
+	if err == nil {
+		t.Errorf("got no error, yet expected an error")
+	}
+	c.Assert(err.Error(), qt.Contains, "no required module provides package")
+
 }

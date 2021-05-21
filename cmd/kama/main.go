@@ -97,6 +97,8 @@ func main() {
 
 	house := House{Name: "KICC", Chairs: x}
 	kama.Dirp(house)
+
+	kama.Dirp(&house)
 }
 
 // TODO: clean up
