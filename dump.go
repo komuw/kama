@@ -99,7 +99,7 @@ func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
 	maxL := 50
 
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(maxL)))
+	constraint := int(math.Min(float64(numEntries), float64(maxL))) + 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
 	s := fmt.Sprintf("%#v", v)[:constraint]
 
 	if numEntries > constraint {
