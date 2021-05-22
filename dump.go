@@ -221,7 +221,7 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	for iter.Next() {
 		mapKey := iter.Key()
 		mapVal := iter.Value()
-		s = s + dump(mapKey, compact, hideZeroValues, indentLevel) + ": " + dump(mapVal, compact, hideZeroValues, indentLevel) + ",\n"
+		s = s + "  " + dump(mapKey, compact, hideZeroValues, indentLevel) + ": " + dump(mapVal, compact, hideZeroValues, indentLevel) + ",\n"
 		count = count + 1
 		if count >= constraint {
 			remainder := numEntries - constraint
