@@ -72,6 +72,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
 		maxL = 50
+	default:
+		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
 
 	x := 9
