@@ -62,7 +62,9 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 				fromPtr := true
 				return dumpStruct(v, fromPtr, compact, hideZeroValues, indentLevel)
 			}
+			// TODO: handle other pointers(apart from just struct)
 		}
+		// TODO: handle other pointers(apart from just struct)
 	case reflect.Array,
 		reflect.Slice:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
