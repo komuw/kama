@@ -61,7 +61,7 @@ func main() {
 	}
 
 	h := []http.Request{}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		h = append(h, http.Request{Method: fmt.Sprint(i)})
 	}
 
