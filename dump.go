@@ -72,14 +72,12 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		cpt := true
 		hideZeroValues := true
 		return dumpSlice(val, cpt, hideZeroValues, indentLevel)
-
 	case reflect.Chan:
 		return dumpChan(val, compact, hideZeroValues, indentLevel)
-
-	// case reflect.Map:
-	// 	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-	// 	// see: https://github.com/sanity-io/litter/pull/43
-	// 	maxL = 50
+	case reflect.Map:
+		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+		// see: https://github.com/sanity-io/litter/pull/43
+		return dumpMap(val, compact, hideZeroValues, indentLevel)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
@@ -201,6 +199,38 @@ func dumpChan(v reflect.Value, compact bool, hideZeroValues bool, indentLevel in
 	element := v.Type().Elem()
 	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
 
+}
+
+func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	//dumps maps
+
+	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+
+	// TODO: handle compact
+	// TODO: handle indentLevel
+
+	maxL := 5
+	numEntries := v.Len()
+	constraint := int(math.Min(float64(numEntries), float64(maxL)))
+
+	typeName := v.Type().String()
+	s := typeName + "{\n"
+
+	iter := v.MapRange()
+	count := 0
+	for iter.Next() {
+		mapKey := iter.Key()
+		mapVal := iter.Value()
+		s = s + dump(mapKey, compact, hideZeroValues, indentLevel) + ": " + dump(mapVal, compact, hideZeroValues, indentLevel) + ",\n"
+		count = count + 1
+		if count >= constraint {
+			remainder := numEntries - constraint
+			s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
+			break
+		}
+	}
+	s = s + "}"
+	return s
 }
 
 func isPointerValue(v reflect.Value) bool {
