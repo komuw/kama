@@ -46,23 +46,24 @@ type House struct {
 	// Age    int16
 	// Alas   uintptr
 	// Chairs []int
-	HTTP []http.Request
+	HTTP  []http.Request
+	Hello http.Request
 }
 
 type Hello struct{ Age uint64 }
 
 func main() {
-	x := []int{}
-	for i := 0; i < 10_000; i++ {
-		x = append(x, i)
-	}
+	// x := []int{}
+	// for i := 0; i < 10_000; i++ {
+	// 	x = append(x, i)
+	// }
 
 	h := []http.Request{}
 	for i := 0; i < 1; i++ {
 		h = append(h, http.Request{Method: fmt.Sprint(i)})
 	}
 
-	house := House{HTTP: h}
+	house := House{HTTP: h, Hello: http.Request{Method: "HEllo"}}
 	kama.Dirp(house)
 
 	// kama.Dirp(&Hello{78})
