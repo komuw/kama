@@ -17,13 +17,14 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		`hideZeroValues` indicates whether to show zeroValued vars
 		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
 	*/
-	iType := val.Type()
-	maxL := 720
-
-	if iType == nil {
-		// TODO: handle this better
-		return "Nil NotImplemented"
+	if !val.IsValid() {
+		return "nil"
 	}
+	iType := val.Type()
+	if iType == nil {
+		return "nil"
+	}
+	maxL := 720
 	indentLevel = indentLevel + 1
 
 	switch iType.Kind() {
