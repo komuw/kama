@@ -70,10 +70,10 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		cpt := true
 		hideZeroValues := true
 		return dumpSlice(val, cpt, hideZeroValues, indentLevel)
-	case reflect.Map:
-		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-		// see: https://github.com/sanity-io/litter/pull/43
-		maxL = 50
+	// case reflect.Map:
+	// 	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+	// 	// see: https://github.com/sanity-io/litter/pull/43
+	// 	maxL = 50
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}

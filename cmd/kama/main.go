@@ -43,16 +43,26 @@ func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 
 type Distance uint64
 
+func bigMap() map[int]string {
+	y := map[int]string{}
+	for i := 0; i < 10_000; i++ {
+		y[i] = fmt.Sprintf("%d", i)
+	}
+	return y
+}
+
 type House struct {
-	Name   string
-	Age    int16
-	Alas   uintptr
-	Chairs []int
-	HTTP   []http.Request
-	Hello  http.Request
-	One    string
-	Two    string
-	Length Distance
+	Name    string
+	Age     int16
+	Alas    uintptr
+	Chairs  []int
+	HTTP    []http.Request
+	Hello   http.Request
+	One     string
+	Two     string
+	Length  Distance
+	MyError error
+	Keys    map[int]string
 }
 
 type Hello struct{ Age uint64 }
@@ -69,15 +79,17 @@ func main() {
 	}
 
 	house := House{
-		Name:   sawyer,
-		Age:    64,
-		Alas:   uintptr(90),
-		Chairs: x,
-		HTTP:   h,
-		Hello:  http.Request{Method: "HEllo"},
-		One:    "",
-		Two:    "Twooot",
-		Length: Distance(9131),
+		Name:    sawyer,
+		Age:     64,
+		Alas:    uintptr(90),
+		Chairs:  x,
+		HTTP:    h,
+		Hello:   http.Request{Method: "HEllo"},
+		One:     "",
+		Two:     "Twooot",
+		Length:  Distance(9131),
+		MyError: nil,
+		Keys:    bigMap(),
 	}
 	kama.Dirp(house)
 
