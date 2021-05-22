@@ -5,7 +5,6 @@ import (
 	"math"
 	"reflect"
 	"regexp"
-	"strings"
 	"unicode"
 
 	"github.com/sanity-io/litter"
@@ -126,14 +125,6 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 	// - https://github.com/sanity-io/litter/pull/43
 
 	typeName := v.Type().Name()
-	if v.Type().PkgPath() != "" {
-		path := v.Type().PkgPath()
-		splitPath := strings.Split(path, "/")
-		if len(splitPath) > 1 {
-			path = splitPath[len(splitPath)-1]
-		}
-		typeName = path + "." + typeName
-	}
 	if fromPtr {
 		typeName = "&" + typeName
 	}
