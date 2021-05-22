@@ -148,6 +148,10 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 	if compact {
 		fieldNameSep = ""
 	}
+	lastBracketSep := strings.Repeat("  ", indentLevel-1)
+	if compact {
+		lastBracketSep = ""
+	}
 
 	vt := v.Type()
 	s := fmt.Sprintf("%s{%s", typeName, sep)
@@ -165,7 +169,7 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 			}
 		}
 	}
-	s = s + "}"
+	s = s + lastBracketSep + "}"
 	return s
 }
 
