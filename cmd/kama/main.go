@@ -51,21 +51,30 @@ func bigMap() map[int]string {
 	return y
 }
 
-type House struct {
-	Name    string
-	Age     int16
-	Alas    uintptr
-	Chairs  []int
-	HTTP    []http.Request
-	Hello   http.Request
-	One     string
-	Two     string
-	Length  Distance
-	MyError error
-	Keys    map[int]string
+func bigChan() chan int {
+	z := make(chan int, 10_000)
+	for i := 0; i < 122; i++ {
+		// TODO: will be fixed by https://github.com/sanity-io/litter/pull/42
+		z <- i
+	}
+	return z
 }
 
-type Hello struct{ Age uint64 }
+type House struct {
+	Name           string
+	Age            int16
+	Alas           uintptr
+	Chairs         []int
+	HTTP           []http.Request
+	Hello          http.Request
+	One            string
+	Two            string
+	Length         Distance
+	MyError        error
+	Keys           map[int]string
+	UndirectedChan chan int
+	DirectedChan   chan<- bool
+}
 
 func main() {
 	x := []int{}
@@ -78,18 +87,23 @@ func main() {
 		h = append(h, http.Request{Method: fmt.Sprint(i)})
 	}
 
+	directedChan := make(chan<- bool, 13)
+	directedChan <- true
+
 	house := House{
-		Name:    sawyer,
-		Age:     64,
-		Alas:    uintptr(90),
-		Chairs:  x,
-		HTTP:    h,
-		Hello:   http.Request{Method: "HEllo"},
-		One:     "",
-		Two:     "Twooot",
-		Length:  Distance(9131),
-		MyError: nil,
-		Keys:    bigMap(),
+		Name:           sawyer,
+		Age:            64,
+		Alas:           uintptr(90),
+		Chairs:         x,
+		HTTP:           h,
+		Hello:          http.Request{Method: "HEllo"},
+		One:            "",
+		Two:            "Twooot",
+		Length:         Distance(9131),
+		MyError:        nil,
+		Keys:           bigMap(),
+		UndirectedChan: bigChan(),
+		DirectedChan:   directedChan,
 	}
 	kama.Dirp(house)
 

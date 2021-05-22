@@ -72,6 +72,10 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		cpt := true
 		hideZeroValues := true
 		return dumpSlice(val, cpt, hideZeroValues, indentLevel)
+
+	case reflect.Chan:
+		return dumpChan(val, compact, hideZeroValues, indentLevel)
+
 	// case reflect.Map:
 	// 	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 	// 	// see: https://github.com/sanity-io/litter/pull/43
@@ -183,6 +187,16 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	}
 	s = s + "}"
 	return s
+}
+
+func dumpChan(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	//dumps channels
+	cap := v.Cap()
+	len := v.Len()
+	direction := v.Type().ChanDir()
+	element := v.Type().Elem()
+	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
+
 }
 
 func isPointerValue(v reflect.Value) bool {
