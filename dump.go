@@ -5,15 +5,17 @@ import (
 	"math"
 	"reflect"
 	"regexp"
+	"strings"
 	"unicode"
 
 	"github.com/sanity-io/litter"
 )
 
-func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
+func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	/*
 		`compact` indicates whether the struct should be laid in one line or not
 		`hideZeroValues` indicates whether to show zeroValued vars
+		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
 	*/
 	iType := val.Type()
 	maxL := 720
@@ -22,6 +24,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 		// TODO: handle this better
 		return "Nil NotImplemented"
 	}
+	indentLevel = indentLevel + 1
 
 	switch iType.Kind() {
 	case reflect.String:
@@ -46,7 +49,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 		// This logic can be discarded if sanity-io/litter implements similar.
 		// see: https://github.com/sanity-io/litter/pull/43
 		fromPtr := false
-		return dumpStruct(val, fromPtr, compact, hideZeroValues)
+		return dumpStruct(val, fromPtr, compact, hideZeroValues, indentLevel)
 	case reflect.Ptr:
 		v := val.Elem()
 		if v.IsValid() {
@@ -56,7 +59,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 				// This logic can be discarded if sanity-io/litter implements similar.
 				// see: https://github.com/sanity-io/litter/pull/43
 				fromPtr := true
-				return dumpStruct(v, fromPtr, compact, hideZeroValues)
+				return dumpStruct(v, fromPtr, compact, hideZeroValues, indentLevel)
 			}
 		}
 	case reflect.Array,
@@ -65,7 +68,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 		// see: https://github.com/sanity-io/litter/pull/43
 		cpt := true
 		hideZeroValues := true
-		return dumpSlice(val, cpt, hideZeroValues)
+		return dumpSlice(val, cpt, hideZeroValues, indentLevel)
 	case reflect.Map:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
@@ -113,11 +116,12 @@ func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
 	return s
 }
 
-func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool) string {
+func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool, indentLevel int) string {
 	/*
 		`fromPtr` indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
 		`compact` indicates whether the struct should be laid in one line or not
 		`hideZeroValues` indicates whether to show zeroValued fields
+		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
 	*/
 	// This logic is only required until similar logic is implemented in sanity-io/litter
 	// see:
@@ -133,6 +137,10 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 	if compact {
 		sep = ""
 	}
+	fieldNameSep := strings.Repeat("  ", indentLevel)
+	if compact {
+		fieldNameSep = ""
+	}
 
 	vt := v.Type()
 	s := fmt.Sprintf("%s{%s", typeName, sep)
@@ -145,8 +153,8 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 			if hideZeroValues && isZeroValue(fieldd) {
 				continue
 			} else {
-				val := dump(fieldd, compact, hideZeroValues)
-				s = s + "  " + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
+				val := dump(fieldd, compact, hideZeroValues, indentLevel)
+				s = s + fieldNameSep + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
 	}
@@ -154,7 +162,7 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 	return s
 }
 
-func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool) string {
+func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	//dumps slices & arrays
 	maxL := 10
 	numEntries := v.Len()
@@ -164,7 +172,7 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool) string {
 	s := typeName + "{"
 	for i := 0; i < constraint; i++ {
 		elm := v.Index(i) // todo: call dump on this
-		s = s + dump(elm, compact, hideZeroValues) + ","
+		s = s + dump(elm, compact, hideZeroValues, indentLevel) + ","
 	}
 	if numEntries > constraint {
 		remainder := numEntries - constraint

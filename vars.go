@@ -23,6 +23,7 @@ func newVari(i interface{}) vari {
 	valueOfi := reflect.ValueOf(i)
 	compact := false
 	hideZeroValues := false
+	indentLevel := 0
 
 	if iType == nil {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
@@ -30,7 +31,7 @@ func newVari(i interface{}) vari {
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       dump(valueOfi, compact, hideZeroValues)}
+			Val:       dump(valueOfi, compact, hideZeroValues, indentLevel)}
 	}
 
 	typeKind := getKind(i)
@@ -46,7 +47,7 @@ func newVari(i interface{}) vari {
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
-		Val:       dump(valueOfi, compact, hideZeroValues),
+		Val:       dump(valueOfi, compact, hideZeroValues, indentLevel),
 	}
 
 }
