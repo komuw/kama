@@ -100,10 +100,17 @@ func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
 
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
-	remainder := numEntries - constraint
-	s := fmt.Sprint(v)[:constraint]
+	s := fmt.Sprintf("%#v", v)[:constraint]
 
-	return fmt.Sprintf("%s ...<%d more redacted>..", s[:constraint], remainder)
+	if numEntries > constraint {
+		remainder := numEntries - constraint
+		s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
+	}
+	if s == "" {
+		s = `""`
+	}
+
+	return s
 }
 
 func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool) string {

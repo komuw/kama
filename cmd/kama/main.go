@@ -48,6 +48,7 @@ type House struct {
 	Chairs []int
 	HTTP   []http.Request
 	Hello  http.Request
+	One    string
 }
 
 type Hello struct{ Age uint64 }
@@ -70,6 +71,7 @@ func main() {
 		Chairs: x,
 		HTTP:   h,
 		Hello:  http.Request{Method: "HEllo"},
+		One:    "",
 	}
 	kama.Dirp(house)
 
