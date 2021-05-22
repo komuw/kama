@@ -93,7 +93,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 	}
 
 	_ = maxL
-	return "NotImplemented"
+	return "NotImplemented (note:Went outside swith.)"
 }
 
 func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool) string {
