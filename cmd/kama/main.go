@@ -41,6 +41,8 @@ type myHandler struct{ Logger *log.Logger }
 func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 }
 
+type Distance uint64
+
 type House struct {
 	Name   string
 	Age    int16
@@ -50,6 +52,7 @@ type House struct {
 	Hello  http.Request
 	One    string
 	Two    string
+	Length Distance
 }
 
 type Hello struct{ Age uint64 }
@@ -74,6 +77,7 @@ func main() {
 		Hello:  http.Request{Method: "HEllo"},
 		One:    "",
 		Two:    "Twooot",
+		Length: Distance(9131),
 	}
 	kama.Dirp(house)
 
