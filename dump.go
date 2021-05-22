@@ -25,9 +25,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 
 	switch iType.Kind() {
 	case reflect.String:
-		maxL = 50
-		// TODO: constraint by maxL
-		return fmt.Sprint(val)
+		return dumpString(val, compact, hideZeroValues)
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
@@ -96,6 +94,18 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool) string {
 	return "NotImplemented (note:Went outside swith.)"
 }
 
+func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
+	//dumps strings
+	maxL := 50
+
+	numEntries := v.Len()
+	constraint := int(math.Min(float64(numEntries), float64(maxL)))
+	remainder := numEntries - constraint
+	s := fmt.Sprint(v)[:constraint]
+
+	return fmt.Sprintf("%s ...<%d more redacted>..", s[:constraint], remainder)
+}
+
 func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool) string {
 	/*
 		`fromPtr` indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
@@ -139,14 +149,6 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 
 func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool) string {
 	//dumps slices & arrays
-
-	//TODO: (BUG)
-	// inline funcs ``inherit`` variables from their enclosing func.
-	// The main func(dump) has a param called `compact` which is `false`
-	// If `dumpSlice` is called with `compact==true`; it will have `compact==false`
-	//because of the ``inheritance``.
-	// We need to kill this inline funcs
-
 	maxL := 10
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
