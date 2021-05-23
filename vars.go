@@ -175,6 +175,10 @@ func getFields(iType reflect.Type) []string {
 	typeKind := iType.Kind()
 
 	if typeKind == reflect.Struct {
+		// TODO: If a structField happens to be a func,
+		// We should enhance that signature.
+		// Look at `dumpFunc()` for implementation
+
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
 			f := iType.Field(i)
