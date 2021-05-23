@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/komuw/kama"
 )
@@ -82,6 +83,11 @@ type House struct {
 	GetBody      func() (io.ReadCloser, error)
 	AnotherFn    http.HandlerFunc
 	FnWithReturn MyFuncWithReturn
+
+	SomeURls      *url.URL
+	SomeOtherURls *url.URL
+	EvenMoreUrl   *url.URL
+	CoolUrls      []*url.URL
 }
 
 func main() {
@@ -113,6 +119,18 @@ func main() {
 		UndirectedChan: bigChan(),
 		DirectedChan:   directedChan,
 		SomeBool:       true,
+		SomeOtherURls:  &url.URL{},
+		EvenMoreUrl:    &url.URL{Path: "/some/path"},
+		CoolUrls: []*url.URL{
+			&url.URL{Path: "1"},
+			&url.URL{Path: "2"},
+			&url.URL{Path: "3"},
+			&url.URL{Path: "4"},
+			&url.URL{Path: "5"},
+			&url.URL{Path: "6"},
+			&url.URL{Path: "7"},
+			&url.URL{Path: "8"},
+		},
 	}
 	kama.Dirp(house)
 
