@@ -82,6 +82,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		return dumpMap(val, compact, hideZeroValues, indentLevel)
 	case reflect.Bool:
 		return fmt.Sprint(val)
+	case reflect.Func:
+		return dumpFunc(val, compact, hideZeroValues, indentLevel)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
@@ -234,9 +236,44 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 			break
 		}
 	}
-	s = strings.TrimRight(s, ",\n")
+	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
 	s = s + "}"
 	return s
+}
+
+func dumpFunc(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	//dumps functions
+
+	vType := v.Type()
+	typeName := vType.String()
+
+	if !strings.Contains(typeName, "(") {
+		// ie, typeName is like `http.HandlerFunc` instead of like `func() (io.ReadCloser, error)`
+		// we thus need to bring out the actual signature
+		numIn := vType.NumIn()
+		numOut := vType.NumOut()
+
+		if numIn > 0 {
+			typeName = typeName + "("
+			for i := 0; i < numIn; i++ {
+				arg := vType.In(i)
+				typeName = typeName + arg.String() + ", "
+			}
+			typeName = strings.TrimRight(typeName, ", ") // maybe use `strings.TrimSuffix`
+			typeName = typeName + ")"
+		}
+		if numOut > 0 {
+			typeName = typeName + " ("
+			for i := 0; i < numOut; i++ {
+				arg := vType.Out(i)
+				typeName = typeName + arg.String() + ", "
+			}
+			typeName = strings.TrimRight(typeName, ", ") // maybe use `strings.TrimSuffix`
+			typeName = typeName + ")"
+		}
+	}
+
+	return typeName
 }
 
 func isPointerValue(v reflect.Value) bool {

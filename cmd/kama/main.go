@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -60,6 +61,8 @@ func bigChan() chan int {
 	return z
 }
 
+type MyFuncWithReturn func(http.ResponseWriter) (uint16, error)
+
 type House struct {
 	Name           string
 	Age            int16
@@ -75,6 +78,10 @@ type House struct {
 	UndirectedChan chan int
 	DirectedChan   chan<- bool
 	SomeBool       bool
+
+	GetBody      func() (io.ReadCloser, error)
+	AnotherFn    http.HandlerFunc
+	FnWithReturn MyFuncWithReturn
 }
 
 func main() {
