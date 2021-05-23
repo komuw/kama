@@ -184,21 +184,22 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	// TODO: slices on their own should not be compacted
 	// look at how dumpMap does it.
 
-	maxL := 10
+	maxL := 6
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
 
 	newline := "\n"
+	leftSep := "   "
 	if compact {
 		newline = ""
-
+		leftSep = ""
 	}
 
 	s := typeName + "{" + newline
 	for i := 0; i < constraint; i++ {
-		elm := v.Index(i) // todo: call dump on this
-		s = s + dump(elm, compact, hideZeroValues, indentLevel) + ","
+		elm := v.Index(i)
+		s = s + leftSep + dump(elm, compact, hideZeroValues, indentLevel) + "," + newline
 	}
 	if numEntries > constraint {
 		remainder := numEntries - constraint
