@@ -71,17 +71,13 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		reflect.Slice:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
-		cpt := true
-		hzv := true
-		return dumpSlice(val, cpt, hzv, indentLevel)
+		return dumpSlice(val, compact, hideZeroValues, indentLevel)
 	case reflect.Chan:
 		return dumpChan(val, compact, hideZeroValues, indentLevel)
 	case reflect.Map:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
-		cpt := true
-		hzv := true
-		return dumpMap(val, cpt, hzv, indentLevel)
+		return dumpMap(val, compact, hideZeroValues, indentLevel)
 	case reflect.Bool:
 		return fmt.Sprint(val)
 	case reflect.Func:
@@ -170,7 +166,10 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 			if hideZeroValues && isZeroValue(fieldd) {
 				continue
 			} else {
-				val := dump(fieldd, compact, hideZeroValues, indentLevel)
+				// when something is inside a struct, that's when we use compact & hideZeroValues
+				cpt := true
+				hzv := true
+				val := dump(fieldd, cpt, hzv, indentLevel)
 				s = s + fieldNameSep + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
@@ -181,6 +180,10 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 
 func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	//dumps slices & arrays
+
+	// TODO: slices on their own should not be compacted
+	// look at how dumpMap does it.
+
 	maxL := 10
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
@@ -217,22 +220,27 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	// TODO: handle compact
 	// TODO: handle indentLevel
 
-	fmt.Println("dumpMap compact: ", compact)
-
-	maxL := 5
+	maxL := 3
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
-
 	typeName := v.Type().String()
-	s := typeName + "{\n"
+
+	newline := "\n"
 	leftSep := "   "
+	colonSep := " "
+	if compact {
+		newline = ""
+		leftSep = ""
+		colonSep = ""
+	}
+	s := typeName + "{" + newline
 
 	iter := v.MapRange()
 	count := 0
 	for iter.Next() {
 		mapKey := iter.Key()
 		mapVal := iter.Value()
-		s = s + leftSep + dump(mapKey, compact, hideZeroValues, indentLevel) + ": " + dump(mapVal, compact, hideZeroValues, indentLevel) + ",\n"
+		s = s + leftSep + dump(mapKey, compact, hideZeroValues, indentLevel) + ":" + colonSep + dump(mapVal, compact, hideZeroValues, indentLevel) + ", " + newline
 		count = count + 1
 		if count > constraint {
 			remainder := numEntries - constraint
