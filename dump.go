@@ -28,6 +28,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 	indentLevel = indentLevel + 1
 
 	switch iType.Kind() {
+	case reflect.Invalid:
+		return "<invalid>"
 	case reflect.String:
 		return dumpString(val, compact, hideZeroValues)
 	case reflect.Int,
