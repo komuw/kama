@@ -215,20 +215,22 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 
 	typeName := v.Type().String()
 	s := typeName + "{\n"
+	leftSep := "  "
 
 	iter := v.MapRange()
 	count := 0
 	for iter.Next() {
 		mapKey := iter.Key()
 		mapVal := iter.Value()
-		s = s + "  " + dump(mapKey, compact, hideZeroValues, indentLevel) + ": " + dump(mapVal, compact, hideZeroValues, indentLevel) + ",\n"
+		s = s + leftSep + dump(mapKey, compact, hideZeroValues, indentLevel) + ": " + dump(mapVal, compact, hideZeroValues, indentLevel) + ",\n"
 		count = count + 1
-		if count >= constraint {
+		if count > constraint {
 			remainder := numEntries - constraint
-			s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
+			s = s + fmt.Sprintf("%s...<%d more redacted>..", leftSep, remainder)
 			break
 		}
 	}
+	s = strings.TrimRight(s, ",\n")
 	s = s + "}"
 	return s
 }
