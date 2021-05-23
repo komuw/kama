@@ -141,7 +141,7 @@ func main() {
 
 	// kama.Dirp(&Hello{78})
 
-	// kama.Dirp(&house)
+	kama.Dirp(&house)
 }
 
 // TODO: clean up
