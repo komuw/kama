@@ -74,6 +74,7 @@ type House struct {
 	Keys           map[int]string
 	UndirectedChan chan int
 	DirectedChan   chan<- bool
+	SomeBool       bool
 }
 
 func main() {
@@ -104,6 +105,7 @@ func main() {
 		Keys:           bigMap(),
 		UndirectedChan: bigChan(),
 		DirectedChan:   directedChan,
+		SomeBool:       true,
 	}
 	kama.Dirp(house)
 

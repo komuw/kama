@@ -78,6 +78,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
 		return dumpMap(val, compact, hideZeroValues, indentLevel)
+	case reflect.Bool:
+		return fmt.Sprint(val)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
