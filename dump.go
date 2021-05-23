@@ -189,7 +189,13 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
 
-	s := typeName + "{"
+	newline := "\n"
+	if compact {
+		newline = ""
+
+	}
+
+	s := typeName + "{" + newline
 	for i := 0; i < constraint; i++ {
 		elm := v.Index(i) // todo: call dump on this
 		s = s + dump(elm, compact, hideZeroValues, indentLevel) + ","
@@ -200,16 +206,6 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	}
 	s = s + "}"
 	return s
-}
-
-func dumpChan(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
-	//dumps channels
-	cap := v.Cap()
-	len := v.Len()
-	direction := v.Type().ChanDir()
-	element := v.Type().Elem()
-	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
-
 }
 
 func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
@@ -251,6 +247,16 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
 	s = s + "}"
 	return s
+}
+
+func dumpChan(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	//dumps channels
+	cap := v.Cap()
+	len := v.Len()
+	direction := v.Type().ChanDir()
+	element := v.Type().Elem()
+	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
+
 }
 
 func dumpFunc(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
