@@ -63,10 +63,15 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 				// see: https://github.com/sanity-io/litter/pull/43
 				fromPtr := true
 				return dumpStruct(v, fromPtr, compact, hideZeroValues, indentLevel)
+			} else {
+				// TODO: handle other pointers(apart from just struct)
+				return "NotImplemented: reflect.Ptr other than struct."
 			}
-			// TODO: handle other pointers(apart from just struct)
+		} else {
+			// `v.IsValid()` returns false if v is the zero Value.
+			// If `IsValid` returns false, all other methods except String panic.
+			return val.Type().String()
 		}
-		// TODO: handle other pointers(apart from just struct)
 	case reflect.Array,
 		reflect.Slice:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
@@ -103,7 +108,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 	}
 
 	_ = maxL
-	return "NotImplemented (note:Went outside swith.)"
+
+	return "NotImplemented (note:Went outside switch.)"
 }
 
 func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
