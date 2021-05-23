@@ -72,14 +72,16 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
 		cpt := true
-		hideZeroValues := true
-		return dumpSlice(val, cpt, hideZeroValues, indentLevel)
+		hzv := true
+		return dumpSlice(val, cpt, hzv, indentLevel)
 	case reflect.Chan:
 		return dumpChan(val, compact, hideZeroValues, indentLevel)
 	case reflect.Map:
 		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 		// see: https://github.com/sanity-io/litter/pull/43
-		return dumpMap(val, compact, hideZeroValues, indentLevel)
+		cpt := true
+		hzv := true
+		return dumpMap(val, cpt, hzv, indentLevel)
 	case reflect.Bool:
 		return fmt.Sprint(val)
 	case reflect.Func:
@@ -214,6 +216,8 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 
 	// TODO: handle compact
 	// TODO: handle indentLevel
+
+	fmt.Println("dumpMap compact: ", compact)
 
 	maxL := 5
 	numEntries := v.Len()
