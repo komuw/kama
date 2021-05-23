@@ -85,9 +85,9 @@ type House struct {
 }
 
 func main() {
-	x := []int{}
+	bigSlice := []int{}
 	for i := 0; i < 10_000; i++ {
-		x = append(x, i)
+		bigSlice = append(bigSlice, i)
 	}
 
 	h := []http.Request{}
@@ -102,7 +102,7 @@ func main() {
 		Name:           sawyer,
 		Age:            64,
 		Alas:           uintptr(90),
-		Chairs:         x,
+		Chairs:         bigSlice,
 		HTTP:           h,
 		Hello:          http.Request{Method: "HEllo"},
 		One:            "",
@@ -115,6 +115,11 @@ func main() {
 		SomeBool:       true,
 	}
 	kama.Dirp(house)
+
+	kama.Dirp(bigMap())
+
+	// TODO: slices on their own should not be compacted
+	kama.Dirp(bigSlice)
 
 	// kama.Dirp(&Hello{78})
 
