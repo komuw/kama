@@ -221,7 +221,7 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 
 	typeName := v.Type().String()
 	s := typeName + "{\n"
-	leftSep := "  "
+	leftSep := "   "
 
 	iter := v.MapRange()
 	count := 0
