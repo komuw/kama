@@ -70,7 +70,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		} else {
 			// `v.IsValid()` returns false if v is the zero Value.
 			// If `IsValid` returns false, all other methods except String panic.
-			return val.Type().String()
+			return val.Type().String() + "(nil)"
 		}
 	case reflect.Array,
 		reflect.Slice:
