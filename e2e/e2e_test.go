@@ -149,4 +149,30 @@ SNIPPET: some{
 		res := kama.Dir(s)
 		c.Assert(res, qt.Equals, expected)
 	})
+
+	t.Run("map on its own is not compacted", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+		expected := `
+[
+NAME: map[int]string
+KIND: map
+SIGNATURE: [map[int]string]
+FIELDS: []
+METHODS: []
+SNIPPET: map[int]string{
+   6081: "6081", 
+   6895: "6895", 
+   7775: "7775", 
+   8244: "8244", 
+   ...<9997 more redacted>..}
+]
+`
+
+		myMap := bigMap()
+
+		res := kama.Dir(myMap)
+		t.Log(res)
+		c.Assert(res, qt.Equals, expected)
+	})
 }
