@@ -18,14 +18,15 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		`hideZeroValues` indicates whether to show zeroValued vars
 		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
 	*/
-	if !val.IsValid() {
+	deVal := deInterface(val)
+	if !deVal.IsValid() {
 		return "nil"
 	}
+	if deVal.Type() == nil {
+		return "nil"
+	}
+
 	iType := val.Type()
-	if iType == nil {
-		return "nil"
-	}
-	maxL := 720
 	indentLevel = indentLevel + 1
 
 	switch iType.Kind() {
@@ -95,6 +96,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		// so we probably want to leave it as is.
 		// do note that if we wanted we could get a uintptr via `val.Pointer()`
 		return "unsafe.Pointer"
+	case reflect.Interface:
+		return dumpInterface(val, compact, hideZeroValues, indentLevel)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
@@ -109,13 +112,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 			Separator:         " "}
 
 		s := sq.Sdump(val)
-		if len(s) <= maxL {
-			maxL = len(s)
-			return s[:maxL]
-		}
+		_ = s
 	}
-
-	_ = maxL
 
 	return "NotImplemented (note:Went outside switch.)"
 }
@@ -330,7 +328,14 @@ func dumpNonStructPointer(v reflect.Value, compact bool, hideZeroValues bool, in
 	//dumps pointer types other than struct.
 	// ie; someIntEight := int8(14); kama.Dirp(&someIntEight)
 	// dumping for struct pointers is handled in `dumpStruct()`
-	return "&" + dump(v, compact, hideZeroValues, indentLevel)
+
+	pref := "&"
+	s := dump(v, compact, hideZeroValues, indentLevel)
+
+	if strings.HasPrefix(s, pref) {
+		return s
+	}
+	return pref + s
 }
 
 func dumpNumbers(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
@@ -363,6 +368,45 @@ func dumpNumbers(v reflect.Value, compact bool, hideZeroValues bool, indentLevel
 	}
 }
 
+func dumpInterface(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	// dump interface
+
+	name := v.Type().String() // eg; `io.Reader` or `error`
+	concrete := ""
+	actualVal := ""
+
+	if !v.IsNil() {
+		elm := v.Elem()
+		concrete = elm.Type().String() // eg; `*strings.Reader`
+
+		// The fmt package treats `reflect.Value` specially.
+		// It does not call their String method implicitly but instead prints the concrete values they hold.
+		switch name {
+		// TODO: add more cases here as we recognise how to handle them
+		case "error":
+			actualVal = fmt.Sprint(elm) // this will be the string content of the error
+			// default:
+			// 	actualVal = fmt.Sprint(elm) // this will be the string content of the error
+
+		}
+	} else {
+		actualVal = "nil"
+	}
+
+	vv := name
+	if concrete != "" {
+		vv = vv + "(" + concrete + ")"
+	}
+	if actualVal != "" {
+		vv = vv + " " + actualVal
+	}
+
+	if name == "error" {
+		return "error(" + actualVal + ")"
+	}
+	return vv //s
+}
+
 func isPointerValue(v reflect.Value) bool {
 	// Taken from https://github.com/sanity-io/litter/blob/v1.5.1/util.go
 	// under the MIT license;
@@ -380,4 +424,17 @@ func isZeroValue(v reflect.Value) bool {
 	// https://github.com/sanity-io/litter/blob/v1.5.1/LICENSE
 	return (isPointerValue(v) && v.IsNil()) ||
 		(v.IsValid() && v.CanInterface() && reflect.DeepEqual(v.Interface(), reflect.Zero(v.Type()).Interface()))
+}
+
+// deInterface returns values inside of non-nil interfaces when possible.
+// This is useful for data types like structs, arrays, slices, and maps which
+// can contain varying types packed inside an interface.
+func deInterface(v reflect.Value) reflect.Value {
+	// Taken from https://github.com/sanity-io/litter/blob/v1.5.1/util.go
+	// under the MIT license;
+	// https://github.com/sanity-io/litter/blob/v1.5.1/LICENSE
+	if v.Kind() == reflect.Interface && !v.IsNil() {
+		v = v.Elem()
+	}
+	return v
 }
