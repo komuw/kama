@@ -5,6 +5,7 @@ import (
 	"math"
 	"reflect"
 	"regexp"
+	"sort"
 	"strings"
 	"unicode"
 
@@ -238,19 +239,26 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	}
 	s := typeName + "{" + newline
 
-	iter := v.MapRange()
-	count := 0
-	for iter.Next() {
-		mapKey := iter.Key()
-		mapVal := iter.Value()
+	// Lets sort the map based on keys. This is done to introduce stability of the output.
+	// This is not an important part of the design of kama, however, it makes testing much easier.
+	keys := v.MapKeys()
+	sort.Slice(keys,
+		func(i, j int) bool {
+			// it's unfortunate that we have to dump twice. In this func and in the `for range` below.
+			return dump(keys[i], compact, hideZeroValues, indentLevel) < dump(keys[j], compact, hideZeroValues, indentLevel)
+		},
+	)
+	for count, key := range keys {
+		mapKey := key
+		mapVal := v.MapIndex(key)
 		s = s + leftSep + dump(mapKey, compact, hideZeroValues, indentLevel) + ":" + colonSep + dump(mapVal, compact, hideZeroValues, indentLevel) + ", " + newline
-		count = count + 1
 		if count > constraint {
 			remainder := numEntries - constraint
 			s = s + fmt.Sprintf("%s...<%d more redacted>..", leftSep, remainder)
 			break
 		}
 	}
+
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
 	s = s + "}"
 	return s
