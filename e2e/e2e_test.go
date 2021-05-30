@@ -342,7 +342,6 @@ SNIPPET: SomeStruct{
 		}
 
 		res := kama.Dir(s)
-		t.Log(res)
 		c.Assert(res, qt.Equals, expected)
 	})
 
