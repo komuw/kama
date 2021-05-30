@@ -284,11 +284,11 @@ SIGNATURE: [map[int]string]
 FIELDS: []
 METHODS: []
 SNIPPET: map[int]string{
-   0: "0", 
-   1: "1", 
-   10: "10", 
-   100: "100", 
-   1000: "1000", 
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   int(1000): "1000", 
    ...<9997 more redacted>..}
 ]
 `
@@ -312,7 +312,7 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: map[int]string{0:"0", 1:"1", 10:"10", 100:"100", 1000:"1000", ...<9997 more redacted>..},
+  XX: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", int(1000):"1000", ...<9997 more redacted>..},
 }
 ]
 `
@@ -323,6 +323,7 @@ SNIPPET: some{
 		s := some{XX: bigMap()}
 
 		res := kama.Dir(s)
+		t.Log(res)
 		c.Assert(res, qt.Equals, expected)
 	})
 
@@ -378,7 +379,7 @@ SNIPPET: SomeStruct{
   DistinctType: e2e_test.Distance(9131),
   SomeNilError: interface NotImplemented,
   SomeConcreteError: interface NotImplemented,
-  LargeSlice: []int{0,1,2,3,4,5, ...<9994 more redacted>..},
+  LargeSlice: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
   LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", int(1000):"1000", ...<9997 more redacted>..},
   UndirectedChan: chan int (len=122, cap=10000),
   DirectedChan: chan<- bool (len=1, cap=13),
