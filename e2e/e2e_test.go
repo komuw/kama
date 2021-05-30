@@ -132,6 +132,94 @@ type SomeStruct struct {
 func TestDir(t *testing.T) {
 	t.Parallel()
 
+	t.Run("dump numbers", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+
+		vals := map[interface{}]string{
+			int(44): `
+[
+NAME: int
+KIND: int
+SIGNATURE: [int]
+FIELDS: []
+METHODS: []
+SNIPPET: int(44)
+]
+`,
+
+			int32(32): `
+[
+NAME: int32
+KIND: int32
+SIGNATURE: [int32]
+FIELDS: []
+METHODS: []
+SNIPPET: int32(32)
+]
+`,
+
+			int64(64): `
+[
+NAME: int64
+KIND: int64
+SIGNATURE: [int64]
+FIELDS: []
+METHODS: []
+SNIPPET: int64(64)
+]
+`,
+
+			float32(32): `
+[
+NAME: float32
+KIND: float32
+SIGNATURE: [float32]
+FIELDS: []
+METHODS: []
+SNIPPET: float32(32)
+]
+`,
+
+			float64(64): `
+[
+NAME: float64
+KIND: float64
+SIGNATURE: [float64]
+FIELDS: []
+METHODS: []
+SNIPPET: float64(64)
+]
+`,
+
+			uintptr(123): `
+[
+NAME: uintptr
+KIND: uintptr
+SIGNATURE: [uintptr]
+FIELDS: []
+METHODS: []
+SNIPPET: uintptr(123)
+]
+`,
+
+			uint64(88): `
+[
+NAME: uint64
+KIND: uint64
+SIGNATURE: [uint64]
+FIELDS: []
+METHODS: []
+SNIPPET: uint64(88)
+]
+`,
+		}
+		for k, v := range vals {
+			res := kama.Dir(k)
+			c.Assert(res, qt.Equals, v)
+		}
+	})
+
 	t.Run("slice on its own is not compacted", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
@@ -143,12 +231,12 @@ SIGNATURE: [[]int]
 FIELDS: []
 METHODS: []
 SNIPPET: []int{
-   0,
-   1,
-   2,
-   3,
-   4,
-   5,
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
  ...<9994 more redacted>..}
 ]
 `
@@ -172,7 +260,7 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: []int{0,1,2,3,4,5, ...<9994 more redacted>..},
+  XX: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
 }
 ]
 `
@@ -281,7 +369,7 @@ FIELDS: [
 METHODS: []
 SNIPPET: SomeStruct{
   SomeInt: 13,
-  SomeUintptr: 64902,
+  SomeUintptr: uintptr(64902),
   SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",},Request{Method: "2",},Request{Method: "3",},Request{Method: "4",},Request{Method: "5",}, ...<94 more redacted>..},
   OneHttpRequest: Request{Method: "Hello",},
   EmptyString: "",
@@ -408,7 +496,7 @@ FIELDS: [
 METHODS: []
 SNIPPET: &SomeStruct{
   SomeInt: 13,
-  SomeUintptr: 64902,
+  SomeUintptr: uintptr(64902),
   SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",},Request{Method: "2",},Request{Method: "3",},Request{Method: "4",},Request{Method: "5",}, ...<94 more redacted>..},
   OneHttpRequest: Request{Method: "Hello",},
   EmptyString: "",

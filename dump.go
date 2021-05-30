@@ -43,12 +43,10 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		reflect.Uint16,
 		reflect.Uint32,
 		reflect.Uint64,
-		reflect.Uintptr,
 		reflect.Float32,
-		reflect.Float64:
-		// TODO: we should display their types also.
-		// ie, `var x uint8 = 9` should be dumped/displayed differently to `var x int8 = 9`
-		return fmt.Sprint(val)
+		reflect.Float64,
+		reflect.Uintptr:
+		return dumpNumbers(val, compact, hideZeroValues, indentLevel)
 	case reflect.Struct:
 		// the reason we are doing this is because sanity-io/litter has no way to compact
 		// arrays/slices/maps that are inside structs.
@@ -333,6 +331,36 @@ func dumpNonStructPointer(v reflect.Value, compact bool, hideZeroValues bool, in
 	// ie; someIntEight := int8(14); kama.Dirp(&someIntEight)
 	// dumping for struct pointers is handled in `dumpStruct()`
 	return "&" + dump(v, compact, hideZeroValues, indentLevel)
+}
+
+func dumpNumbers(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	// dumps numbers.
+
+	iType := v.Type()
+
+	switch iType.Kind() {
+	case reflect.Int,
+		reflect.Int8,
+		reflect.Int16,
+		reflect.Int32,
+		reflect.Int64,
+
+		reflect.Uint,
+		reflect.Uint8,
+		reflect.Uint16,
+		reflect.Uint32,
+		reflect.Uint64,
+
+		reflect.Float32,
+		reflect.Float64,
+
+		reflect.Uintptr:
+
+		name := v.Type().String()
+		return fmt.Sprintf("%s(%v)", name, v)
+	default:
+		return fmt.Sprintf("%v NotImplemented", iType.Kind())
+	}
 }
 
 func isPointerValue(v reflect.Value) bool {
