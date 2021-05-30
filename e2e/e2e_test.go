@@ -1,6 +1,7 @@
 package e2e_test
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -58,12 +59,36 @@ func bigChan() chan int {
 	return z
 }
 
+func makeDirecteChan() chan<- bool {
+	directedChan := make(chan<- bool, 13)
+	directedChan <- true
+	return directedChan
+}
+
 func bigSlice() []int {
 	bigSlice := []int{}
 	for i := 0; i < 10_000; i++ {
 		bigSlice = append(bigSlice, i)
 	}
 	return bigSlice
+}
+
+func makeSliceOfHttpRequests() []http.Request {
+	h := []http.Request{}
+	for i := 0; i < 100; i++ {
+		h = append(h, http.Request{Method: fmt.Sprint(i)})
+	}
+	return h
+}
+
+// We just need a type that will implement the `io.ReadCloser` interface
+type CustomReadCloser int64
+
+func (c CustomReadCloser) Read(p []byte) (n int, err error) {
+	return 10, nil
+}
+func (c CustomReadCloser) Close() error {
+	return errors.New("CustomReadCloser always fails closing")
 }
 
 type FuncWithReturn func(http.ResponseWriter) (uint16, error)
@@ -77,16 +102,20 @@ type SomeStruct struct {
 	SmallString        string
 	LargeString        string
 	DistinctType       Distance
-	SomeError          error
+	SomeNilError       error
+	SomeConcreteError  error
 	LargeSlice         []int
 	LargeMap           map[int]string
 	UndirectedChan     chan int
 	DirectedChan       chan<- bool
 	SomeBool           bool
 
-	FuncClosure    func() (io.ReadCloser, error)
-	FuncFromStdLib http.HandlerFunc
-	FuncWithReturn FuncWithReturn
+	NonIntializedFuncClosure    func() (io.ReadCloser, error)
+	NonIntializedFuncFromStdLib http.HandlerFunc
+	NonIntializedFuncWithReturn FuncWithReturn
+	IntializedFuncClosure       func() (io.ReadCloser, error)
+	IntializedFuncFromStdLib    http.HandlerFunc
+	IntializedFuncWithReturn    FuncWithReturn
 
 	ZeroPointerStruct           *url.URL // we won't initiliaze this
 	NonZeroPointerStruct        *url.URL
@@ -202,4 +231,127 @@ SNIPPET: some{
 		res := kama.Dir(s)
 		c.Assert(res, qt.Equals, expected)
 	})
+
+	t.Run("struct of varying field types", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+		expected := `
+[
+NAME: github.com/komuw/kama/e2e_test.SomeStruct
+KIND: struct
+SIGNATURE: [e2e_test.SomeStruct *e2e_test.SomeStruct]
+FIELDS: [
+	SomeInt int16
+	SomeUintptr uintptr
+	SliceOfHttpRequest []http.Request
+	OneHttpRequest http.Request
+	EmptyString string
+	SmallString string
+	LargeString string
+	DistinctType e2e_test.Distance
+	SomeNilError error
+	SomeConcreteError error
+	LargeSlice []int
+	LargeMap map[int]string
+	UndirectedChan chan int
+	DirectedChan chan<- bool
+	SomeBool bool
+	NonIntializedFuncClosure func() (io.ReadCloser, error)
+	NonIntializedFuncFromStdLib http.HandlerFunc
+	NonIntializedFuncWithReturn e2e_test.FuncWithReturn
+	IntializedFuncClosure func() (io.ReadCloser, error)
+	IntializedFuncFromStdLib http.HandlerFunc
+	IntializedFuncWithReturn e2e_test.FuncWithReturn
+	ZeroPointerStruct *url.URL
+	NonZeroPointerStruct *url.URL
+	EvenMoreUrl *url.URL
+	SliceOfNonZeroPointerStruct []*url.URL
+	]
+METHODS: []
+SNIPPET: SomeStruct{
+	SomeInt: 13,
+	SomeUintptr: 64902,
+	SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",},Request{Method: "2",},Request{Method: "3",},Request{Method: "4",},Request{Method: "5",}, ...<94 more redacted>..},
+	OneHttpRequest: Request{Method: "Hello",},
+	EmptyString: "",
+	SmallString: "What up?",
+	LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
+	DistinctType: 9131,
+	SomeNilError: interface NotImplemented,
+	SomeConcreteError: interface NotImplemented,
+	LargeSlice: []int{0,1,2,3,4,5, ...<9994 more redacted>..},
+	LargeMap: map[int]string{0:"0", 1:"1", 10:"10", 100:"100", 1000:"1000", ...<9997 more redacted>..},
+	UndirectedChan: chan int (len=122, cap=10000),
+	DirectedChan: chan<- bool (len=1, cap=13),
+	SomeBool: true,
+	NonIntializedFuncClosure: func() (io.ReadCloser, error),
+	NonIntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
+	NonIntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
+	IntializedFuncClosure: func() (io.ReadCloser, error),
+	IntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
+	IntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
+	ZeroPointerStruct: *url.URL(nil),
+	NonZeroPointerStruct: &URL{},
+	EvenMoreUrl: &URL{Path: "/some/path",},
+	SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
+}
+]`
+
+		s := SomeStruct{
+			SomeInt:            13,
+			SomeUintptr:        uintptr(64_902),
+			SliceOfHttpRequest: makeSliceOfHttpRequests(),
+			OneHttpRequest:     http.Request{Method: "Hello"},
+			EmptyString:        "",
+			SmallString:        "What up?",
+			LargeString:        longText,
+			DistinctType:       Distance(9131),
+			SomeNilError:       nil,
+			SomeConcreteError:  errors.New("Houston something bad happened"),
+			LargeSlice:         bigSlice(),
+			LargeMap:           bigMap(),
+			UndirectedChan:     bigChan(),
+			DirectedChan:       makeDirecteChan(),
+			SomeBool:           true,
+
+			IntializedFuncClosure: func() (io.ReadCloser, error) {
+				return CustomReadCloser(900), nil
+			},
+			IntializedFuncFromStdLib: func(rw http.ResponseWriter, r *http.Request) {
+				_ = r.Close
+				rw.Write([]byte("yo"))
+			},
+			IntializedFuncWithReturn: func(http.ResponseWriter) (uint16, error) {
+				return uint16(1), nil
+			},
+
+			NonZeroPointerStruct: &url.URL{},
+			EvenMoreUrl:          &url.URL{Path: "/some/path"},
+			SliceOfNonZeroPointerStruct: []*url.URL{
+				&url.URL{Path: "1"},
+				&url.URL{Path: "2"},
+				&url.URL{Path: "3"},
+				&url.URL{Path: "4"},
+				&url.URL{Path: "5"},
+				&url.URL{Path: "6"},
+				&url.URL{Path: "7"},
+				&url.URL{Path: "8"},
+			},
+		}
+
+		res := kama.Dir(s)
+		t.Log(res)
+		c.Assert(res, qt.Equals, expected)
+	})
+
+	// t.Run("pointer to struct of varying field types", func(t *testing.T) {
+	// 	t.Parallel()
+	// 	c := qt.New(t)
+	// 	expected := ``
+
+	// 	s := &SomeStruct{}
+
+	// 	res := kama.Dir(s)
+	// 	c.Assert(res, qt.Equals, expected)
+	// })
 }
