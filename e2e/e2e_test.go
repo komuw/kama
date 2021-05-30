@@ -595,6 +595,17 @@ func TestAllAboutInterfaces(t *testing.T) {
 		var NilEmptyInterface interface{} = nil
 		var NonNilEmptyInterface interface{} = 9
 
+		type SomeStructWithInterfaces struct {
+			AAA               io.Reader
+			SomeNilError      error
+			SomeConcreteError error
+		}
+		someOne := SomeStructWithInterfaces{
+			AAA:               strings.NewReader("hello"),
+			SomeConcreteError: errors.New("houston something bad happened"),
+		}
+		someTwo := &someOne
+
 		vals := map[interface{}]string{
 			SomeNilError: `
 [
@@ -679,11 +690,48 @@ METHODS: []
 SNIPPET: int(9)
 ]
 `,
+
+			someOne: `
+[
+NAME: github.com/komuw/kama/e2e_test.SomeStructWithInterfaces
+KIND: struct
+SIGNATURE: [e2e_test.SomeStructWithInterfaces *e2e_test.SomeStructWithInterfaces]
+FIELDS: [
+	AAA io.Reader 
+	SomeNilError error 
+	SomeConcreteError error 
+	]
+METHODS: []
+SNIPPET: SomeStructWithInterfaces{
+  AAA: io.Reader(*strings.Reader),
+  SomeNilError: error(nil),
+  SomeConcreteError: error(houston something bad happened),
+}
+]
+`,
+
+			someTwo: `
+[
+NAME: github.com/komuw/kama/e2e_test.SomeStructWithInterfaces
+KIND: struct
+SIGNATURE: [*e2e_test.SomeStructWithInterfaces e2e_test.SomeStructWithInterfaces]
+FIELDS: [
+	AAA io.Reader 
+	SomeNilError error 
+	SomeConcreteError error 
+	]
+METHODS: []
+SNIPPET: &SomeStructWithInterfaces{
+  AAA: io.Reader(*strings.Reader),
+  SomeNilError: error(nil),
+  SomeConcreteError: error(houston something bad happened),
+}
+]
+`,
 		}
 
 		for k, v := range vals {
 			res := kama.Dir(k)
-			t.Log(res)
 			c.Assert(res, qt.Equals, v)
 		}
 	})
