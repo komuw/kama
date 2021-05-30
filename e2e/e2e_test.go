@@ -592,6 +592,8 @@ func TestAllAboutInterfaces(t *testing.T) {
 		var SomeNilError error = nil
 		var SomeConcreteError error = errors.New("unable to read from ftp file")
 		var SomeReader io.Reader = strings.NewReader("hello my reader")
+		var NilEmptyInterface interface{} = nil
+		var NonNilEmptyInterface interface{} = 9
 
 		vals := map[interface{}]string{
 			SomeNilError: `
@@ -653,6 +655,28 @@ METHODS: [
 	]
 SNIPPET: &Reader{
 }
+]
+`,
+
+			NilEmptyInterface: `
+[
+NAME: nil
+KIND: ptr
+SIGNATURE: [nil]
+FIELDS: []
+METHODS: []
+SNIPPET: nil
+]
+`,
+
+			NonNilEmptyInterface: `
+[
+NAME: int
+KIND: int
+SIGNATURE: [int]
+FIELDS: []
+METHODS: []
+SNIPPET: int(9)
 ]
 `,
 		}
