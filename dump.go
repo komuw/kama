@@ -90,6 +90,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		return fmt.Sprint(val)
 	case reflect.Func:
 		return dumpFunc(val, compact, hideZeroValues, indentLevel)
+	case reflect.Complex64, reflect.Complex128:
+		return dumpComplexNum(val, compact, hideZeroValues, indentLevel)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
@@ -309,6 +311,16 @@ func dumpFunc(v reflect.Value, compact bool, hideZeroValues bool, indentLevel in
 	}
 
 	return typeName
+}
+
+func dumpComplexNum(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	//dumps complex64 and complex128 numbers
+	bits := v.Type().Bits()
+	cmp := v.Complex() // returns complex128 even for `reflect.Complex64`
+	if bits == 64 {
+		return fmt.Sprintf("complex64%v", cmp)
+	}
+	return fmt.Sprintf("complex128%v", cmp)
 }
 
 func isPointerValue(v reflect.Value) bool {
