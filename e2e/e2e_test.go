@@ -580,3 +580,61 @@ SNIPPET: &SomeStruct{
 		c.Assert(res, qt.Equals, expected)
 	})
 }
+
+func TestAllAboutInterfaces(t *testing.T) {
+	t.Parallel()
+
+	t.Run("interfaces should be well represented", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+
+		var SomeNilError error = nil
+		var SomeConcreteError error = errors.New("unable to read from ftp file")
+
+		vals := map[interface{}]string{
+			SomeNilError: `
+[
+NAME: nil
+KIND: ptr
+SIGNATURE: [nil]
+FIELDS: []
+METHODS: []
+SNIPPET: nil
+]
+`,
+
+			SomeConcreteError: `
+[
+NAME: errors.errorString
+KIND: struct
+SIGNATURE: [*errors.errorString errors.errorString]
+FIELDS: []
+METHODS: [
+	Error func(*errors.errorString) string 
+	]
+SNIPPET: &errorString{
+}
+]
+`,
+
+			&SomeConcreteError: `
+[
+NAME: .error
+KIND: interface
+SIGNATURE: [*error error]
+FIELDS: []
+METHODS: [
+	Error func() string 
+	]
+SNIPPET: &error(unable to read from ftp file)
+]
+`,
+		}
+
+		for k, v := range vals {
+			res := kama.Dir(k)
+			t.Log(res)
+			c.Assert(res, qt.Equals, v)
+		}
+	})
+}
