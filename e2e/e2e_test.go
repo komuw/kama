@@ -241,31 +241,31 @@ NAME: github.com/komuw/kama/e2e_test.SomeStruct
 KIND: struct
 SIGNATURE: [e2e_test.SomeStruct *e2e_test.SomeStruct]
 FIELDS: [
-	SomeInt int16
-	SomeUintptr uintptr
-	SliceOfHttpRequest []http.Request
-	OneHttpRequest http.Request
-	EmptyString string
-	SmallString string
-	LargeString string
-	DistinctType e2e_test.Distance
-	SomeNilError error
-	SomeConcreteError error
-	LargeSlice []int
-	LargeMap map[int]string
-	UndirectedChan chan int
-	DirectedChan chan<- bool
-	SomeBool bool
-	NonIntializedFuncClosure func() (io.ReadCloser, error)
-	NonIntializedFuncFromStdLib http.HandlerFunc
-	NonIntializedFuncWithReturn e2e_test.FuncWithReturn
-	IntializedFuncClosure func() (io.ReadCloser, error)
-	IntializedFuncFromStdLib http.HandlerFunc
-	IntializedFuncWithReturn e2e_test.FuncWithReturn
-	ZeroPointerStruct *url.URL
-	NonZeroPointerStruct *url.URL
-	EvenMoreUrl *url.URL
-	SliceOfNonZeroPointerStruct []*url.URL
+	SomeInt int16 
+	SomeUintptr uintptr 
+	SliceOfHttpRequest []http.Request 
+	OneHttpRequest http.Request 
+	EmptyString string 
+	SmallString string 
+	LargeString string 
+	DistinctType e2e_test.Distance 
+	SomeNilError error 
+	SomeConcreteError error 
+	LargeSlice []int 
+	LargeMap map[int]string 
+	UndirectedChan chan int 
+	DirectedChan chan<- bool 
+	SomeBool bool 
+	NonIntializedFuncClosure func() (io.ReadCloser, error) 
+	NonIntializedFuncFromStdLib http.HandlerFunc 
+	NonIntializedFuncWithReturn e2e_test.FuncWithReturn 
+	IntializedFuncClosure func() (io.ReadCloser, error) 
+	IntializedFuncFromStdLib http.HandlerFunc 
+	IntializedFuncWithReturn e2e_test.FuncWithReturn 
+	ZeroPointerStruct *url.URL 
+	NonZeroPointerStruct *url.URL 
+	EvenMoreUrl *url.URL 
+	SliceOfNonZeroPointerStruct []*url.URL 
 	]
 METHODS: []
 SNIPPET: SomeStruct{
