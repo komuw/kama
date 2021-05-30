@@ -232,6 +232,7 @@ SNIPPET: some{
 		c.Assert(res, qt.Equals, expected)
 	})
 
+	// TODO: fix the fields with `NotImplemented`
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
