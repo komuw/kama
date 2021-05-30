@@ -92,6 +92,12 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		return dumpFunc(val, compact, hideZeroValues, indentLevel)
 	case reflect.Complex64, reflect.Complex128:
 		return dumpComplexNum(val, compact, hideZeroValues, indentLevel)
+	case reflect.UnsafePointer:
+		// It is not generally safe to do anything with an unsafe.Pointer
+		// see: https://golang.org/pkg/unsafe/#Pointer
+		// so we probably want to leave it as is.
+		// do note that if we wanted we could get a uintptr via `val.Pointer()`
+		return "unsafe.Pointer"
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}

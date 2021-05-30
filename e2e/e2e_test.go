@@ -308,7 +308,7 @@ SNIPPET: SomeStruct{
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
   NonStructPointer: NotImplemented: reflect.Ptr other than struct.,
-  SomeUnsafety: unsafe.Pointer NotImplemented,
+  SomeUnsafety: unsafe.Pointer,
 }
 ]
 `
@@ -435,7 +435,7 @@ SNIPPET: &SomeStruct{
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
   NonStructPointer: NotImplemented: reflect.Ptr other than struct.,
-  SomeUnsafety: unsafe.Pointer NotImplemented,
+  SomeUnsafety: unsafe.Pointer,
 }
 ]
 `
