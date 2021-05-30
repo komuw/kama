@@ -323,7 +323,6 @@ SNIPPET: some{
 		s := some{XX: bigMap()}
 
 		res := kama.Dir(s)
-		t.Log(res)
 		c.Assert(res, qt.Equals, expected)
 	})
 
@@ -377,8 +376,8 @@ SNIPPET: SomeStruct{
   SmallString: "What up?",
   LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
   DistinctType: e2e_test.Distance(9131),
-  SomeNilError: interface NotImplemented,
-  SomeConcreteError: interface NotImplemented,
+  SomeNilError: error(nil),
+  SomeConcreteError: error(Houston something bad happened),
   LargeSlice: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
   LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", int(1000):"1000", ...<9997 more redacted>..},
   UndirectedChan: chan int (len=122, cap=10000),
@@ -504,8 +503,8 @@ SNIPPET: &SomeStruct{
   SmallString: "What up?",
   LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
   DistinctType: e2e_test.Distance(9131),
-  SomeNilError: interface NotImplemented,
-  SomeConcreteError: interface NotImplemented,
+  SomeNilError: error(nil),
+  SomeConcreteError: error(Houston something bad happened),
   LargeSlice: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
   LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", int(1000):"1000", ...<9997 more redacted>..},
   UndirectedChan: chan int (len=122, cap=10000),
