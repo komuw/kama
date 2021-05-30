@@ -175,4 +175,31 @@ SNIPPET: map[int]string{
 		res := kama.Dir(myMap)
 		c.Assert(res, qt.Equals, expected)
 	})
+
+	t.Run("map in a struct is compacted", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+		expected := `
+[
+NAME: github.com/komuw/kama/e2e_test.some
+KIND: struct
+SIGNATURE: [e2e_test.some *e2e_test.some]
+FIELDS: [
+	XX map[int]string 
+	]
+METHODS: []
+SNIPPET: some{
+  XX: map[int]string{0:"0", 1:"1", 10:"10", 100:"100", 1000:"1000", ...<9997 more redacted>..},
+}
+]
+`
+
+		type some struct {
+			XX map[int]string
+		}
+		s := some{XX: bigMap()}
+
+		res := kama.Dir(s)
+		c.Assert(res, qt.Equals, expected)
+	})
 }
