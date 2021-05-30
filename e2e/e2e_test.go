@@ -307,7 +307,7 @@ SNIPPET: SomeStruct{
   SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
-  NonStructPointer: NotImplemented: reflect.Ptr other than struct.,
+  NonStructPointer: &14,
   SomeUnsafety: unsafe.Pointer,
 }
 ]
@@ -434,7 +434,7 @@ SNIPPET: &SomeStruct{
   SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
-  NonStructPointer: NotImplemented: reflect.Ptr other than struct.,
+  NonStructPointer: &14,
   SomeUnsafety: unsafe.Pointer,
 }
 ]

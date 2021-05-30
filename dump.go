@@ -67,8 +67,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 				fromPtr := true
 				return dumpStruct(v, fromPtr, compact, hideZeroValues, indentLevel)
 			} else {
-				// TODO: handle other pointers(apart from just struct)
-				return "NotImplemented: reflect.Ptr other than struct."
+				return dumpNonStructPointer(v, compact, hideZeroValues, indentLevel)
 			}
 		} else {
 			// `v.IsValid()` returns false if v is the zero Value.
@@ -327,6 +326,13 @@ func dumpComplexNum(v reflect.Value, compact bool, hideZeroValues bool, indentLe
 		return fmt.Sprintf("complex64%v", cmp)
 	}
 	return fmt.Sprintf("complex128%v", cmp)
+}
+
+func dumpNonStructPointer(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+	//dumps pointer types other than struct.
+	// ie; someIntEight := int8(14); kama.Dirp(&someIntEight)
+	// dumping for struct pointers is handled in `dumpStruct()`
+	return "&" + dump(v, compact, hideZeroValues, indentLevel)
 }
 
 func isPointerValue(v reflect.Value) bool {
