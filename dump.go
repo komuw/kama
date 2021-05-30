@@ -46,6 +46,8 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		reflect.Uintptr,
 		reflect.Float32,
 		reflect.Float64:
+		// TODO: we should display their types also.
+		// ie, `var x uint8 = 9` should be dumped/displayed differently to `var x int8 = 9`
 		return fmt.Sprint(val)
 	case reflect.Struct:
 		// the reason we are doing this is because sanity-io/litter has no way to compact
