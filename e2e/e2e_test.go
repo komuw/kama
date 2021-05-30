@@ -368,14 +368,14 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: SomeStruct{
-  SomeInt: 13,
+  SomeInt: int16(13),
   SomeUintptr: uintptr(64902),
   SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",},Request{Method: "2",},Request{Method: "3",},Request{Method: "4",},Request{Method: "5",}, ...<94 more redacted>..},
   OneHttpRequest: Request{Method: "Hello",},
   EmptyString: "",
   SmallString: "What up?",
   LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
-  DistinctType: 9131,
+  DistinctType: e2e_test.Distance(9131),
   SomeNilError: interface NotImplemented,
   SomeConcreteError: interface NotImplemented,
   LargeSlice: []int{0,1,2,3,4,5, ...<9994 more redacted>..},
@@ -395,7 +395,7 @@ SNIPPET: SomeStruct{
   SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
-  NonStructPointer: &14,
+  NonStructPointer: &int8(14),
   SomeUnsafety: unsafe.Pointer,
 }
 ]
@@ -495,17 +495,17 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: &SomeStruct{
-  SomeInt: 13,
+  SomeInt: int16(13),
   SomeUintptr: uintptr(64902),
   SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",},Request{Method: "2",},Request{Method: "3",},Request{Method: "4",},Request{Method: "5",}, ...<94 more redacted>..},
   OneHttpRequest: Request{Method: "Hello",},
   EmptyString: "",
   SmallString: "What up?",
   LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
-  DistinctType: 9131,
+  DistinctType: e2e_test.Distance(9131),
   SomeNilError: interface NotImplemented,
   SomeConcreteError: interface NotImplemented,
-  LargeSlice: []int{0,1,2,3,4,5, ...<9994 more redacted>..},
+  LargeSlice: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
   LargeMap: map[int]string{0:"0", 1:"1", 10:"10", 100:"100", 1000:"1000", ...<9997 more redacted>..},
   UndirectedChan: chan int (len=122, cap=10000),
   DirectedChan: chan<- bool (len=1, cap=13),
@@ -522,7 +522,7 @@ SNIPPET: &SomeStruct{
   SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
-  NonStructPointer: &14,
+  NonStructPointer: &int8(14),
   SomeUnsafety: unsafe.Pointer,
 }
 ]
