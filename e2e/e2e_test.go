@@ -161,10 +161,11 @@ SIGNATURE: [map[int]string]
 FIELDS: []
 METHODS: []
 SNIPPET: map[int]string{
-   6081: "6081", 
-   6895: "6895", 
-   7775: "7775", 
-   8244: "8244", 
+   0: "0", 
+   1: "1", 
+   10: "10", 
+   100: "100", 
+   1000: "1000", 
    ...<9997 more redacted>..}
 ]
 `
@@ -172,7 +173,6 @@ SNIPPET: map[int]string{
 		myMap := bigMap()
 
 		res := kama.Dir(myMap)
-		t.Log(res)
 		c.Assert(res, qt.Equals, expected)
 	})
 }
