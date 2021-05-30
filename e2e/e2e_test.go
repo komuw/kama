@@ -123,10 +123,10 @@ type SomeStruct struct {
 	EvenMoreUrl                 *url.URL
 	SliceOfNonZeroPointerStruct []*url.URL
 
-	ComplexxySixFour complex64
-	ComplexyTwoEight complex128
-	NonStructPointer *int8
-	SomeUnsafety     unsafe.Pointer
+	ComplexxySixFour    complex64
+	ComplexyOneTwoEight complex128
+	NonStructPointer    *int8
+	SomeUnsafety        unsafe.Pointer
 }
 
 func TestDir(t *testing.T) {
@@ -274,7 +274,7 @@ FIELDS: [
 	EvenMoreUrl *url.URL 
 	SliceOfNonZeroPointerStruct []*url.URL 
 	ComplexxySixFour complex64 
-	ComplexyTwoEight complex128 
+	ComplexyOneTwoEight complex128 
 	NonStructPointer *int8 
 	SomeUnsafety unsafe.Pointer 
 	]
@@ -305,8 +305,8 @@ SNIPPET: SomeStruct{
   NonZeroPointerStruct: &URL{},
   EvenMoreUrl: &URL{Path: "/some/path",},
   SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
-  ComplexxySixFour: complex64 NotImplemented,
-  ComplexyTwoEight: complex128 NotImplemented,
+  ComplexxySixFour: complex64(5+7i),
+  ComplexyOneTwoEight: complex128(5+7i),
   NonStructPointer: NotImplemented: reflect.Ptr other than struct.,
   SomeUnsafety: unsafe.Pointer NotImplemented,
 }
@@ -355,10 +355,10 @@ SNIPPET: SomeStruct{
 				&url.URL{Path: "8"},
 			},
 
-			ComplexxySixFour: complex(float32(5), 7),
-			ComplexyTwoEight: complex(float64(5), 7),
-			NonStructPointer: &someIntEight,
-			SomeUnsafety:     unsafe.Pointer(&someIntEight),
+			ComplexxySixFour:    complex(float32(5), 7),
+			ComplexyOneTwoEight: complex(float64(5), 7),
+			NonStructPointer:    &someIntEight,
+			SomeUnsafety:        unsafe.Pointer(&someIntEight),
 		}
 
 		res := kama.Dir(s)
@@ -401,7 +401,7 @@ FIELDS: [
 	EvenMoreUrl *url.URL 
 	SliceOfNonZeroPointerStruct []*url.URL 
 	ComplexxySixFour complex64 
-	ComplexyTwoEight complex128 
+	ComplexyOneTwoEight complex128 
 	NonStructPointer *int8 
 	SomeUnsafety unsafe.Pointer 
 	]
@@ -432,8 +432,8 @@ SNIPPET: &SomeStruct{
   NonZeroPointerStruct: &URL{},
   EvenMoreUrl: &URL{Path: "/some/path",},
   SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",},&URL{Path: "3",},&URL{Path: "4",},&URL{Path: "5",},&URL{Path: "6",}, ...<2 more redacted>..},
-  ComplexxySixFour: complex64 NotImplemented,
-  ComplexyTwoEight: complex128 NotImplemented,
+  ComplexxySixFour: complex64(5+7i),
+  ComplexyOneTwoEight: complex128(5+7i),
   NonStructPointer: NotImplemented: reflect.Ptr other than struct.,
   SomeUnsafety: unsafe.Pointer NotImplemented,
 }
@@ -482,10 +482,10 @@ SNIPPET: &SomeStruct{
 				&url.URL{Path: "8"},
 			},
 
-			ComplexxySixFour: complex(float32(5), 7),
-			ComplexyTwoEight: complex(float64(5), 7),
-			NonStructPointer: &someIntEight,
-			SomeUnsafety:     unsafe.Pointer(&someIntEight),
+			ComplexxySixFour:    complex(float32(5), 7),
+			ComplexyOneTwoEight: complex(float64(5), 7),
+			NonStructPointer:    &someIntEight,
+			SomeUnsafety:        unsafe.Pointer(&someIntEight),
 		}
 
 		res := kama.Dir(s)
