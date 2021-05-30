@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"testing"
 	"unsafe"
 
@@ -590,6 +591,7 @@ func TestAllAboutInterfaces(t *testing.T) {
 
 		var SomeNilError error = nil
 		var SomeConcreteError error = errors.New("unable to read from ftp file")
+		var SomeReader io.Reader = strings.NewReader("hello my reader")
 
 		vals := map[interface{}]string{
 			SomeNilError: `
@@ -627,6 +629,30 @@ METHODS: [
 	Error func() string 
 	]
 SNIPPET: &error(unable to read from ftp file)
+]
+`,
+
+			SomeReader: `
+[
+NAME: strings.Reader
+KIND: struct
+SIGNATURE: [*strings.Reader strings.Reader]
+FIELDS: []
+METHODS: [
+	Len func(*strings.Reader) int 
+	Read func(*strings.Reader, []uint8) (int, error) 
+	ReadAt func(*strings.Reader, []uint8, int64) (int, error) 
+	ReadByte func(*strings.Reader) (uint8, error) 
+	ReadRune func(*strings.Reader) (int32, int, error) 
+	Reset func(*strings.Reader, string) 
+	Seek func(*strings.Reader, int64, int) (int64, error) 
+	Size func(*strings.Reader) int64 
+	UnreadByte func(*strings.Reader) error 
+	UnreadRune func(*strings.Reader) error 
+	WriteTo func(*strings.Reader, io.Writer) (int64, error) 
+	]
+SNIPPET: &Reader{
+}
 ]
 `,
 		}
