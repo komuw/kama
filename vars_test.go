@@ -137,8 +137,8 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `Person{
   Name: "John",
-  Age: 0,
-  Height: 0,
+  Age: int(0),
+  Height: float32(0),
 }`,
 			},
 		},
@@ -152,8 +152,8 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `&Person{
   Name: "Jane",
-  Age: 0,
-  Height: 0,
+  Age: int(0),
+  Height: float32(0),
 }`,
 			},
 		},
@@ -164,7 +164,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "ThisFunction",
+				Val:       "func(string, int) (string, error)",
 			},
 		},
 		{
@@ -174,7 +174,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "ThisFunction",
+				Val:       "func(string, int) (string, error)",
 			},
 		},
 		{
@@ -184,7 +184,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"kama.customerID"},
 				Fields:    []string{},
 				Methods:   []string{"ID func(kama.customerID) uint16"},
-				Val:       "9",
+				Val:       "kama.customerID(9)",
 			},
 		},
 		{
@@ -194,7 +194,14 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"[]int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "[]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..",
+				Val: `[]int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+ ...<9994 more redacted>..}`,
 			},
 		},
 		{
