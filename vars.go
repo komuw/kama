@@ -197,11 +197,10 @@ func getAllMethods(i interface{}) []string {
 	iType := reflect.TypeOf(i)
 
 	allMethods := []string{}
-	methodsOfPassedInType := []string{}
 	methodsOfT := []string{}
 	methodsOfPointerT := []string{}
 
-	methodsOfPassedInType = getMethods(iType)
+	methodsOfPassedInType := getMethods(iType)
 
 	if iType.Kind() == reflect.Ptr {
 		// the passed in type is a `*T` so lets also find methods of `T`

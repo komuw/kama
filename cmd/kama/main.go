@@ -140,7 +140,7 @@ func main() {
 		LargeString:        longText,
 		DistinctType:       Distance(9131),
 		SomeNilError:       nil,
-		SomeConcreteError:  errors.New("Houston something bad happened"),
+		SomeConcreteError:  errors.New("houston something bad happened"),
 		LargeSlice:         bigSlice(),
 		LargeMap:           bigMap(),
 		UndirectedChan:     bigChan(),
@@ -152,7 +152,7 @@ func main() {
 		},
 		IntializedFuncFromStdLib: func(rw http.ResponseWriter, r *http.Request) {
 			_ = r.Close
-			rw.Write([]byte("yo"))
+			_, _ = rw.Write([]byte("yo"))
 		},
 		IntializedFuncWithReturn: func(http.ResponseWriter) (uint16, error) {
 			return uint16(1), nil
@@ -174,7 +174,8 @@ func main() {
 		ComplexxySixFour: complex(float32(5), 7),
 		ComplexyTwoEight: complex(float64(5), 7),
 		NonStructPointer: &someIntEight,
-		SomeUnsafety:     unsafe.Pointer(&someIntEight),
+		/* #nosec */
+		SomeUnsafety: unsafe.Pointer(&someIntEight), // #nosec G103
 	}
 
 	kama.Dirp(s)
