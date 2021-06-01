@@ -7,6 +7,10 @@
 `kama` prints exported information of types, variables, packages, modules, imports etc     
 It also pretty prints data structures.    
 It can be used to aid debugging and testing.        
+If you have heard of [kr/pretty](https://github.com/kr/pretty), [sanity-io/litter](https://github.com/sanity-io/litter), [davecgh/go-spew](https://github.com/davecgh/go-spew) etc; then `kama` is like those except that it;   
+(a) prints the exported API of types, modules etc     
+and     
+(b) pretty prints data structures.        
 
 It's name is derived from Kenyan hip hop artiste, `Kama`(One third of the hiphop group `Kalamashaka`).                               
 
@@ -20,24 +24,54 @@ go get -u github.com/komuw/kama
 ```           
 
 
-## Usage
+## Usage:    
+
+#### (a) print exported api of modules
 ```go
 import "github.com/komuw/kama"
 
 kama.Dirp("compress/flate")
-kama.Dirp(&http.Request{})
-kama.Dirp("github.com/pkg/errors")
-kama.Dirp(http.Request{})
-```
-
-## Basic example
-This;   
-```go
-import "github.com/komuw/kama"
-
 kama.Dirp("github.com/pkg/errors")
 ```
-will output;   
+that will print:
+```bash
+[
+NAME: compress/flate
+CONSTANTS: [
+	BestCompression untyped int
+	BestSpeed untyped int
+	DefaultCompression untyped int
+	HuffmanOnly untyped int
+	NoCompression untyped int
+	]
+VARIABLES: []
+FUNCTIONS: [
+	NewReader(r io.Reader) io.ReadCloser
+	NewReaderDict(r io.Reader, dict []byte) io.ReadCloser
+	NewWriter(w io.Writer, level int) (*Writer, error)
+	NewWriterDict(w io.Writer, level int, dict []byte) (*Writer, error)
+	]
+TYPES: [
+	Writer struct
+		(*Writer) Close() error
+		(*Writer) Flush() error
+		(*Writer) Reset(dst io.Writer)
+		(*Writer) Write(data []byte) (n int, err error)
+	CorruptInputError int64
+		(CorruptInputError) Error() string
+	InternalError string
+		(InternalError) Error() string
+	ReadError struct
+		(*ReadError) Error() string
+	Reader interface
+		(Reader) Read(p []byte) (n int, err error)
+		(Reader) ReadByte() (byte, error)
+	Resetter interface
+		(Resetter) Reset(r io.Reader, dict []byte) error
+	WriteError struct
+		(*WriteError) Error() string]
+]
+```
 ```bash
 [
 NAME: github.com/pkg/errors
@@ -63,42 +97,90 @@ TYPES: [
 	StackTrace []Frame
 		(StackTrace) Format(s fmt.State, verb rune)]
 ]
-```   
-   
-  
-whereas this;   
-```go
-import "github.com/komuw/kama"
-
-h := http.Header{}
-h.Add("content-type", "text")
-kama.Dirp(h)
 ```
-will output;  
+
+#### (b) pretty data structures:
+```go
+req, _ := http.NewRequest("GET", "https://example.com", nil)
+req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+
+kama.Dirp(req)
+```
+that will print:
 ```bash
 [
-NAME: net/http.Header
-KIND: map
-SIGNATURE: [http.Header]
-FIELDS: []
-METHODS: [
-	Add func(http.Header, string, string)
-	Clone func(http.Header) http.Header
-	Del func(http.Header, string)
-	Get func(http.Header, string) string
-	Set func(http.Header, string, string)
-	Values func(http.Header, string) []string
-	Write func(http.Header, io.Writer) error
-	WriteSubset func(http.Header, io.Writer, map[string]bool) error
+NAME: net/http.Request
+KIND: struct
+SIGNATURE: [*http.Request http.Request]
+FIELDS: [
+	Method string
+	URL *url.URL
+	Proto string
+	ProtoMajor int
+	ProtoMinor int
+	Header http.Header
+	Body io.ReadCloser
+	GetBody func() (io.ReadCloser, error)
+	ContentLength int64
+	TransferEncoding []string
+	Close bool
+	Host string
+	Form url.Values
+	PostForm url.Values
+	MultipartForm *multipart.Form
+	Trailer http.Header
+	RemoteAddr string
+	RequestURI string
+	TLS *tls.ConnectionState
+	Cancel <-chan struct {}
+	Response *http.Response
 	]
-SNIPPET: Header{
-  "Content-Type": []string{
-    "text",
-  },
+METHODS: [
+	AddCookie func(*http.Request, *http.Cookie)
+	BasicAuth func(*http.Request) (string, string, bool)
+	Clone func(*http.Request, context.Context) *http.Request
+	Context func(*http.Request) context.Context
+	Cookie func(*http.Request, string) (*http.Cookie, error)
+	Cookies func(*http.Request) []*http.Cookie
+	FormFile func(*http.Request, string) (multipart.File, *multipart.FileHeader, error)
+	FormValue func(*http.Request, string) string
+	MultipartReader func(*http.Request) (*multipart.Reader, error)
+	ParseForm func(*http.Request) error
+	ParseMultipartForm func(*http.Request, int64) error
+	PostFormValue func(*http.Request, string) string
+	ProtoAtLeast func(*http.Request, int, int) bool
+	Referer func(*http.Request) string
+	SetBasicAuth func(*http.Request, string, string)
+	UserAgent func(*http.Request) string
+	WithContext func(*http.Request, context.Context) *http.Request
+	Write func(*http.Request, io.Writer) error
+	WriteProxy func(*http.Request, io.Writer) error
+	]
+SNIPPET: &Request{
+  Method: "GET",
+  URL: &URL{Scheme: "https",Host: "example.com",},
+  Proto: "HTTP/1.1",
+  ProtoMajor: int(1),
+  ProtoMinor: int(1),
+  Header: http.Header{"Cookie":[]string{"hello=world",}, },
+  Body: io.ReadCloser nil,
+  GetBody: func() (io.ReadCloser, error),
+  ContentLength: int64(0),
+  TransferEncoding: []string{},
+  Close: false,
+  Host: "example.com",
+  Form: url.Values{},
+  PostForm: url.Values{},
+  MultipartForm: *multipart.Form(nil),
+  Trailer: http.Header{},
+  RemoteAddr: "",
+  RequestURI: "",
+  TLS: *tls.ConnectionState(nil),
+  Cancel: <-chan struct {} (len=0, cap=0),
+  Response: *http.Response(nil),
 }
 ]
 ```
-
 
 
 ## Inspiration

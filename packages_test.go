@@ -120,5 +120,4 @@ func TestError(t *testing.T) {
 		t.Errorf("got no error, yet expected an error")
 	}
 	c.Assert(err.Error(), qt.Contains, "no required module provides package")
-
 }

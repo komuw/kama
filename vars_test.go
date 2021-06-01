@@ -75,7 +75,6 @@ func bigMap() map[int]string {
 func bigChan() chan int {
 	z := make(chan int, 10_000)
 	for i := 0; i < 10_000; i++ {
-		// TODO: will be fixed by https://github.com/sanity-io/litter/pull/42
 		z <- i
 	}
 	return z
@@ -137,8 +136,8 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `Person{
   Name: "John",
-  Age: 0,
-  Height: 0,
+  Age: int(0),
+  Height: float32(0),
 }`,
 			},
 		},
@@ -152,8 +151,8 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{"ValueMethodOne func(kama.Person)", "ValueMethodTwo func(kama.Person)", "PtrMethodOne func(*kama.Person)", "PtrMethodTwo func(*kama.Person) float32"},
 				Val: `&Person{
   Name: "Jane",
-  Age: 0,
-  Height: 0,
+  Age: int(0),
+  Height: float32(0),
 }`,
 			},
 		},
@@ -164,7 +163,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "ThisFunction",
+				Val:       "func(string, int) (string, error)",
 			},
 		},
 		{
@@ -174,7 +173,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"func(string, int) (string, error)"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "ThisFunction",
+				Val:       "func(string, int) (string, error)",
 			},
 		},
 		{
@@ -184,7 +183,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"kama.customerID"},
 				Fields:    []string{},
 				Methods:   []string{"ID func(kama.customerID) uint16"},
-				Val:       "9",
+				Val:       "kama.customerID(9)",
 			},
 		},
 		{
@@ -194,17 +193,10 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"[]int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "[]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..",
-			},
-		},
-		{
-			sliceOfStruct(), vari{
-				Name:      "[]http.Request",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]http.Request"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       `[]Request{Request{Method:"0",URL:nil,Proto:"",Prot ...<snipped>..`,
+				Val: `[]int{
+   int(0),
+   int(1),
+ ...<9998 more redacted>..}`,
 			},
 		},
 		{
@@ -214,7 +206,12 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"map[int]string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       `map[int]string{0:"0",1:"1",10:"10",100:"100",1000: ...<snipped>..`,
+				Val: `map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   ...<9998 more redacted>..}`,
 			},
 		},
 		{
@@ -224,7 +221,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"chan int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "chan int",
+				Val:       "chan int (len=10000, cap=10000)",
 			},
 		},
 		{
@@ -234,7 +231,11 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"[10000]int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "[10000]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1 ...<snipped>.."},
+				Val: `[10000]int{
+   int(0),
+   int(1),
+ ...<9998 more redacted>..}`,
+			},
 		},
 		{
 			BigString, vari{
@@ -243,7 +244,8 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       `"AT last the sleepy atmosphere was stirred—and v ...<snipped>..`},
+				Val:       `"AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..`,
+			},
 		},
 		{
 
@@ -255,7 +257,7 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val: `SomeStructWIthSlice{
   Name: "Hello",
-  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+  MyAwesome: []int{int(0),int(1), ...<9998 more redacted>..},
 }`,
 			},
 		},
@@ -269,7 +271,7 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val: `&SomeStructWIthSlice{
   Name: "HelloPointery",
-  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+  MyAwesome: []int{int(0),int(1), ...<9998 more redacted>..},
 }`,
 			},
 		},
@@ -277,7 +279,7 @@ func TestBasicVariables(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+		t.Run(v.expected.Name, func(t *testing.T) {
 			c := qt.New(t)
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
@@ -341,26 +343,26 @@ func TestStdlibVariables(t *testing.T) {
 				},
 				Val: `Request{
   Method: "",
-  URL: nil,
+  URL: *url.URL(nil),
   Proto: "",
-  ProtoMajor: 0,
-  ProtoMinor: 0,
-  Header: Header(nil),
-  Body: nil,
-  GetBody: ,
-  ContentLength: 0,
-  TransferEncoding: nil,
+  ProtoMajor: int(0),
+  ProtoMinor: int(0),
+  Header: http.Header{},
+  Body: io.ReadCloser nil,
+  GetBody: func() (io.ReadCloser, error),
+  ContentLength: int64(0),
+  TransferEncoding: []string{},
   Close: false,
   Host: "",
-  Form: Values(nil),
-  PostForm: Values(nil),
-  MultipartForm: nil,
-  Trailer: Header(nil),
+  Form: url.Values{},
+  PostForm: url.Values{},
+  MultipartForm: *multipart.Form(nil),
+  Trailer: http.Header{},
   RemoteAddr: "",
   RequestURI: "",
-  TLS: nil,
-  Cancel: <-chan struct {},
-  Response: nil,
+  TLS: *tls.ConnectionState(nil),
+  Cancel: <-chan struct {} (len=0, cap=0),
+  Response: *http.Response(nil),
 }`,
 			},
 		},
@@ -416,34 +418,92 @@ func TestStdlibVariables(t *testing.T) {
 				},
 				Val: `&Request{
   Method: "",
-  URL: nil,
+  URL: *url.URL(nil),
   Proto: "",
-  ProtoMajor: 0,
-  ProtoMinor: 0,
-  Header: Header(nil),
-  Body: nil,
-  GetBody: ,
-  ContentLength: 0,
-  TransferEncoding: nil,
+  ProtoMajor: int(0),
+  ProtoMinor: int(0),
+  Header: http.Header{},
+  Body: io.ReadCloser nil,
+  GetBody: func() (io.ReadCloser, error),
+  ContentLength: int64(0),
+  TransferEncoding: []string{},
   Close: false,
   Host: "",
-  Form: Values(nil),
-  PostForm: Values(nil),
-  MultipartForm: nil,
-  Trailer: Header(nil),
+  Form: url.Values{},
+  PostForm: url.Values{},
+  MultipartForm: *multipart.Form(nil),
+  Trailer: http.Header{},
   RemoteAddr: "",
   RequestURI: "",
-  TLS: nil,
-  Cancel: <-chan struct {},
-  Response: nil,
+  TLS: *tls.ConnectionState(nil),
+  Cancel: <-chan struct {} (len=0, cap=0),
+  Response: *http.Response(nil),
 }`,
+			},
+		},
+
+		{
+			sliceOfStruct(), vari{
+				Name:      "[]http.Request",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]http.Request"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val: `[]http.Request{
+   Request{
+    Method: "0",
+    URL: *url.URL(nil),
+    Proto: "",
+    ProtoMajor: int(0),
+    ProtoMinor: int(0),
+    Header: http.Header{},
+    Body: io.ReadCloser nil,
+    GetBody: func() (io.ReadCloser, error),
+    ContentLength: int64(0),
+    TransferEncoding: []string{},
+    Close: false,
+    Host: "",
+    Form: url.Values{},
+    PostForm: url.Values{},
+    MultipartForm: *multipart.Form(nil),
+    Trailer: http.Header{},
+    RemoteAddr: "",
+    RequestURI: "",
+    TLS: *tls.ConnectionState(nil),
+    Cancel: <-chan struct {} (len=0, cap=0),
+    Response: *http.Response(nil),
+  },
+   Request{
+    Method: "1",
+    URL: *url.URL(nil),
+    Proto: "",
+    ProtoMajor: int(0),
+    ProtoMinor: int(0),
+    Header: http.Header{},
+    Body: io.ReadCloser nil,
+    GetBody: func() (io.ReadCloser, error),
+    ContentLength: int64(0),
+    TransferEncoding: []string{},
+    Close: false,
+    Host: "",
+    Form: url.Values{},
+    PostForm: url.Values{},
+    MultipartForm: *multipart.Form(nil),
+    Trailer: http.Header{},
+    RemoteAddr: "",
+    RequestURI: "",
+    TLS: *tls.ConnectionState(nil),
+    Cancel: <-chan struct {} (len=0, cap=0),
+    Response: *http.Response(nil),
+  },
+ ...<9998 more redacted>..}`,
 			},
 		},
 	}
 
 	for _, v := range tt {
 		v := v
-		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+		t.Run(v.expected.Name, func(t *testing.T) {
 			c := qt.New(t)
 
 			res := newVari(v.variable)
