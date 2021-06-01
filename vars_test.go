@@ -214,7 +214,13 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"map[int]string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       `map[int]string{0:"0",1:"1",10:"10",100:"100",1000: ...<snipped>..`,
+				Val: `map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   int(1000): "1000", 
+   ...<9997 more redacted>..}`,
 			},
 		},
 		{
@@ -224,7 +230,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"chan int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "chan int",
+				Val:       "chan int (len=10000, cap=10000)",
 			},
 		},
 		{
@@ -234,7 +240,14 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"[10000]int"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       "[10000]int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,1 ...<snipped>.."},
+				Val: `[10000]int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+ ...<9994 more redacted>..}`},
 		},
 		{
 			BigString, vari{
@@ -243,7 +256,7 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       `"AT last the sleepy atmosphere was stirred—and v ...<snipped>..`},
+				Val:       `"AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..`},
 		},
 		{
 
@@ -255,7 +268,7 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val: `SomeStructWIthSlice{
   Name: "Hello",
-  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+  MyAwesome: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
 }`,
 			},
 		},
@@ -269,7 +282,7 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val: `&SomeStructWIthSlice{
   Name: "HelloPointery",
-  MyAwesome: []int{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17, ...<snipped>..,
+  MyAwesome: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
 }`,
 			},
 		},
@@ -277,9 +290,13 @@ func TestBasicVariables(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		t.Run(fmt.Sprintf("runing test for: %s", v.expected.Name), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s", v.expected.Name), func(t *testing.T) {
 			c := qt.New(t)
 			res := newVari(v.variable)
+			t.Log()
+			t.Log()
+			t.Log("naame:: ", v.expected.Name)
+			t.Log(res)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
