@@ -285,8 +285,7 @@ SNIPPET: map[int]string{
    int(1): "1", 
    int(10): "10", 
    int(100): "100", 
-   int(1000): "1000", 
-   ...<9997 more redacted>..}
+   ...<9998 more redacted>..}
 ]
 `
 
