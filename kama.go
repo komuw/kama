@@ -17,10 +17,8 @@ import (
 	"strings"
 )
 
-// Dirp prints exported information of types, variables, packages, modules, imports
+// Dirp prints (to stdout) exported information of types, variables, packages, modules, imports
 // It also pretty prints data structures.
-//
-// It is almost similar to Python's builtin dir function
 //
 // examples:
 //
