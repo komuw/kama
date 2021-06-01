@@ -196,7 +196,7 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	// TODO: slices on their own should not be compacted
 	// look at how dumpMap does it.
 
-	maxL := 6
+	maxL := 2
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
@@ -229,7 +229,7 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	// TODO: handle compact
 	// TODO: handle indentLevel
 
-	maxL := 3
+	maxL := 2
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
