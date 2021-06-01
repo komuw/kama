@@ -10,6 +10,3 @@ require (
 	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015 // indirect
 	golang.org/x/tools v0.1.1
 )
-
-// undo after https://github.com/sanity-io/litter/pull/42
-replace github.com/sanity-io/litter => github.com/komuw/litter v1.5.2-0.20210519173802-98968e92f504

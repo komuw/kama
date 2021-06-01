@@ -55,7 +55,6 @@ func bigMap() map[int]string {
 func bigChan() chan int {
 	z := make(chan int, 10_000)
 	for i := 0; i < 122; i++ {
-		// TODO: will be fixed by https://github.com/sanity-io/litter/pull/42
 		z <- i
 	}
 	return z

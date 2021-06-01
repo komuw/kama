@@ -46,7 +46,10 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		reflect.Uintptr:
 		return dumpNumbers(val, compact, hideZeroValues, indentLevel)
 	case reflect.Struct:
-		// the reason we are doing this is because sanity-io/litter has no way to compact
+		// We used to use `sanity-io/litter` to do dumping.
+		// We however, decided to implement our own dump functionality.
+		//
+		// The main reason precipitating we are doing this is because sanity-io/litter has no way to compact
 		// arrays/slices/maps that are inside structs.
 		// This logic can be discarded if sanity-io/litter implements similar.
 		// see: https://github.com/sanity-io/litter/pull/43
@@ -56,10 +59,6 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		v := val.Elem()
 		if v.IsValid() {
 			if v.Type().Kind() == reflect.Struct {
-				// the reason we are doing this is because sanity-io/litter has no way to compact
-				// arrays/slices/maps that are inside structs.
-				// This logic can be discarded if sanity-io/litter implements similar.
-				// see: https://github.com/sanity-io/litter/pull/43
 				fromPtr := true
 				return dumpStruct(v, fromPtr, compact, hideZeroValues, indentLevel)
 			} else {
@@ -98,7 +97,6 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
-
 }
 
 func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
@@ -127,11 +125,6 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 		`hideZeroValues` indicates whether to show zeroValued fields
 		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
 	*/
-	// This logic is only required until similar logic is implemented in sanity-io/litter
-	// see:
-	// - https://github.com/sanity-io/litter/issues/34
-	// - https://github.com/sanity-io/litter/pull/43
-
 	typeName := v.Type().Name()
 	if fromPtr {
 		typeName = "&" + typeName
