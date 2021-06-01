@@ -234,11 +234,7 @@ METHODS: []
 SNIPPET: []int{
    int(0),
    int(1),
-   int(2),
-   int(3),
-   int(4),
-   int(5),
- ...<9994 more redacted>..}
+ ...<9998 more redacted>..}
 ]
 `
 
@@ -261,7 +257,7 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
+  XX: []int{int(0),int(1), ...<9998 more redacted>..},
 }
 ]
 `
@@ -379,7 +375,7 @@ SNIPPET: SomeStruct{
   DistinctType: e2e_test.Distance(9131),
   SomeNilError: error(nil),
   SomeConcreteError: error(Houston something bad happened),
-  LargeSlice: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
+  LargeSlice: []int{int(0),int(1), ...<9998 more redacted>..},
   LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", int(1000):"1000", ...<9997 more redacted>..},
   UndirectedChan: chan int (len=122, cap=10000),
   DirectedChan: chan<- bool (len=1, cap=13),
@@ -506,7 +502,7 @@ SNIPPET: &SomeStruct{
   DistinctType: e2e_test.Distance(9131),
   SomeNilError: error(nil),
   SomeConcreteError: error(Houston something bad happened),
-  LargeSlice: []int{int(0),int(1),int(2),int(3),int(4),int(5), ...<9994 more redacted>..},
+  LargeSlice: []int{int(0),int(1), ...<9998 more redacted>..},
   LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", int(1000):"1000", ...<9997 more redacted>..},
   UndirectedChan: chan int (len=122, cap=10000),
   DirectedChan: chan<- bool (len=1, cap=13),
