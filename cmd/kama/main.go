@@ -86,6 +86,7 @@ type CustomReadCloser int64
 func (c CustomReadCloser) Read(p []byte) (n int, err error) {
 	return 10, nil
 }
+
 func (c CustomReadCloser) Close() error {
 	return errors.New("CustomReadCloser always fails closing")
 }
@@ -160,14 +161,14 @@ func main() {
 		NonZeroPointerStruct: &url.URL{},
 		EvenMoreUrl:          &url.URL{Path: "/some/path"},
 		SliceOfNonZeroPointerStruct: []*url.URL{
-			&url.URL{Path: "1"},
-			&url.URL{Path: "2"},
-			&url.URL{Path: "3"},
-			&url.URL{Path: "4"},
-			&url.URL{Path: "5"},
-			&url.URL{Path: "6"},
-			&url.URL{Path: "7"},
-			&url.URL{Path: "8"},
+			{Path: "1"},
+			{Path: "2"},
+			{Path: "3"},
+			{Path: "4"},
+			{Path: "5"},
+			{Path: "6"},
+			{Path: "7"},
+			{Path: "8"},
 		},
 
 		ComplexxySixFour: complex(float32(5), 7),

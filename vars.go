@@ -2,10 +2,9 @@ package kama
 
 import (
 	"fmt"
+	"reflect"
 	"runtime"
 	"strings"
-
-	"reflect"
 )
 
 // vari represents a variable
@@ -31,15 +30,16 @@ func newVari(i interface{}) vari {
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       dump(valueOfi, compact, hideZeroValues, indentLevel)}
+			Val:       dump(valueOfi, compact, hideZeroValues, indentLevel),
+		}
 	}
 
 	typeKind := getKind(i)
 	typeName := getName(i)
 	typeSig := getSignature(i)
 
-	var fields = getAllFields(i)
-	var methods = trimMethods(getAllMethods(i))
+	fields := getAllFields(i)
+	methods := trimMethods(getAllMethods(i))
 
 	return vari{
 		Name:      typeName,
@@ -49,12 +49,11 @@ func newVari(i interface{}) vari {
 		Methods:   methods,
 		Val:       dump(valueOfi, compact, hideZeroValues, indentLevel),
 	}
-
 }
 
 func (v vari) String() string {
 	nLf := func(x []string) []string {
-		var fm = []string{}
+		fm := []string{}
 		if len(x) <= 0 {
 			return fm
 		}
@@ -133,7 +132,7 @@ func getSignature(i interface{}) []string {
 	iType := reflect.TypeOf(i)
 	typeKind := iType.Kind()
 
-	var allSignatures = []string{iType.String()}
+	allSignatures := []string{iType.String()}
 
 	if typeKind == reflect.Ptr {
 		// the passed in type maybe be a `*T` so lets find the signature of `T`
@@ -157,7 +156,7 @@ func getAllFields(i interface{}) []string {
 	iType := reflect.TypeOf(i)
 	typeKind := iType.Kind()
 
-	var allFields = []string{}
+	allFields := []string{}
 	if typeKind == reflect.Ptr {
 		// the passed in type maybe be a `*T struct{}` so lets also find methods of `T struct{}`
 		valueI := reflect.ValueOf(i).Elem()
@@ -171,7 +170,7 @@ func getAllFields(i interface{}) []string {
 
 // getFields finds all the fields(if any) of a type
 func getFields(iType reflect.Type) []string {
-	var fields = []string{}
+	fields := []string{}
 	typeKind := iType.Kind()
 
 	if typeKind == reflect.Struct {
@@ -197,10 +196,10 @@ func getFields(iType reflect.Type) []string {
 func getAllMethods(i interface{}) []string {
 	iType := reflect.TypeOf(i)
 
-	var allMethods = []string{}
-	var methodsOfPassedInType = []string{}
-	var methodsOfT = []string{}
-	var methodsOfPointerT = []string{}
+	allMethods := []string{}
+	methodsOfPassedInType := []string{}
+	methodsOfT := []string{}
+	methodsOfPointerT := []string{}
 
 	methodsOfPassedInType = getMethods(iType)
 
@@ -223,7 +222,7 @@ func getAllMethods(i interface{}) []string {
 
 // getMethods finds all the methods of type.
 func getMethods(iType reflect.Type) []string {
-	var methods = []string{}
+	methods := []string{}
 	numMethods := iType.NumMethod()
 	for i := 0; i < numMethods; i++ {
 		meth := iType.Method(i)
@@ -249,7 +248,6 @@ func getMethods(iType reflect.Type) []string {
 // if a method is applicable for both type `T` and `*T`, then `trimMethods` will
 // just remove the one for `*T`
 func trimMethods(methods []string) []string {
-
 	// contains tells whether a contains x.
 	contains := func(a []string, x string) bool {
 		for _, n := range a {
@@ -260,7 +258,7 @@ func trimMethods(methods []string) []string {
 		return false
 	}
 
-	var trimmedMethods = []string{}
+	trimmedMethods := []string{}
 	var TmethNames []string
 
 	// first add all methods for type `T`

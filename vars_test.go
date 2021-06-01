@@ -235,7 +235,8 @@ func TestBasicVariables(t *testing.T) {
 				Val: `[10000]int{
    int(0),
    int(1),
- ...<9998 more redacted>..}`},
+ ...<9998 more redacted>..}`,
+			},
 		},
 		{
 			BigString, vari{
@@ -244,7 +245,8 @@ func TestBasicVariables(t *testing.T) {
 				Signature: []string{"string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       `"AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..`},
+				Val:       `"AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..`,
+			},
 		},
 		{
 

@@ -55,11 +55,13 @@ func leakDetector(exitCode int) int {
 	return exitCode
 }
 
-type BlankStruct struct{}
-type BasicStruct struct {
-	Public  int
-	private int
-}
+type (
+	BlankStruct struct{}
+	BasicStruct struct {
+		Public  int
+		private int
+	}
+)
 type IntAlias int
 
 func SomeFunction(arg1 string, arg2 int) (string, error) {
