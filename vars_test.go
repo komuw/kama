@@ -205,16 +205,6 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-			sliceOfStruct(), vari{
-				Name:      "[]http.Request",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]http.Request"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       `[]Request{Request{Method:"0",URL:nil,Proto:"",Prot ...<snipped>..`,
-			},
-		},
-		{
 			bigMap(), vari{
 				Name:      "map[int]string",
 				Kind:      reflect.Map,
@@ -297,13 +287,9 @@ func TestBasicVariables(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		t.Run(fmt.Sprintf("%s", v.expected.Name), func(t *testing.T) {
+		t.Run(v.expected.Name, func(t *testing.T) {
 			c := qt.New(t)
 			res := newVari(v.variable)
-			t.Log()
-			t.Log()
-			t.Log("naame:: ", v.expected.Name)
-			t.Log(res)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
