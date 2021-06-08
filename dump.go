@@ -169,9 +169,6 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	// dumps slices & arrays
 
-	// TODO: slices on their own should not be compacted
-	// look at how dumpMap does it.
-
 	maxL := 2
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
@@ -201,9 +198,6 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	// dumps maps
 
 	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-
-	// TODO: handle compact
-	// TODO: handle indentLevel
 
 	maxL := 2
 	numEntries := v.Len()
