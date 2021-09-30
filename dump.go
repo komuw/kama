@@ -15,6 +15,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		`hideZeroValues` indicates whether to show zeroValued vars
 		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
 	*/
+	compact = false
 	deVal := deInterface(val)
 	if !deVal.IsValid() {
 		return "nil"
@@ -169,7 +170,7 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	// dumps slices & arrays
 
-	maxL := 2
+	maxL := 8
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
@@ -199,7 +200,7 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 
 	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 
-	maxL := 2
+	maxL := 8
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
