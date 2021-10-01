@@ -102,7 +102,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 
 func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
 	// dumps strings
-	maxL := 50
+	maxL := 100
 
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL))) + 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
@@ -170,7 +170,7 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	// dumps slices & arrays
 
-	maxL := 8
+	maxL := 20
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
@@ -200,7 +200,7 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 
 	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
 
-	maxL := 8
+	maxL := 20
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
