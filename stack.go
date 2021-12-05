@@ -2,6 +2,7 @@ package kama
 
 import (
 	"fmt"
+	"os"
 	"runtime/debug"
 	"strings"
 )
@@ -28,15 +29,15 @@ var colors = map[string]int{
 func reset() {
 	const escape = "\x1b"
 	const r = 0
-	fmt.Printf("%s[%dm", escape, r)
+	fmt.Fprintf(os.Stderr, "%s[%dm", escape, r)
 }
 
 func setColor(code int, bold bool) {
 	const escape = "\x1b"
 	if bold {
-		fmt.Printf("%s[1%dm", escape, code)
+		fmt.Fprintf(os.Stderr, "%s[1%dm", escape, code)
 	} else {
-		fmt.Printf("%s[%dm", escape, code)
+		fmt.Fprintf(os.Stderr, "%s[%dm", escape, code)
 	}
 }
 
@@ -44,11 +45,10 @@ func printWithColor(s string, color string, bold bool) {
 	defer reset()
 	color = strings.ToLower(color)
 	setColor(colors[color], bold)
-	fmt.Println(s)
+	fmt.Fprintln(os.Stderr, s)
 }
 
-// TODO: move the exported funcs into kama.go
-func Stack() string {
+func stackp() {
 	x := debug.Stack()
 
 	lines := [][]byte{}
@@ -83,9 +83,4 @@ func Stack() string {
 
 	curLine = nil
 	lines = nil
-	return "" //string(x)
-}
-
-func Stackp() {
-	fmt.Println(Stack())
 }
