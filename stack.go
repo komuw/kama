@@ -27,6 +27,8 @@ var colors = map[string]int{
 	"RESET":   0,
 }
 
+var goModCache = os.Getenv("GOMODCACHE")
+
 func reset() {
 	const escape = "\x1b"
 	const r = 0
@@ -55,10 +57,10 @@ func stackp() {
 		if strings.Contains(v, "go/src/") {
 			// compiler
 			printWithColor(v, "cyan", false)
-		} else if strings.Contains(v, "github.com/komuw/") {
+		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
 			printWithColor(v, "magenta", false)
-		} else if strings.Contains(v, "/home/komuw") {
+		} else if strings.Contains(v, "/home/komuw") { //TODO: fix this.
 			// your code
 			printWithColor(v, "green", true)
 		} else {
