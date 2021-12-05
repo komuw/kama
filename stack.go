@@ -86,7 +86,21 @@ func stackp() {
 	// curLine = nil
 	// lines = nil
 
-	fmt.Println(getStackTrace())
+	traces := getStackTrace()
+	for _, v := range traces {
+		if strings.Contains(v, "go/src/") {
+			// compiler
+			printWithColor(v, "cyan", false)
+		} else if strings.Contains(v, "github.com/komuw/") {
+			// third party
+			printWithColor(v, "magenta", false)
+		} else if strings.Contains(v, "/home/komuw") {
+			// your code
+			printWithColor(v, "green", true)
+		} else {
+			printWithColor(v, "green", false)
+		}
+	}
 }
 
 const maxStackLength = 50
@@ -98,7 +112,7 @@ type frm struct {
 	function string
 }
 
-func getStackTrace() string {
+func getStackTrace() []string {
 	stackBuf := make([]uintptr, maxStackLength)
 	length := runtime.Callers(4, stackBuf[:])
 	stack := stackBuf[:length]
@@ -117,20 +131,21 @@ func getStackTrace() string {
 	txtLast := readLastLine(frms[0].file, int64(frms[0].line))
 	txtLastButOne := readLastLine(frms[1].file, int64(frms[1].line))
 
-	trace := ""
+	traces := []string{}
 	for k, v := range frms {
-		trace = trace + fmt.Sprintf("\n\t%s:%d %s", v.file, v.line, v.function)
+		traces = append(traces, fmt.Sprintf("\t%s:%d %s", v.file, v.line, v.function))
 
 		if k == 0 && txtLast != "" {
-			trace = trace + "\n" + txtLast
+			traces = append(traces, txtLast)
 		}
 
 		if k == 1 && txtLastButOne != "" {
-			trace = trace + "\n" + txtLastButOne
+			traces = append(traces, txtLastButOne)
 		}
+
 	}
 
-	return trace
+	return traces
 }
 
 func readLastLine(file string, line int64) string {
