@@ -62,6 +62,7 @@ func stackp() {
 		}
 	}
 
+	tab := "\t"
 	for _, v := range lines {
 		it := string(v)
 		if strings.Contains(it, "runtime/") {
@@ -75,9 +76,9 @@ func stackp() {
 			printWithColor(it, "magenta", false)
 		} else if strings.Contains(it, "/home/komuw") {
 			// your code
-			printWithColor(it, "green", true)
+			printWithColor(tab+it, "green", true)
 		} else {
-			printWithColor(it, "green", false)
+			printWithColor(tab+it, "green", false)
 		}
 	}
 
