@@ -50,42 +50,6 @@ func printWithColor(s string, color string, bold bool) {
 }
 
 func stackp() {
-	// x := debug.Stack()
-
-	// lines := [][]byte{}
-	// curLine := []byte{}
-	// for _, v := range x {
-	// 	if v == 10 {
-	// 		lines = append(lines, curLine)
-	// 		curLine = []byte{}
-	// 	} else {
-	// 		curLine = append(curLine, v)
-	// 	}
-	// }
-
-	// tab := "\t"
-	// for _, v := range lines {
-	// 	it := string(v)
-	// 	if strings.Contains(it, "runtime/") {
-	// 		// compiler
-	// 		printWithColor(it, "cyan", false)
-	// 	} else if strings.Contains(it, "[running]") {
-	// 		// treat it like compiler
-	// 		printWithColor(it, "cyan", false)
-	// 	} else if strings.Contains(it, "github.com/komuw/") {
-	// 		// third party
-	// 		printWithColor(it, "magenta", false)
-	// 	} else if strings.Contains(it, "/home/komuw") {
-	// 		// your code
-	// 		printWithColor(tab+it, "green", true)
-	// 	} else {
-	// 		printWithColor(tab+it, "green", false)
-	// 	}
-	// }
-
-	// curLine = nil
-	// lines = nil
-
 	traces := getStackTrace()
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
