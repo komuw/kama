@@ -108,7 +108,6 @@ func getStackTrace() []string {
 		if k == 1 && txtLastButOne != "" {
 			traces = append(traces, txtLastButOne)
 		}
-
 	}
 
 	return traces
