@@ -115,12 +115,18 @@ func getStackTrace() string {
 	}
 
 	txtLast := readLastLine(frms[0].file, int64(frms[0].line))
+	txtLastButOne := readLastLine(frms[1].file, int64(frms[1].line))
 
 	trace := ""
 	for k, v := range frms {
 		trace = trace + fmt.Sprintf("\n\t%s:%d %s", v.file, v.line, v.function)
+
 		if k == 0 && txtLast != "" {
 			trace = trace + "\n" + txtLast
+		}
+
+		if k == 1 && txtLastButOne != "" {
+			trace = trace + "\n" + txtLastButOne
 		}
 	}
 
