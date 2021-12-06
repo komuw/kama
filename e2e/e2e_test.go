@@ -234,7 +234,25 @@ METHODS: []
 SNIPPET: []int{
    int(0),
    int(1),
- ...<9998 more redacted>..}
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..}
 ]
 `
 
@@ -244,7 +262,7 @@ SNIPPET: []int{
 		c.Assert(res, qt.Equals, expected)
 	})
 
-	t.Run("slice in a struct is compacted", func(t *testing.T) {
+	t.Run("slice in a struct is not compacted", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
 		expected := `
@@ -257,7 +275,28 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: []int{int(0),int(1), ...<9998 more redacted>..},
+  XX: []int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..},
 }
 ]
 `
@@ -285,7 +324,25 @@ SNIPPET: map[int]string{
    int(1): "1", 
    int(10): "10", 
    int(100): "100", 
-   ...<9998 more redacted>..}
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   int(1011): "1011", 
+   int(1012): "1012", 
+   int(1013): "1013", 
+   int(1014): "1014", 
+   int(1015): "1015", 
+   int(1016): "1016", 
+   ...<9980 more redacted>..}
 ]
 `
 
@@ -295,7 +352,7 @@ SNIPPET: map[int]string{
 		c.Assert(res, qt.Equals, expected)
 	})
 
-	t.Run("map in a struct is compacted", func(t *testing.T) {
+	t.Run("map in a struct is not compacted", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
 		expected := `
@@ -308,7 +365,30 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", ...<9998 more redacted>..},
+  XX: map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   int(1011): "1011", 
+   int(1012): "1012", 
+   int(1013): "1013", 
+   int(1014): "1014", 
+   int(1015): "1015", 
+   int(1016): "1016", 
+   ...<9980 more redacted>..},
 }
 ]
 `

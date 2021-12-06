@@ -178,6 +178,8 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	newline := "\n"
 	leftSep := "   "
 	if compact {
+		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+		// see: https://github.com/sanity-io/litter/pull/43
 		newline = ""
 		leftSep = ""
 	}
@@ -198,8 +200,6 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
 	// dumps maps
 
-	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-
 	maxL := 20
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
@@ -209,6 +209,8 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	leftSep := "   "
 	colonSep := " "
 	if compact {
+		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+		// see: https://github.com/sanity-io/litter/pull/43
 		newline = ""
 		leftSep = ""
 		colonSep = ""
