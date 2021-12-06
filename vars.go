@@ -20,7 +20,6 @@ type vari struct {
 func newVari(i interface{}) vari {
 	iType := reflect.TypeOf(i)
 	valueOfi := reflect.ValueOf(i)
-	compact := false
 	hideZeroValues := false
 	indentLevel := 0
 
@@ -30,7 +29,7 @@ func newVari(i interface{}) vari {
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       dump(valueOfi, compact, hideZeroValues, indentLevel),
+			Val:       dump(valueOfi, hideZeroValues, indentLevel),
 		}
 	}
 
@@ -47,7 +46,7 @@ func newVari(i interface{}) vari {
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
-		Val:       dump(valueOfi, compact, hideZeroValues, indentLevel),
+		Val:       dump(valueOfi, hideZeroValues, indentLevel),
 	}
 }
 

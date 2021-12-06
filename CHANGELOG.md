@@ -6,7 +6,8 @@ Most recent version is listed first.
 ## v0.0.4
 - Add ability to print stack traces: https://github.com/komuw/kama/pull/29
   The stack traces are colorized with different colors for your code, third-party libs & the Go stdlib/runtime.
-  Also code snippet for the most recent call is shown. 
+  Also code snippet for the most recent call is shown.
+- Stop compacting data structures: https://github.com/komuw/kama/pull/28
 
 ## v0.0.3
 - Update CI: https://github.com/komuw/kama/pull/17   
