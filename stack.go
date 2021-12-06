@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -75,7 +76,7 @@ func getStackTrace() []string {
 func readLastLine(file string, line int64) string {
 	txt := ""
 
-	f, err := os.Open(file)
+	f, err := os.Open(filepath.Clean(file))
 	if err != nil {
 		return txt
 	}
