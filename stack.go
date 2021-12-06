@@ -79,7 +79,9 @@ func readLastLine(file string, line int64) string {
 	if err != nil {
 		return txt
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 
 	// NB: scanner will error if file is larger than scanner.MaxScanTokenSize
 	// which is about 65_000 lines. We should do something about that in the future.
