@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 )
 
 func stackp() {
 	goModCache := os.Getenv("GOMODCACHE")
+	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
 
 	traces := getStackTrace()
 	for _, v := range traces {
@@ -20,11 +22,12 @@ func stackp() {
 		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
 			printWithColor(v, "magenta", false)
-		} else if strings.Contains(v, "/home/komuw") { //TODO: fix this.
+		} else if re.MatchString(v) {
+			// this is code snippets
+			printWithColor(v, "green", false)
+		} else {
 			// your code
 			printWithColor(v, "green", true)
-		} else {
-			printWithColor(v, "green", false)
 		}
 	}
 }
@@ -54,8 +57,14 @@ func getStackTrace() []string {
 		}
 	}
 
-	txtLast := readLastLine(frms[0].file, int64(frms[0].line))
-	txtLastButOne := readLastLine(frms[1].file, int64(frms[1].line))
+	txtLast := ""
+	txtLastButOne := ""
+	if len(frms) > 0 {
+		txtLast = readLastLine(frms[0].file, int64(frms[0].line))
+	}
+	if len(frms) > 1 {
+		txtLastButOne = readLastLine(frms[1].file, int64(frms[1].line))
+	}
 
 	traces := []string{}
 	for k, v := range frms {
