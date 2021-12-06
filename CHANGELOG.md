@@ -8,6 +8,7 @@ Most recent version is listed first.
   The stack traces are colorized with different colors for your code, third-party libs & the Go stdlib/runtime.
   Also code snippet for the most recent call is shown.
 - Stop compacting data structures: https://github.com/komuw/kama/pull/28
+- Add errcheck to CI: https://github.com/komuw/kama/pull/23
 
 ## v0.0.3
 - Update CI: https://github.com/komuw/kama/pull/17   

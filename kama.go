@@ -41,8 +41,13 @@ func Dir(i interface{}) string {
 		res := newVari(i)
 		return res.String()
 	} else if iType.Kind() == reflect.String {
-		i := i.(string)
-		res, err := newPak(i)
+		pat, ok := i.(string)
+		if !ok {
+			res := newVari(i)
+			return res.String()
+		}
+
+		res, err := newPak(pat)
 		if err != nil {
 			for _, eMsg := range []string{
 				// We check if it is truly a module error. We check all the errors that can be returned.
