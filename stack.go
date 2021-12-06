@@ -8,50 +8,9 @@ import (
 	"strings"
 )
 
-// TODO: should be iota
-var colors = map[string]int{
-	// Go compiler == cyan
-	// Third party == magenta
-	// Your code == green
-
-	"black":   30,
-	"red":     31,
-	"green":   32,
-	"yellow":  33,
-	"blue":    34,
-	"magenta": 35,
-	"cyan":    36,
-	"white":   37,
-
-	"DEFAULT": 39,
-	"RESET":   0,
-}
-
-var goModCache = os.Getenv("GOMODCACHE")
-
-func reset() {
-	const escape = "\x1b"
-	const r = 0
-	fmt.Fprintf(os.Stderr, "%s[%dm", escape, r)
-}
-
-func setColor(code int, bold bool) {
-	const escape = "\x1b"
-	if bold {
-		fmt.Fprintf(os.Stderr, "%s[1%dm", escape, code)
-	} else {
-		fmt.Fprintf(os.Stderr, "%s[%dm", escape, code)
-	}
-}
-
-func printWithColor(s string, color string, bold bool) {
-	defer reset()
-	color = strings.ToLower(color)
-	setColor(colors[color], bold)
-	fmt.Fprintln(os.Stderr, s)
-}
-
 func stackp() {
+	goModCache := os.Getenv("GOMODCACHE")
+
 	traces := getStackTrace()
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
@@ -69,8 +28,6 @@ func stackp() {
 	}
 }
 
-const maxStackLength = 50
-
 // frm is like a runtime.Frame
 type frm struct {
 	file     string
@@ -79,6 +36,8 @@ type frm struct {
 }
 
 func getStackTrace() []string {
+	const maxStackLength = 50
+
 	stackBuf := make([]uintptr, maxStackLength)
 	length := runtime.Callers(4, stackBuf[:])
 	stack := stackBuf[:length]
@@ -144,4 +103,45 @@ func readLastLine(file string, line int64) string {
 	}
 
 	return strings.TrimSuffix(txt, "\n")
+}
+
+func reset() {
+	const escape = "\x1b"
+	const r = 0
+	fmt.Fprintf(os.Stderr, "%s[%dm", escape, r)
+}
+
+func setColor(code int, bold bool) {
+	const escape = "\x1b"
+	if bold {
+		fmt.Fprintf(os.Stderr, "%s[1%dm", escape, code)
+	} else {
+		fmt.Fprintf(os.Stderr, "%s[%dm", escape, code)
+	}
+}
+
+func printWithColor(s string, color string, bold bool) {
+	// TODO: should be iota
+	colors := map[string]int{
+		// Go compiler == cyan
+		// Third party == magenta
+		// Your code == green
+
+		"black":   30,
+		"red":     31,
+		"green":   32,
+		"yellow":  33,
+		"blue":    34,
+		"magenta": 35,
+		"cyan":    36,
+		"white":   37,
+
+		"DEFAULT": 39,
+		"RESET":   0,
+	}
+
+	defer reset()
+	color = strings.ToLower(color)
+	setColor(colors[color], bold)
+	fmt.Fprintln(os.Stderr, s)
 }
