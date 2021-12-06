@@ -527,6 +527,29 @@ SNIPPET: some{
 		res := kama.Dir(s)
 		c.Assert(res, qt.Equals, expected)
 	})
+
+	t.Run("slice of http.Request value structs", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+
+		p, e := filepath.Abs("../testdata/slice_of_http_Request_value_structs.txt")
+		c.Assert(e, qt.IsNil)
+		b, e := os.ReadFile(p)
+		c.Assert(e, qt.IsNil)
+		expected := string(b)
+
+		sliceOfStruct := func() []http.Request {
+			xx := []http.Request{}
+			for i := 0; i < 10_000; i++ {
+				xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
+			}
+			return xx
+		}
+
+		s := sliceOfStruct()
+		res := kama.Dir(s)
+		c.Assert(res, qt.Equals, expected)
+	})
 }
 
 func TestAllAboutInterfaces(t *testing.T) {

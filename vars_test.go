@@ -56,14 +56,6 @@ func bigSlice() []int {
 
 var MyBigSlice = bigSlice()
 
-func sliceOfStruct() []http.Request {
-	xx := []http.Request{}
-	for i := 0; i < 10_000; i++ {
-		xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
-	}
-	return xx
-}
-
 func bigMap() map[int]string {
 	y := map[int]string{}
 	for i := 0; i < 10_000; i++ {
@@ -408,11 +400,14 @@ func TestBasicVariables(t *testing.T) {
 
 func TestStdlibVariables(t *testing.T) {
 	tt := []struct {
+		tName    string
 		variable interface{}
 		expected vari
 	}{
 		{
-			http.Request{}, vari{
+			tName:    "value struct of http.Request",
+			variable: http.Request{},
+			expected: vari{
 				Name:      "net/http.Request",
 				Kind:      reflect.Struct,
 				Signature: []string{"http.Request", "*http.Request"},
@@ -470,7 +465,8 @@ func TestStdlibVariables(t *testing.T) {
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
-  TransferEncoding: []string{},
+  TransferEncoding: []string{
+},
   Close: false,
   Host: "",
   Form: url.Values{},
@@ -487,7 +483,9 @@ func TestStdlibVariables(t *testing.T) {
 		},
 
 		{
-			&http.Request{}, vari{
+			tName:    "pointer struct of http.Request",
+			variable: &http.Request{},
+			expected: vari{
 				Name:      "net/http.Request",
 				Kind:      reflect.Struct,
 				Signature: []string{"*http.Request", "http.Request"},
@@ -545,7 +543,8 @@ func TestStdlibVariables(t *testing.T) {
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
-  TransferEncoding: []string{},
+  TransferEncoding: []string{
+},
   Close: false,
   Host: "",
   Form: url.Values{},
@@ -560,71 +559,12 @@ func TestStdlibVariables(t *testing.T) {
 }`,
 			},
 		},
-
-		{
-			sliceOfStruct(), vari{
-				Name:      "[]http.Request",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]http.Request"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val: `[]http.Request{
-   Request{
-    Method: "0",
-    URL: *url.URL(nil),
-    Proto: "",
-    ProtoMajor: int(0),
-    ProtoMinor: int(0),
-    Header: http.Header{},
-    Body: io.ReadCloser nil,
-    GetBody: func() (io.ReadCloser, error),
-    ContentLength: int64(0),
-    TransferEncoding: []string{},
-    Close: false,
-    Host: "",
-    Form: url.Values{},
-    PostForm: url.Values{},
-    MultipartForm: *multipart.Form(nil),
-    Trailer: http.Header{},
-    RemoteAddr: "",
-    RequestURI: "",
-    TLS: *tls.ConnectionState(nil),
-    Cancel: <-chan struct {} (len=0, cap=0),
-    Response: *http.Response(nil),
-  },
-   Request{
-    Method: "1",
-    URL: *url.URL(nil),
-    Proto: "",
-    ProtoMajor: int(0),
-    ProtoMinor: int(0),
-    Header: http.Header{},
-    Body: io.ReadCloser nil,
-    GetBody: func() (io.ReadCloser, error),
-    ContentLength: int64(0),
-    TransferEncoding: []string{},
-    Close: false,
-    Host: "",
-    Form: url.Values{},
-    PostForm: url.Values{},
-    MultipartForm: *multipart.Form(nil),
-    Trailer: http.Header{},
-    RemoteAddr: "",
-    RequestURI: "",
-    TLS: *tls.ConnectionState(nil),
-    Cancel: <-chan struct {} (len=0, cap=0),
-    Response: *http.Response(nil),
-  },
- ...<9998 more redacted>..}`,
-			},
-		},
 	}
 
 	for _, v := range tt {
 		v := v
-		t.Run(v.expected.Name, func(t *testing.T) {
+		t.Run(v.tName, func(t *testing.T) {
 			c := qt.New(t)
-
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})
