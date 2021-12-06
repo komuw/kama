@@ -198,8 +198,9 @@ jobs:
 
       - name: dummy run
         run: |
-          go build -trimpath -race -o kama cmd/kama/main.go
+          go build -trimpath -race -o kama cmd/kama
           ./kama -h
+          ./kama errors
 
 
   # run_stress_test:

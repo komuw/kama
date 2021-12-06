@@ -20,11 +20,15 @@ Comprehensive documetion is available -> [Documentation](https://pkg.go.dev/gith
 ## Installation
 
 ```shell
-go get -u github.com/komuw/kama
+go get github.com/komuw/kama # library
+// TODO: check if this works
+go install github.com/komuw/kama/cmd/kama@latest # cli app 
 ```           
 
 
 ## Usage:    
+
+#### 1. As a library
 
 #### (a) print exported api of modules
 ```go
@@ -182,6 +186,16 @@ SNIPPET: &Request{
 ]
 ```
 
+#### 2. As a cli app    
+`kama` also has a commandline app, which you can install as;
+```shell
+go get github.com/komuw/kama/cmd/kama
+```
+and use as;
+```shell
+kama --help
+kama github.com/pkg/errors
+```
 
 ## Inspiration
 1. Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin.    
