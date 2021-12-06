@@ -25,6 +25,6 @@ fi
 
 
 printf "\n creating git tag: ${VERSION} \n"
-printf "\n with commit message, see Changelong: https://github.com/komuw/ote/blob/master/CHANGELOG.md \n" && \
-  git tag -a "${VERSION}" -m "see Changelong: https://github.com/komuw/ote/blob/master/CHANGELOG.md"
+printf "\n with commit message, see Changelong: https://github.com/komuw/kama/blob/main/CHANGELOG.md \n" && \
+  git tag -a "${VERSION}" -m "see Changelong: https://github.com/komuw/kama/blob/main/CHANGELOG.md"
 printf "\n git push the tag::\n" && git push --all -u --follow-tags

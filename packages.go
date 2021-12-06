@@ -39,14 +39,12 @@ func newPak(pattern string) (pak, error) {
 	)
 	if err != nil {
 		return pak{}, err
-
 	}
-	// if packages.PrintErrors(pkgs) > 0 {
-	// 	// TODO: maybe we do not need this
-	// 	log.Fatal("PrintErrors")
-	// }
 
 	pkg := pkgs[0]
+	if len(pkg.Errors) > 0 {
+		return pak{}, pkg.Errors[0]
+	}
 	constantSlice, varSlice, typeSlice, funcSlice, methodSlice := pkgScope(pkg)
 
 	type2Methods := associateTypeMethods(typeSlice, methodSlice)
@@ -61,9 +59,8 @@ func newPak(pattern string) (pak, error) {
 }
 
 func (p pak) String() string {
-
 	nLf := func(x []string) []string {
-		var fm = []string{}
+		fm := []string{}
 		if len(x) <= 1 {
 			return fm
 		}
@@ -77,8 +74,8 @@ func (p pak) String() string {
 
 	var sliceTypeMeths []string
 	for typ, meths := range p.Types {
-		var typ = typ
-		var meths = meths
+		typ := typ
+		meths := meths
 
 		t := "\n\t" + typ
 		for _, met := range meths {
@@ -107,7 +104,7 @@ TYPES: %v
 func pkgScope(pkg *packages.Package) ([]string, []string, []string, []string, []string) {
 	// package members (TypeCheck or WholeProgram mode)
 
-	constVarTypFunc := []string{} //holds top level constants, variables, types & functions
+	constVarTypFunc := []string{} // holds top level constants, variables, types & functions
 	methodSlice := []string{}
 	if pkg.Types != nil {
 		qual := types.RelativeTo(pkg.Types)
@@ -160,6 +157,7 @@ func pkgScope(pkg *packages.Package) ([]string, []string, []string, []string, []
 
 	return constantSlice, varSlice, typeSlice, funcSlice, methodSlice
 }
+
 func associateTypeMethods(typeSlice, methodSlice []string) map[string][]string {
 	type2Methods := map[string][]string{}
 

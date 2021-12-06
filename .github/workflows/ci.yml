@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        go-version: [1.15]
+        go-version: [1.16]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -20,23 +20,36 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
+      - name: checkout main branch too. # so that it is also available for diff operations
+        uses: actions/checkout@v2
+        with:
+          ref: main
 
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      # https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
       - name: check if changes have release notes
-        if: github.ref != 'refs/heads/master'
+        if: github.ref != 'refs/heads/main'
         env:
           GIT_BRANCH: ${{ github.ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_BASE_REF: ${{ github.base_ref	}}
         run: |
-          echo $GIT_BRANCH
-          if [[ "$GIT_BRANCH" == "refs/heads/master" ]]
+          printf "GIT_BRANCH: $GIT_BRANCH \n"
+          printf "GITHUB_HEAD_REF: $GITHUB_HEAD_REF \n"
+          printf "GITHUB_BASE_REF: $GITHUB_BASE_REF \n"
+          printf "list git branches: \n"
+          git branch --list --all
+
+          if [[ "$GIT_BRANCH" == "refs/heads/main" ]]
           then
               printf "\n $GIT_BRANCH branch, ignoring check for relese notes \n"
           elif [[  "$GIT_BRANCH" == *"refs/tags/"* ]]
           then
               printf "\n $GIT_BRANCH branch, ignoring check for relese notes \n"
           else
-              ChangedFiles=`git diff --name-only origin/master`
+              ChangedFiles=`git diff --name-only remotes/origin/main`
               echo $ChangedFiles
               case "$ChangedFiles" in
                 *CHANGELOG.*)
@@ -48,58 +61,57 @@ jobs:
 
   run_tests:
     name: run_tests
-    timeout-minutes: 3
+    timeout-minutes: 7
     strategy:
       matrix:
-        go-version: [1.15]
-        platform: [ubuntu-18.04, macos-latest, windows-latest]
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - name: Set up Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.15
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
-
-      - name: tests and benchmarks
-        run: |
-          go test -timeout 1m -race -run=XXXX -bench=. ./...
-          go test -timeout 1m -v -race ./...
-
-      - name: test coverage
-        run: |
-          go test -timeout 2m -v -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
-          go tool cover -html=coverage.out -o coverage.html
-          go tool cover -func=coverage.out
-        if: matrix.platform != 'windows-latest'
-
-      - name: check can run
-        run: |
-          pwd; ls -lsha
-          go build --race -trimpath -o kama $HOME/work/kama/kama/cmd/kama
-          ./kama -h
-          ./kama errors
-        if: matrix.platform != 'windows-latest'
-
-
-  run_analysis:
-    name: run_analysis
-    timeout-minutes: 2
-    strategy:
-      matrix:
-        go-version: [1.15]
+        go-version: [1.16]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.15
+          go-version: 1.16
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+
+      - name: tests and benchmarks
+        run: |
+          go test -timeout 1m -race -run=XXXX -bench=. ./...
+          go test -timeout 4m -v -race ./...
+
+      - name: test coverage
+        run: |
+          set -x
+
+          # check integrity of codecov
+          curl -s https://codecov.io/bash > codecov;
+          VERSION=$(grep -o 'VERSION=\"[0-9\.]*\"' codecov | cut -d'"' -f2);
+          shasum --algorithm 512 --check <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA512SUM" | grep codecov)
+          rm -rf codecov
+
+          go test -timeout 4m -v -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
+          go tool cover -html=coverage.out -o coverage.html
+          go tool cover -func=coverage.out
+
+
+  run_analysis:
+    name: run_analysis
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        go-version: [1.16]
+        platform: [ubuntu-18.04]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
       - name: install apt and pip deps
         run: |
@@ -109,22 +121,107 @@ jobs:
 
       - name: install tools
         run: |
-          wget -nc --directory-prefix=/tmp https://github.com/myitcv/gobin/releases/download/$GOBIN_VERSION/linux-amd64
-          mv /tmp/linux-amd64 /tmp/gobin
-          chmod +x /tmp/gobin
-          /tmp/gobin honnef.co/go/tools/cmd/staticcheck@$STATICCHECK_VERSION
-          /tmp/gobin github.com/securego/gosec/cmd/gosec
-          /tmp/gobin github.com/quasilyte/go-ruleguard/cmd/ruleguard
+          set -x
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          go install github.com/securego/gosec/cmd/gosec@latest
+          go install github.com/quasilyte/go-ruleguard/cmd/ruleguard@latest
+          go install github.com/orijtech/structslop/cmd/structslop@latest
+          go install github.com/orijtech/httperroryzer/cmd/httperroryzer@latest
+          go install golang.org/x/tools/cmd/stress@latest
+          go install golang.org/x/tools/cmd/goimports@latest
+          go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow@latest
+          go install github.com/kisielk/errcheck@latest
+
+          /home/runner/go/bin/staticcheck -version
         env:
-          GOBIN_VERSION: 'v0.0.14'
-          STATICCHECK_VERSION: '2020.1.6'
+          SOME_ENV_VAR: '2020.1.6'
 
       - name: static analysis
         run: |
-          go vet -v -all ./...
-          /home/runner/go/bin/staticcheck -tests -go 1.15 -unused.whole-program ./...
+          set -x
+          diff <(gofmt -d .) <(printf "")
+          go vet -all ./...
+          go vet -vettool=/home/runner/go/bin/shadow -strict ./...
+          /home/runner/go/bin/staticcheck -tests -go 1.16 ./...
           /home/runner/go/bin/gosec ./...
+          /home/runner/go/bin/structslop ./...
+          /home/runner/go/bin/httperroryzer ./...
+          # see: https://github.com/golang/go/commit/a98589711da5e9d935e8d690cfca92892e86d557
+          /home/runner/go/bin/errcheck -ignoregenerated -ignoretests -asserts ./...
+          
+          # dont use golangci-lint
+          # see: https://twitter.com/dominikhonnef/status/1394766501157167112
 
-          mkdir -p /tmp/dgryski/semgrep-go && \
-          wget -nc --output-document=/tmp/dgryski/semgrep-go/rules.go https://raw.githubusercontent.com/dgryski/semgrep-go/master/ruleguard.rules.go && \
+          mkdir -p /tmp/dgryski/semgrep-go
+          wget -nc --output-document=/tmp/dgryski/semgrep-go/rules.go https://raw.githubusercontent.com/dgryski/semgrep-go/master/ruleguard.rules.go
+          go get github.com/quasilyte/go-ruleguard/dsl
           /home/runner/go/bin/ruleguard -c 1 -rules /tmp/dgryski/semgrep-go/rules.go ./...
+          go mod tidy
+
+          # deadlock detection
+          # https://github.com/cockroachdb/cockroach/issues/7972
+          go get github.com/sasha-s/go-deadlock
+          find . -name "*.go" | xargs -n 1 sed -i.backup 's/sync.RWMutex/deadlock.RWMutex/'
+          find . -name "*.go" | xargs -n 1 sed -i.backup 's/sync.Mutex/deadlock.Mutex/'
+          find . -name '*.backup' -delete
+          /home/runner/go/bin/goimports -w .
+          go test -timeout 4m -v -race ./...
+          go mod tidy
+
+          # error shadowing
+          num_err_shadows=$(grep -irSn 'err = ' *.go | wc -l | tr -d ' ')
+          if [ "$num_err_shadows" != "0" ]; then
+              printf "\n\t fix error shadowing \n" && \
+              grep -irSn 'err = ' *.go
+              exit 77
+          fi
+
+          # TODO: add https://github.com/system-pclub/GCatch
+
+  do_acceptance:
+    name: do_acceptance
+    timeout-minutes: 3
+    strategy:
+      matrix:
+        go-version: [1.16]
+        platform: [ubuntu-18.04]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.16
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      
+
+      - name: dummy run
+        run: |
+          go build -trimpath -race -o kama cmd/kama
+          ./kama -h
+          ./kama errors
+
+
+  # run_stress_test:
+  #   name: run_stress_test
+  #   timeout-minutes: 2
+  #   strategy:
+  #     matrix:
+  #       go-version: [1.16]
+  #       platform: [ubuntu-18.04]
+  #   runs-on: ${{ matrix.platform }}
+  #   steps:
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v1
+  #       with:
+  #         go-version: 1.16
+
+  #     - name: Check out code into the Go module directory
+  #       uses: actions/checkout@v1
+
+  #     - name: stress test
+  #       run: |
+  #         go install golang.org/x/tools/cmd/stress@latest
+  #         go test -o kama.test -c -race
+  #         /home/runner/go/bin/stress -timeout 10s ./kama.test

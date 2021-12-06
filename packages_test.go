@@ -3,7 +3,7 @@ package kama
 import (
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
+	qt "github.com/frankban/quicktest"
 )
 
 func TestStdlibPackages(t *testing.T) {
@@ -27,13 +27,13 @@ func TestStdlibPackages(t *testing.T) {
 				Name:      "archive/tar",
 				Constants: []string{"FormatGNU Format", "FormatPAX Format", "FormatUSTAR Format", "FormatUnknown Format", "TypeBlock untyped rune", "TypeChar untyped rune", "TypeCont untyped rune", "TypeDir untyped rune", "TypeFifo untyped rune", "TypeGNULongLink untyped rune", "TypeGNULongName untyped rune", "TypeGNUSparse untyped rune", "TypeLink untyped rune", "TypeReg untyped rune", "TypeRegA untyped rune", "TypeSymlink untyped rune", "TypeXGlobalHeader untyped rune", "TypeXHeader untyped rune"},
 				Variables: []string{"ErrFieldTooLong error", "ErrHeader error", "ErrWriteAfterClose error", "ErrWriteTooLong error"},
-				Functions: []string{"FileInfoHeader(fi os.FileInfo, link string) (*Header, error)", "NewReader(r io.Reader) *Reader", "NewWriter(w io.Writer) *Writer"},
+				Functions: []string{"FileInfoHeader(fi io/fs.FileInfo, link string) (*Header, error)", "NewReader(r io.Reader) *Reader", "NewWriter(w io.Writer) *Writer"},
 				Types: map[string][]string{
 					"Format int": {
 						"(Format) String() string",
 					},
 					"Header struct": {
-						"(*Header) FileInfo() os.FileInfo",
+						"(*Header) FileInfo() io/fs.FileInfo",
 					},
 					"Reader struct": {
 						"(*Reader) Next() (*Header, error)",
@@ -51,14 +51,15 @@ func TestStdlibPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		pak, err := newPak(v.importPath)
+		v := v
+		c := qt.New(t)
+
+		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(pak, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", pak, v.expected)
-		}
+		c.Assert(p, qt.DeepEquals, v.expected)
 	}
 }
 
@@ -99,13 +100,24 @@ func TestThirdPartyPackages(t *testing.T) {
 	}
 
 	for _, v := range tt {
-		pak, err := newPak(v.importPath)
+		v := v
+		c := qt.New(t)
+
+		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		if !cmp.Equal(pak, v.expected) {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", pak, v.expected)
-		}
+		c.Assert(p, qt.DeepEquals, v.expected)
 	}
+}
+
+func TestError(t *testing.T) {
+	c := qt.New(t)
+
+	_, err := newPak("github.com/pkg/NoSuchModule")
+	if err == nil {
+		t.Errorf("got no error, yet expected an error")
+	}
+	c.Assert(err.Error(), qt.Contains, "no required module provides package")
 }

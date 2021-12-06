@@ -1,6 +1,7 @@
 .vscode/*
 debug
 debug.test
+kama.test
 coverage.txt
 coverage.out
 coverage.html
@@ -11,6 +12,9 @@ coverage.html
 
 # goreleaser distribution folder.
 /dist/
+
+# binary
+kama
 
 # debug stuff
 debug.test

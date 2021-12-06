@@ -1,11 +1,15 @@
 module github.com/komuw/kama
 
-go 1.15
+go 1.16
 
 require (
-	github.com/google/go-cmp v0.5.2 // test
+	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
+	golang.org/x/tools v0.1.8
+)
+
+require (
+	github.com/frankban/quicktest v1.14.0 // test
 	github.com/pkg/errors v0.9.1 // test
-	github.com/sanity-io/litter v1.3.0
 	go.uber.org/goleak v1.1.10 // test
-	golang.org/x/tools v0.0.0-20201011145850-ed2f50202694
 )
