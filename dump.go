@@ -9,12 +9,18 @@ import (
 	"unicode"
 )
 
-func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	/*
 		`compact` indicates whether the struct should be laid in one line or not
 		`hideZeroValues` indicates whether to show zeroValued vars
 		`indentLevel` is the number of spaces from the left-most side of the termninal for struct names
+
+		In future(if we ever add compation) we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+		see:
+			1. https://github.com/sanity-io/litter/pull/43
+			2. https://github.com/komuw/kama/pull/28
 	*/
+
 	deVal := deInterface(val)
 	if !deVal.IsValid() {
 		return "nil"
@@ -30,7 +36,7 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 	case reflect.Invalid:
 		return "<invalid>"
 	case reflect.String:
-		return dumpString(val, compact, hideZeroValues)
+		return dumpString(val, hideZeroValues)
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
@@ -44,25 +50,25 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		reflect.Float32,
 		reflect.Float64,
 		reflect.Uintptr:
-		return dumpNumbers(val, compact, hideZeroValues, indentLevel)
+		return dumpNumbers(val, hideZeroValues, indentLevel)
 	case reflect.Struct:
 		// We used to use `sanity-io/litter` to do dumping.
 		// We however, decided to implement our own dump functionality.
 		//
-		// The main reason precipitating we are doing this is because sanity-io/litter has no way to compact
+		// The main reason is because sanity-io/litter has no way to compact
 		// arrays/slices/maps that are inside structs.
 		// This logic can be discarded if sanity-io/litter implements similar.
 		// see: https://github.com/sanity-io/litter/pull/43
 		fromPtr := false
-		return dumpStruct(val, fromPtr, compact, hideZeroValues, indentLevel)
+		return dumpStruct(val, fromPtr, hideZeroValues, indentLevel)
 	case reflect.Ptr:
 		v := val.Elem()
 		if v.IsValid() {
 			if v.Type().Kind() == reflect.Struct {
 				fromPtr := true
-				return dumpStruct(v, fromPtr, compact, hideZeroValues, indentLevel)
+				return dumpStruct(v, fromPtr, hideZeroValues, indentLevel)
 			} else {
-				return dumpNonStructPointer(v, compact, hideZeroValues, indentLevel)
+				return dumpNonStructPointer(v, hideZeroValues, indentLevel)
 			}
 		} else {
 			// `v.IsValid()` returns false if v is the zero Value.
@@ -71,21 +77,17 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		}
 	case reflect.Array,
 		reflect.Slice:
-		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-		// see: https://github.com/sanity-io/litter/pull/43
-		return dumpSlice(val, compact, hideZeroValues, indentLevel)
+		return dumpSlice(val, hideZeroValues, indentLevel)
 	case reflect.Chan:
-		return dumpChan(val, compact, hideZeroValues, indentLevel)
+		return dumpChan(val, hideZeroValues, indentLevel)
 	case reflect.Map:
-		// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
-		// see: https://github.com/sanity-io/litter/pull/43
-		return dumpMap(val, compact, hideZeroValues, indentLevel)
+		return dumpMap(val, hideZeroValues, indentLevel)
 	case reflect.Bool:
 		return fmt.Sprint(val)
 	case reflect.Func:
-		return dumpFunc(val, compact, hideZeroValues, indentLevel)
+		return dumpFunc(val, hideZeroValues, indentLevel)
 	case reflect.Complex64, reflect.Complex128:
-		return dumpComplexNum(val, compact, hideZeroValues, indentLevel)
+		return dumpComplexNum(val, hideZeroValues, indentLevel)
 	case reflect.UnsafePointer:
 		// It is not generally safe to do anything with an unsafe.Pointer
 		// see: https://golang.org/pkg/unsafe/#Pointer
@@ -93,15 +95,15 @@ func dump(val reflect.Value, compact bool, hideZeroValues bool, indentLevel int)
 		// do note that if we wanted we could get a uintptr via `val.Pointer()`
 		return "unsafe.Pointer"
 	case reflect.Interface:
-		return dumpInterface(val, compact, hideZeroValues, indentLevel)
+		return dumpInterface(val, hideZeroValues, indentLevel)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iType.Kind())
 	}
 }
 
-func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
+func dumpString(v reflect.Value, hideZeroValues bool) string {
 	// dumps strings
-	maxL := 50
+	maxL := 100
 
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL))) + 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
@@ -118,7 +120,7 @@ func dumpString(v reflect.Value, compact bool, hideZeroValues bool) string {
 	return s
 }
 
-func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpStruct(v reflect.Value, fromPtr bool, hideZeroValues bool, indentLevel int) string {
 	/*
 		`fromPtr` indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
 		`compact` indicates whether the struct should be laid in one line or not
@@ -131,17 +133,8 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 	}
 
 	sep := "\n"
-	if compact {
-		sep = ""
-	}
 	fieldNameSep := strings.Repeat("  ", indentLevel)
-	if compact {
-		fieldNameSep = ""
-	}
 	lastBracketSep := strings.Repeat("  ", indentLevel-1)
-	if compact {
-		lastBracketSep = ""
-	}
 
 	vt := v.Type()
 	s := fmt.Sprintf("%s{%s", typeName, sep)
@@ -156,8 +149,9 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 			} else {
 				// when something is inside a struct, that's when we use compact & hideZeroValues
 				cpt := true
+				_ = cpt
 				hzv := true
-				val := dump(fieldd, cpt, hzv, indentLevel)
+				val := dump(fieldd, hzv, indentLevel)
 				s = s + fieldNameSep + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
@@ -166,25 +160,26 @@ func dumpStruct(v reflect.Value, fromPtr bool, compact bool, hideZeroValues bool
 	return s
 }
 
-func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps slices & arrays
 
-	maxL := 2
+	// In future(if we ever add compation) we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+	// see:
+	//     1. https://github.com/sanity-io/litter/pull/43
+	//     2. https://github.com/komuw/kama/pull/28
+
+	maxL := 20
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
 
 	newline := "\n"
 	leftSep := "   "
-	if compact {
-		newline = ""
-		leftSep = ""
-	}
 
 	s := typeName + "{" + newline
 	for i := 0; i < constraint; i++ {
 		elm := v.Index(i)
-		s = s + leftSep + dump(elm, compact, hideZeroValues, indentLevel) + "," + newline
+		s = s + leftSep + dump(elm, hideZeroValues, indentLevel) + "," + newline
 	}
 	if numEntries > constraint {
 		remainder := numEntries - constraint
@@ -194,12 +189,15 @@ func dumpSlice(v reflect.Value, compact bool, hideZeroValues bool, indentLevel i
 	return s
 }
 
-func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps maps
 
-	// In future we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+	// In future(if we ever add compation) we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
+	// see:
+	//     1. https://github.com/sanity-io/litter/pull/43
+	//     2. https://github.com/komuw/kama/pull/28
 
-	maxL := 2
+	maxL := 20
 	numEntries := v.Len()
 	constraint := int(math.Min(float64(numEntries), float64(maxL)))
 	typeName := v.Type().String()
@@ -207,11 +205,6 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	newline := "\n"
 	leftSep := "   "
 	colonSep := " "
-	if compact {
-		newline = ""
-		leftSep = ""
-		colonSep = ""
-	}
 	s := typeName + "{" + newline
 
 	// Lets sort the map based on keys. This is done to introduce stability of the output.
@@ -220,13 +213,13 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	sort.Slice(keys,
 		func(i, j int) bool {
 			// it's unfortunate that we have to dump twice. In this func and in the `for range` below.
-			return dump(keys[i], compact, hideZeroValues, indentLevel) < dump(keys[j], compact, hideZeroValues, indentLevel)
+			return dump(keys[i], hideZeroValues, indentLevel) < dump(keys[j], hideZeroValues, indentLevel)
 		},
 	)
 	for count, key := range keys {
 		mapKey := key
 		mapVal := v.MapIndex(key)
-		s = s + leftSep + dump(mapKey, compact, hideZeroValues, indentLevel) + ":" + colonSep + dump(mapVal, compact, hideZeroValues, indentLevel) + ", " + newline
+		s = s + leftSep + dump(mapKey, hideZeroValues, indentLevel) + ":" + colonSep + dump(mapVal, hideZeroValues, indentLevel) + ", " + newline
 		if count > constraint {
 			remainder := numEntries - constraint
 			s = s + fmt.Sprintf("%s...<%d more redacted>..", leftSep, remainder)
@@ -239,7 +232,7 @@ func dumpMap(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int
 	return s
 }
 
-func dumpChan(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpChan(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps channels
 	cap := v.Cap()
 	len := v.Len()
@@ -248,7 +241,7 @@ func dumpChan(v reflect.Value, compact bool, hideZeroValues bool, indentLevel in
 	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
 }
 
-func dumpFunc(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpFunc(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps functions
 
 	vType := v.Type()
@@ -283,7 +276,7 @@ func dumpFunc(v reflect.Value, compact bool, hideZeroValues bool, indentLevel in
 	return typeName
 }
 
-func dumpComplexNum(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpComplexNum(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps complex64 and complex128 numbers
 	bits := v.Type().Bits()
 	cmp := v.Complex() // returns complex128 even for `reflect.Complex64`
@@ -293,13 +286,13 @@ func dumpComplexNum(v reflect.Value, compact bool, hideZeroValues bool, indentLe
 	return fmt.Sprintf("complex128%v", cmp)
 }
 
-func dumpNonStructPointer(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpNonStructPointer(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps pointer types other than struct.
 	// ie; someIntEight := int8(14); kama.Dirp(&someIntEight)
 	// dumping for struct pointers is handled in `dumpStruct()`
 
 	pref := "&"
-	s := dump(v, compact, hideZeroValues, indentLevel)
+	s := dump(v, hideZeroValues, indentLevel)
 
 	if strings.HasPrefix(s, pref) {
 		return s
@@ -307,7 +300,7 @@ func dumpNonStructPointer(v reflect.Value, compact bool, hideZeroValues bool, in
 	return pref + s
 }
 
-func dumpNumbers(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpNumbers(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps numbers.
 
 	iType := v.Type()
@@ -337,7 +330,7 @@ func dumpNumbers(v reflect.Value, compact bool, hideZeroValues bool, indentLevel
 	}
 }
 
-func dumpInterface(v reflect.Value, compact bool, hideZeroValues bool, indentLevel int) string {
+func dumpInterface(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dump interface
 
 	name := v.Type().String() // eg; `io.Reader` or `error`

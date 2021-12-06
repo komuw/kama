@@ -74,3 +74,11 @@ func Dir(i interface{}) string {
 		return res.String()
 	}
 }
+
+// Stackp prints to standard error the colorized stack trace returned by debug.Stack.
+//
+// Stack trace from the runtime/stdlib is colored cyan, third party libraries is magenta
+// whereas your code is green.
+func Stackp() {
+	stackp()
+}

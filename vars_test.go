@@ -56,14 +56,6 @@ func bigSlice() []int {
 
 var MyBigSlice = bigSlice()
 
-func sliceOfStruct() []http.Request {
-	xx := []http.Request{}
-	for i := 0; i < 10_000; i++ {
-		xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
-	}
-	return xx
-}
-
 func bigMap() map[int]string {
 	y := map[int]string{}
 	for i := 0; i < 10_000; i++ {
@@ -123,12 +115,15 @@ type SomeStructWIthSlice struct {
 
 func TestBasicVariables(t *testing.T) {
 	tt := []struct {
+		tName    string
 		variable interface{}
 		expected vari
 	}{
 
 		{
-			Person{Name: "John"}, vari{
+			tName:    "value struct",
+			variable: Person{Name: "John"},
+			expected: vari{
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"kama.Person", "*kama.Person"},
@@ -143,7 +138,9 @@ func TestBasicVariables(t *testing.T) {
 		},
 		{
 
-			&Person{Name: "Jane"}, vari{
+			tName:    "pointer struct",
+			variable: &Person{Name: "Jane"},
+			expected: vari{
 				Name:      "github.com/komuw/kama.Person",
 				Kind:      reflect.Struct,
 				Signature: []string{"*kama.Person", "kama.Person"},
@@ -157,7 +154,9 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-			ThisFunction, vari{
+			tName:    "function",
+			variable: ThisFunction,
+			expected: vari{
 				Name:      "github.com/komuw/kama.ThisFunction",
 				Kind:      reflect.Func,
 				Signature: []string{"func(string, int) (string, error)"},
@@ -167,7 +166,9 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-			thisFunctionVar, vari{
+			tName:    "function variable",
+			variable: thisFunctionVar,
+			expected: vari{
 				Name:      "github.com/komuw/kama.ThisFunction",
 				Kind:      reflect.Func,
 				Signature: []string{"func(string, int) (string, error)"},
@@ -177,7 +178,9 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-			customerID(9), vari{
+			tName:    "distinct type",
+			variable: customerID(9),
+			expected: vari{
 				Name:      "github.com/komuw/kama.customerID",
 				Kind:      reflect.Uint16,
 				Signature: []string{"kama.customerID"},
@@ -187,7 +190,9 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-			MyBigSlice, vari{
+			tName:    "big slice",
+			variable: MyBigSlice,
+			expected: vari{
 				Name:      "[]int",
 				Kind:      reflect.Slice,
 				Signature: []string{"[]int"},
@@ -196,11 +201,31 @@ func TestBasicVariables(t *testing.T) {
 				Val: `[]int{
    int(0),
    int(1),
- ...<9998 more redacted>..}`,
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..}`,
 			},
 		},
 		{
-			bigMap(), vari{
+			tName:    "big map",
+			variable: bigMap(),
+			expected: vari{
 				Name:      "map[int]string",
 				Kind:      reflect.Map,
 				Signature: []string{"map[int]string"},
@@ -211,11 +236,31 @@ func TestBasicVariables(t *testing.T) {
    int(1): "1", 
    int(10): "10", 
    int(100): "100", 
-   ...<9998 more redacted>..}`,
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   int(1011): "1011", 
+   int(1012): "1012", 
+   int(1013): "1013", 
+   int(1014): "1014", 
+   int(1015): "1015", 
+   int(1016): "1016", 
+   ...<9980 more redacted>..}`,
 			},
 		},
 		{
-			bigChan(), vari{
+			tName:    "big chan",
+			variable: bigChan(),
+			expected: vari{
 				Name:      "chan int",
 				Kind:      reflect.Chan,
 				Signature: []string{"chan int"},
@@ -225,7 +270,9 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-			bigArray(), vari{
+			tName:    "big array",
+			variable: bigArray(),
+			expected: vari{
 				Name:      "[10000]int",
 				Kind:      reflect.Array,
 				Signature: []string{"[10000]int"},
@@ -234,22 +281,43 @@ func TestBasicVariables(t *testing.T) {
 				Val: `[10000]int{
    int(0),
    int(1),
- ...<9998 more redacted>..}`,
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..}`,
 			},
 		},
 		{
-			BigString, vari{
+			tName:    "big string",
+			variable: BigString,
+			expected: vari{
 				Name:      "string",
 				Kind:      reflect.String,
 				Signature: []string{"string"},
 				Fields:    []string{},
 				Methods:   []string{},
-				Val:       `"AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..`,
+				Val:       `"AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It ...<3404 more redacted>..`,
 			},
 		},
 		{
-
-			SomeStructWIthSlice{Name: "Hello", MyAwesome: bigSlice()}, vari{
+			tName:    "value struct with slice field",
+			variable: SomeStructWIthSlice{Name: "Hello", MyAwesome: bigSlice()},
+			expected: vari{
 				Name:      "github.com/komuw/kama.SomeStructWIthSlice",
 				Kind:      reflect.Struct,
 				Signature: []string{"kama.SomeStructWIthSlice", "*kama.SomeStructWIthSlice"},
@@ -257,13 +325,35 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val: `SomeStructWIthSlice{
   Name: "Hello",
-  MyAwesome: []int{int(0),int(1), ...<9998 more redacted>..},
+  MyAwesome: []int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..},
 }`,
 			},
 		},
 		{
-
-			&SomeStructWIthSlice{Name: "HelloPointery", MyAwesome: bigSlice()}, vari{
+			tName:    "pointer struct with slice field",
+			variable: &SomeStructWIthSlice{Name: "HelloPointery", MyAwesome: bigSlice()},
+			expected: vari{
 				Name:      "github.com/komuw/kama.SomeStructWIthSlice",
 				Kind:      reflect.Struct,
 				Signature: []string{"*kama.SomeStructWIthSlice", "kama.SomeStructWIthSlice"},
@@ -271,7 +361,28 @@ func TestBasicVariables(t *testing.T) {
 				Methods:   []string{},
 				Val: `&SomeStructWIthSlice{
   Name: "HelloPointery",
-  MyAwesome: []int{int(0),int(1), ...<9998 more redacted>..},
+  MyAwesome: []int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..},
 }`,
 			},
 		},
@@ -279,7 +390,7 @@ func TestBasicVariables(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		t.Run(v.expected.Name, func(t *testing.T) {
+		t.Run(v.tName, func(t *testing.T) {
 			c := qt.New(t)
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
@@ -289,11 +400,14 @@ func TestBasicVariables(t *testing.T) {
 
 func TestStdlibVariables(t *testing.T) {
 	tt := []struct {
+		tName    string
 		variable interface{}
 		expected vari
 	}{
 		{
-			http.Request{}, vari{
+			tName:    "value struct of http.Request",
+			variable: http.Request{},
+			expected: vari{
 				Name:      "net/http.Request",
 				Kind:      reflect.Struct,
 				Signature: []string{"http.Request", "*http.Request"},
@@ -351,7 +465,8 @@ func TestStdlibVariables(t *testing.T) {
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
-  TransferEncoding: []string{},
+  TransferEncoding: []string{
+},
   Close: false,
   Host: "",
   Form: url.Values{},
@@ -368,7 +483,9 @@ func TestStdlibVariables(t *testing.T) {
 		},
 
 		{
-			&http.Request{}, vari{
+			tName:    "pointer struct of http.Request",
+			variable: &http.Request{},
+			expected: vari{
 				Name:      "net/http.Request",
 				Kind:      reflect.Struct,
 				Signature: []string{"*http.Request", "http.Request"},
@@ -426,7 +543,8 @@ func TestStdlibVariables(t *testing.T) {
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
-  TransferEncoding: []string{},
+  TransferEncoding: []string{
+},
   Close: false,
   Host: "",
   Form: url.Values{},
@@ -441,71 +559,12 @@ func TestStdlibVariables(t *testing.T) {
 }`,
 			},
 		},
-
-		{
-			sliceOfStruct(), vari{
-				Name:      "[]http.Request",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]http.Request"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val: `[]http.Request{
-   Request{
-    Method: "0",
-    URL: *url.URL(nil),
-    Proto: "",
-    ProtoMajor: int(0),
-    ProtoMinor: int(0),
-    Header: http.Header{},
-    Body: io.ReadCloser nil,
-    GetBody: func() (io.ReadCloser, error),
-    ContentLength: int64(0),
-    TransferEncoding: []string{},
-    Close: false,
-    Host: "",
-    Form: url.Values{},
-    PostForm: url.Values{},
-    MultipartForm: *multipart.Form(nil),
-    Trailer: http.Header{},
-    RemoteAddr: "",
-    RequestURI: "",
-    TLS: *tls.ConnectionState(nil),
-    Cancel: <-chan struct {} (len=0, cap=0),
-    Response: *http.Response(nil),
-  },
-   Request{
-    Method: "1",
-    URL: *url.URL(nil),
-    Proto: "",
-    ProtoMajor: int(0),
-    ProtoMinor: int(0),
-    Header: http.Header{},
-    Body: io.ReadCloser nil,
-    GetBody: func() (io.ReadCloser, error),
-    ContentLength: int64(0),
-    TransferEncoding: []string{},
-    Close: false,
-    Host: "",
-    Form: url.Values{},
-    PostForm: url.Values{},
-    MultipartForm: *multipart.Form(nil),
-    Trailer: http.Header{},
-    RemoteAddr: "",
-    RequestURI: "",
-    TLS: *tls.ConnectionState(nil),
-    Cancel: <-chan struct {} (len=0, cap=0),
-    Response: *http.Response(nil),
-  },
- ...<9998 more redacted>..}`,
-			},
-		},
 	}
 
 	for _, v := range tt {
 		v := v
-		t.Run(v.expected.Name, func(t *testing.T) {
+		t.Run(v.tName, func(t *testing.T) {
 			c := qt.New(t)
-
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})

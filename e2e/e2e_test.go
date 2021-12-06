@@ -6,6 +6,8 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"unsafe"
@@ -234,7 +236,25 @@ METHODS: []
 SNIPPET: []int{
    int(0),
    int(1),
- ...<9998 more redacted>..}
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..}
 ]
 `
 
@@ -244,7 +264,7 @@ SNIPPET: []int{
 		c.Assert(res, qt.Equals, expected)
 	})
 
-	t.Run("slice in a struct is compacted", func(t *testing.T) {
+	t.Run("slice in a struct is not compacted", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
 		expected := `
@@ -257,7 +277,28 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: []int{int(0),int(1), ...<9998 more redacted>..},
+  XX: []int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+   int(14),
+   int(15),
+   int(16),
+   int(17),
+   int(18),
+   int(19),
+ ...<9980 more redacted>..},
 }
 ]
 `
@@ -285,7 +326,25 @@ SNIPPET: map[int]string{
    int(1): "1", 
    int(10): "10", 
    int(100): "100", 
-   ...<9998 more redacted>..}
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   int(1011): "1011", 
+   int(1012): "1012", 
+   int(1013): "1013", 
+   int(1014): "1014", 
+   int(1015): "1015", 
+   int(1016): "1016", 
+   ...<9980 more redacted>..}
 ]
 `
 
@@ -295,7 +354,7 @@ SNIPPET: map[int]string{
 		c.Assert(res, qt.Equals, expected)
 	})
 
-	t.Run("map in a struct is compacted", func(t *testing.T) {
+	t.Run("map in a struct is not compacted", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
 		expected := `
@@ -308,7 +367,30 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: some{
-  XX: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", ...<9998 more redacted>..},
+  XX: map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   int(1011): "1011", 
+   int(1012): "1012", 
+   int(1013): "1013", 
+   int(1014): "1014", 
+   int(1015): "1015", 
+   int(1016): "1016", 
+   ...<9980 more redacted>..},
 }
 ]
 `
@@ -325,76 +407,12 @@ SNIPPET: some{
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
-		expected := `
-[
-NAME: github.com/komuw/kama/e2e_test.SomeStruct
-KIND: struct
-SIGNATURE: [e2e_test.SomeStruct *e2e_test.SomeStruct]
-FIELDS: [
-	SomeInt int16 
-	SomeUintptr uintptr 
-	SliceOfHttpRequest []http.Request 
-	OneHttpRequest http.Request 
-	EmptyString string 
-	SmallString string 
-	LargeString string 
-	DistinctType e2e_test.Distance 
-	SomeNilError error 
-	SomeConcreteError error 
-	LargeSlice []int 
-	LargeMap map[int]string 
-	UndirectedChan chan int 
-	DirectedChan chan<- bool 
-	SomeBool bool 
-	NonIntializedFuncClosure func() (io.ReadCloser, error) 
-	NonIntializedFuncFromStdLib http.HandlerFunc 
-	NonIntializedFuncWithReturn e2e_test.FuncWithReturn 
-	IntializedFuncClosure func() (io.ReadCloser, error) 
-	IntializedFuncFromStdLib http.HandlerFunc 
-	IntializedFuncWithReturn e2e_test.FuncWithReturn 
-	ZeroPointerStruct *url.URL 
-	NonZeroPointerStruct *url.URL 
-	EvenMoreUrl *url.URL 
-	SliceOfNonZeroPointerStruct []*url.URL 
-	ComplexxySixFour complex64 
-	ComplexyOneTwoEight complex128 
-	NonStructPointer *int8 
-	SomeUnsafety unsafe.Pointer 
-	]
-METHODS: []
-SNIPPET: SomeStruct{
-  SomeInt: int16(13),
-  SomeUintptr: uintptr(64902),
-  SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",}, ...<98 more redacted>..},
-  OneHttpRequest: Request{Method: "Hello",},
-  EmptyString: "",
-  SmallString: "What up?",
-  LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
-  DistinctType: e2e_test.Distance(9131),
-  SomeNilError: error(nil),
-  SomeConcreteError: error(Houston something bad happened),
-  LargeSlice: []int{int(0),int(1), ...<9998 more redacted>..},
-  LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", ...<9998 more redacted>..},
-  UndirectedChan: chan int (len=122, cap=10000),
-  DirectedChan: chan<- bool (len=1, cap=13),
-  SomeBool: true,
-  NonIntializedFuncClosure: func() (io.ReadCloser, error),
-  NonIntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
-  NonIntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
-  IntializedFuncClosure: func() (io.ReadCloser, error),
-  IntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
-  IntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
-  ZeroPointerStruct: *url.URL(nil),
-  NonZeroPointerStruct: &URL{},
-  EvenMoreUrl: &URL{Path: "/some/path",},
-  SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",}, ...<6 more redacted>..},
-  ComplexxySixFour: complex64(5+7i),
-  ComplexyOneTwoEight: complex128(5+7i),
-  NonStructPointer: &int8(14),
-  SomeUnsafety: unsafe.Pointer,
-}
-]
-`
+
+		p, e := filepath.Abs("../testdata/struct_of_varying_field_types.txt")
+		c.Assert(e, qt.IsNil)
+		b, e := os.ReadFile(p)
+		c.Assert(e, qt.IsNil)
+		expected := string(b)
 
 		someIntEight := int8(14)
 		s := SomeStruct{
@@ -451,76 +469,12 @@ SNIPPET: SomeStruct{
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
 		t.Parallel()
 		c := qt.New(t)
-		expected := `
-[
-NAME: github.com/komuw/kama/e2e_test.SomeStruct
-KIND: struct
-SIGNATURE: [*e2e_test.SomeStruct e2e_test.SomeStruct]
-FIELDS: [
-	SomeInt int16 
-	SomeUintptr uintptr 
-	SliceOfHttpRequest []http.Request 
-	OneHttpRequest http.Request 
-	EmptyString string 
-	SmallString string 
-	LargeString string 
-	DistinctType e2e_test.Distance 
-	SomeNilError error 
-	SomeConcreteError error 
-	LargeSlice []int 
-	LargeMap map[int]string 
-	UndirectedChan chan int 
-	DirectedChan chan<- bool 
-	SomeBool bool 
-	NonIntializedFuncClosure func() (io.ReadCloser, error) 
-	NonIntializedFuncFromStdLib http.HandlerFunc 
-	NonIntializedFuncWithReturn e2e_test.FuncWithReturn 
-	IntializedFuncClosure func() (io.ReadCloser, error) 
-	IntializedFuncFromStdLib http.HandlerFunc 
-	IntializedFuncWithReturn e2e_test.FuncWithReturn 
-	ZeroPointerStruct *url.URL 
-	NonZeroPointerStruct *url.URL 
-	EvenMoreUrl *url.URL 
-	SliceOfNonZeroPointerStruct []*url.URL 
-	ComplexxySixFour complex64 
-	ComplexyOneTwoEight complex128 
-	NonStructPointer *int8 
-	SomeUnsafety unsafe.Pointer 
-	]
-METHODS: []
-SNIPPET: &SomeStruct{
-  SomeInt: int16(13),
-  SomeUintptr: uintptr(64902),
-  SliceOfHttpRequest: []http.Request{Request{Method: "0",},Request{Method: "1",}, ...<98 more redacted>..},
-  OneHttpRequest: Request{Method: "Hello",},
-  EmptyString: "",
-  SmallString: "What up?",
-  LargeString: "AT last the sleepy atmosphere was stirred—and vig ...<3454 more redacted>..,
-  DistinctType: e2e_test.Distance(9131),
-  SomeNilError: error(nil),
-  SomeConcreteError: error(Houston something bad happened),
-  LargeSlice: []int{int(0),int(1), ...<9998 more redacted>..},
-  LargeMap: map[int]string{int(0):"0", int(1):"1", int(10):"10", int(100):"100", ...<9998 more redacted>..},
-  UndirectedChan: chan int (len=122, cap=10000),
-  DirectedChan: chan<- bool (len=1, cap=13),
-  SomeBool: true,
-  NonIntializedFuncClosure: func() (io.ReadCloser, error),
-  NonIntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
-  NonIntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
-  IntializedFuncClosure: func() (io.ReadCloser, error),
-  IntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
-  IntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
-  ZeroPointerStruct: *url.URL(nil),
-  NonZeroPointerStruct: &URL{},
-  EvenMoreUrl: &URL{Path: "/some/path",},
-  SliceOfNonZeroPointerStruct: []*url.URL{&URL{Path: "1",},&URL{Path: "2",}, ...<6 more redacted>..},
-  ComplexxySixFour: complex64(5+7i),
-  ComplexyOneTwoEight: complex128(5+7i),
-  NonStructPointer: &int8(14),
-  SomeUnsafety: unsafe.Pointer,
-}
-]
-`
+
+		p, e := filepath.Abs("../testdata/pointer_to_struct_of_varying_field_types.txt")
+		c.Assert(e, qt.IsNil)
+		b, e := os.ReadFile(p)
+		c.Assert(e, qt.IsNil)
+		expected := string(b)
 
 		someIntEight := int8(14)
 		s := &SomeStruct{
@@ -570,6 +524,29 @@ SNIPPET: &SomeStruct{
 			SomeUnsafety:        unsafe.Pointer(&someIntEight),
 		}
 
+		res := kama.Dir(s)
+		c.Assert(res, qt.Equals, expected)
+	})
+
+	t.Run("slice of http.Request value structs", func(t *testing.T) {
+		t.Parallel()
+		c := qt.New(t)
+
+		p, e := filepath.Abs("../testdata/slice_of_http_Request_value_structs.txt")
+		c.Assert(e, qt.IsNil)
+		b, e := os.ReadFile(p)
+		c.Assert(e, qt.IsNil)
+		expected := string(b)
+
+		sliceOfStruct := func() []http.Request {
+			xx := []http.Request{}
+			for i := 0; i < 10_000; i++ {
+				xx = append(xx, http.Request{Method: fmt.Sprintf("%d", i)})
+			}
+			return xx
+		}
+
+		s := sliceOfStruct()
 		res := kama.Dir(s)
 		c.Assert(res, qt.Equals, expected)
 	})
