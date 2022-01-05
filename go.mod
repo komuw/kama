@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 // indirect
-	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d
 	golang.org/x/tools v0.1.8
 )
 

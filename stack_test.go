@@ -28,3 +28,13 @@ func b() []string {
 func c() []string {
 	return getStackTrace()
 }
+
+func Test_stackp(t *testing.T) {
+	t.Run("test-stackp", func(t *testing.T) {
+		d()
+	})
+}
+
+func d() {
+	stackp()
+}
