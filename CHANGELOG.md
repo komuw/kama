@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+## v0.0.5
+- check if terminal supports color before printing stack traces: https://github.com/komuw/kama/pull/31
+
 ## v0.0.4
 - Add ability to print stack traces: https://github.com/komuw/kama/pull/29
   The stack traces are colorized with different colors for your code, third-party libs & the Go stdlib/runtime.
