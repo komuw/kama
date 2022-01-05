@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+
+	"golang.org/x/sys/unix"
 )
 
 func stackp() {
@@ -152,8 +154,33 @@ func printWithColor(s string, color string, bold bool) {
 		"RESET":   0,
 	}
 
-	defer reset()
-	color = strings.ToLower(color)
-	setColor(colors[color], bold)
-	fmt.Fprintln(os.Stderr, s)
+	if noColor() {
+		fmt.Fprintln(os.Stderr, s)
+	} else {
+		defer reset()
+		color = strings.ToLower(color)
+		setColor(colors[color], bold)
+		fmt.Fprintln(os.Stderr, s)
+	}
+}
+
+// noColor indicates whether the terminal in question supports color.
+// see: https://github.com/fatih/color/blob/v1.13.0/color.go#L22-L23
+func noColor() bool {
+	_, exists := os.LookupEnv("NO_COLOR")
+	if exists {
+		return true
+	}
+
+	if strings.ToLower(os.Getenv("TERM")) == "dumb" {
+		return true
+	}
+
+	fd := os.Stdout.Fd()
+	_, err := unix.IoctlGetTermios(int(fd), unix.TCGETS)
+	if err == nil {
+		return true
+	}
+
+	return false
 }
