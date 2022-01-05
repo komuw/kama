@@ -178,9 +178,5 @@ func noColor() bool {
 
 	fd := os.Stdout.Fd()
 	_, err := unix.IoctlGetTermios(int(fd), unix.TCGETS)
-	if err == nil {
-		return true
-	}
-
-	return false
+	return err == nil
 }
