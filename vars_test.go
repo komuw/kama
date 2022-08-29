@@ -119,7 +119,6 @@ func TestBasicVariables(t *testing.T) {
 		variable interface{}
 		expected vari
 	}{
-
 		{
 			tName:    "value struct",
 			variable: Person{Name: "John"},
@@ -137,7 +136,6 @@ func TestBasicVariables(t *testing.T) {
 			},
 		},
 		{
-
 			tName:    "pointer struct",
 			variable: &Person{Name: "Jane"},
 			expected: vari{

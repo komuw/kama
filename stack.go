@@ -134,7 +134,7 @@ func setColor(code int, bold bool) {
 	}
 }
 
-func printWithColor(s string, color string, bold bool) {
+func printWithColor(s, color string, bold bool) {
 	// TODO: should be iota
 	colors := map[string]int{
 		// Go compiler == cyan

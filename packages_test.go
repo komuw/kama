@@ -17,7 +17,7 @@ func TestStdlibPackages(t *testing.T) {
 
 				Constants: []string{},
 				Variables: []string{},
-				Functions: []string{"As(err error, target interface{}) bool", "Is(err error, target error) bool", "New(text string) error", "Unwrap(err error) error"},
+				Functions: []string{"As(err error, target any) bool", "Is(err error, target error) bool", "New(text string) error", "Unwrap(err error) error"},
 				Types:     map[string][]string{},
 			},
 		},
