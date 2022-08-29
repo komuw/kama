@@ -120,7 +120,7 @@ func dumpString(v reflect.Value, hideZeroValues bool) string {
 	return s
 }
 
-func dumpStruct(v reflect.Value, fromPtr bool, hideZeroValues bool, indentLevel int) string {
+func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) string {
 	/*
 		`fromPtr` indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
 		`compact` indicates whether the struct should be laid in one line or not

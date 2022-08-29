@@ -78,7 +78,7 @@ NAME: github.com/pkg/errors
 CONSTANTS: []
 VARIABLES: []
 FUNCTIONS: [
-	As(err error, target interface{}) bool
+	As(err error, target any) bool
 	Cause(err error) error
 	Errorf(format string, args ...interface{}) error
 	Is(err error, target error) bool

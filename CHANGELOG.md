@@ -5,6 +5,7 @@ Most recent version is listed first.
 
 # v0.0.6
 - update dependencies: https://github.com/komuw/kama/pull/32
+- update to Go 1.19:   https://github.com/komuw/kama/pull/33
 
 ## v0.0.5
 - check if terminal supports color before printing stack traces: https://github.com/komuw/kama/pull/31

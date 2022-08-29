@@ -437,7 +437,7 @@ SNIPPET: some{
 			},
 			IntializedFuncFromStdLib: func(rw http.ResponseWriter, r *http.Request) {
 				_ = r.Close
-				rw.Write([]byte("yo"))
+				_, _ = io.WriteString(rw, "yo")
 			},
 			IntializedFuncWithReturn: func(http.ResponseWriter) (uint16, error) {
 				return uint16(1), nil
@@ -499,7 +499,7 @@ SNIPPET: some{
 			},
 			IntializedFuncFromStdLib: func(rw http.ResponseWriter, r *http.Request) {
 				_ = r.Close
-				rw.Write([]byte("yo"))
+				_, _ = io.WriteString(rw, "yo")
 			},
 			IntializedFuncWithReturn: func(http.ResponseWriter) (uint16, error) {
 				return uint16(1), nil
