@@ -152,7 +152,7 @@ func main() {
 		},
 		IntializedFuncFromStdLib: func(rw http.ResponseWriter, r *http.Request) {
 			_ = r.Close
-			_, _ = rw.Write([]byte("yo"))
+			_, _ = io.WriteString(rw, "yo")
 		},
 		IntializedFuncWithReturn: func(http.ResponseWriter) (uint16, error) {
 			return uint16(1), nil
