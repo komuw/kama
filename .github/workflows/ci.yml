@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        go-version: [1.17]
+        go-version: [1.19]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -64,14 +64,14 @@ jobs:
     timeout-minutes: 7
     strategy:
       matrix:
-        go-version: [1.17]
+        go-version: [1.19]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
@@ -101,14 +101,14 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        go-version: [1.17]
+        go-version: [1.19]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
@@ -142,7 +142,7 @@ jobs:
           diff <(gofmt -d .) <(printf "")
           go vet -all ./...
           go vet -vettool=/home/runner/go/bin/shadow -strict ./...
-          /home/runner/go/bin/staticcheck -tests -go 1.17 ./...
+          /home/runner/go/bin/staticcheck -tests -go 1.19 ./...
           /home/runner/go/bin/gosec ./...
           /home/runner/go/bin/structslop ./...
           /home/runner/go/bin/httperroryzer ./...
@@ -183,14 +183,14 @@ jobs:
     timeout-minutes: 3
     strategy:
       matrix:
-        go-version: [1.17]
+        go-version: [1.19]
         platform: [ubuntu-18.04]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.17
+          go-version: 1.19
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
@@ -207,14 +207,14 @@ jobs:
   #   timeout-minutes: 2
   #   strategy:
   #     matrix:
-  #       go-version: [1.17]
+  #       go-version: [1.19]
   #       platform: [ubuntu-18.04]
   #   runs-on: ${{ matrix.platform }}
   #   steps:
   #     - name: Set up Go
   #       uses: actions/setup-go@v1
   #       with:
-  #         go-version: 1.17
+  #         go-version: 1.19
 
   #     - name: Check out code into the Go module directory
   #       uses: actions/checkout@v1
