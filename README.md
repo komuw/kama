@@ -187,3 +187,10 @@ SNIPPET: &Request{
 1. Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin.    
 2. [`godex`](https://pkg.go.dev/golang.org/x/tools/cmd/godex).   
 3. [`sanity-io/litter`](https://github.com/sanity-io/litter).
+
+## Prior art
+1. https://github.com/kr/pretty
+2. https://github.com/sanity-io/litter
+3. https://github.com/davecgh/go-spew
+4. https://github.com/hexops/valast
+5. https://github.com/alecthomas/repr
