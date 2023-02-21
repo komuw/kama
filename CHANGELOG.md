@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.7
+- update to Go 1.20: https://github.com/komuw/kama/pull/34
+
 # v0.0.6
 - update dependencies: https://github.com/komuw/kama/pull/32
 - update to Go 1.19:   https://github.com/komuw/kama/pull/33
