@@ -32,6 +32,14 @@ func newVari(i interface{}) vari {
 			Val:       dump(valueOfi, hideZeroValues, indentLevel),
 		}
 	}
+	if iType.Kind() == reflect.Pointer && valueOfi.IsNil() && valueOfi.IsZero() {
+		return vari{
+			Name:      "unknown",
+			Kind:      reflect.Ptr,
+			Signature: []string{fmt.Sprintf("%v", iType)},
+			Val:       dump(valueOfi, hideZeroValues, indentLevel),
+		}
+	}
 
 	typeKind := getKind(i)
 	typeName := getName(i)
