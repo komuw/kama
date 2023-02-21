@@ -7,6 +7,8 @@ import (
 )
 
 func TestStdlibPackages(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		importPath string
 		expected   pak
@@ -70,6 +72,8 @@ func TestStdlibPackages(t *testing.T) {
 }
 
 func TestThirdPartyPackages(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		importPath string
 		expected   pak
@@ -119,6 +123,8 @@ func TestThirdPartyPackages(t *testing.T) {
 }
 
 func TestError(t *testing.T) {
+	t.Parallel()
+
 	c := qt.New(t)
 
 	_, err := newPak("github.com/pkg/NoSuchModule")

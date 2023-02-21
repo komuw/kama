@@ -4,14 +4,15 @@ Most recent version is listed first.
 
 
 # v0.0.7
-- update to Go 1.20: https://github.com/komuw/kama/pull/34
+- Update to Go 1.20: https://github.com/komuw/kama/pull/34
+- Better formatting for zero-length slices and maps: https://github.com/komuw/kama/pull/36
 
 # v0.0.6
-- update dependencies: https://github.com/komuw/kama/pull/32
-- update to Go 1.19:   https://github.com/komuw/kama/pull/33
+- Update dependencies: https://github.com/komuw/kama/pull/32
+- Update to Go 1.19:   https://github.com/komuw/kama/pull/33
 
 ## v0.0.5
-- check if terminal supports color before printing stack traces: https://github.com/komuw/kama/pull/31
+- Check if terminal supports color before printing stack traces: https://github.com/komuw/kama/pull/31
 
 ## v0.0.4
 - Add ability to print stack traces: https://github.com/komuw/kama/pull/29
@@ -31,10 +32,10 @@ Most recent version is listed first.
   arrays/slices/maps that are inside structs.        
 
 ## v0.0.2
-- add test example: https://github.com/komuw/kama/pull/13
-- add types to the fields of a struct: https://github.com/komuw/kama/pull/16
+- Add test example: https://github.com/komuw/kama/pull/13
+- Add types to the fields of a struct: https://github.com/komuw/kama/pull/16
 
 ## v0.0.1
-- pretty print variables and packages: https://github.com/komuw/kama/pull/10
-- add cli: https://github.com/komuw/kama/pull/11
-- add pretty printing for data structures: https://github.com/komuw/kama/pull/12
+- Pretty print variables and packages: https://github.com/komuw/kama/pull/10
+- Add cli: https://github.com/komuw/kama/pull/11
+- Add pretty printing for data structures: https://github.com/komuw/kama/pull/12

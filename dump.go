@@ -173,6 +173,10 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	typeName := v.Type().String()
 
 	newline := "\n"
+	if numEntries <= 0 {
+		// do not use newline.
+		newline = ""
+	}
 	leftSep := "   "
 
 	s := typeName + "{" + newline
@@ -184,7 +188,11 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 		remainder := numEntries - constraint
 		s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
 	}
-	s = s + "}"
+	if v.IsZero() {
+		s = s + "(nil)}"
+	} else {
+		s = s + "}"
+	}
 	return s
 }
 
@@ -227,7 +235,11 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	}
 
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
-	s = s + "}"
+	if v.IsZero() {
+		s = s + "(nil)}"
+	} else {
+		s = s + "}"
+	}
 	return s
 }
 
