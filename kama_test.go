@@ -124,12 +124,18 @@ func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 func TestStdlibTypes(t *testing.T) {
 	t.Parallel()
 
+	var req http.Request
+	var reqPtr *http.Request
+
 	tt := []interface{}{
 		errors.New,
 		reflect.Value{},
 		http.Handle,
 		http.HandleFunc,
 		http.Handler(myHandler{}),
+		req,
+		&req,
+		reqPtr,
 	}
 
 	for _, v := range tt {
