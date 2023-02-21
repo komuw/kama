@@ -7,7 +7,11 @@ import (
 )
 
 func Test_getStackTrace(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test-get-stacktraces", func(t *testing.T) {
+		t.Parallel()
+
 		c := qt.New(t)
 
 		got := a()
@@ -30,7 +34,11 @@ func c() []string {
 }
 
 func Test_stackp(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test-stackp", func(t *testing.T) {
+		t.Parallel()
+
 		d()
 	})
 }

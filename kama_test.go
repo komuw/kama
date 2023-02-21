@@ -69,6 +69,8 @@ func SomeFunction(arg1 string, arg2 int) (string, error) {
 }
 
 func TestPrimitives(t *testing.T) {
+	t.Parallel()
+
 	tt := []interface{}{
 		false,
 		true,
@@ -120,6 +122,8 @@ func (h myHandler) ServeHTTP(http.ResponseWriter, *http.Request) {
 }
 
 func TestStdlibTypes(t *testing.T) {
+	t.Parallel()
+
 	tt := []interface{}{
 		errors.New,
 		reflect.Value{},
@@ -135,6 +139,8 @@ func TestStdlibTypes(t *testing.T) {
 }
 
 func TestThirdPartyTypes(t *testing.T) {
+	t.Parallel()
+
 	tt := []interface{}{
 		pkgErrors.New,
 	}

@@ -114,6 +114,8 @@ type SomeStructWIthSlice struct {
 }
 
 func TestBasicVariables(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		tName    string
 		variable interface{}
@@ -389,6 +391,8 @@ func TestBasicVariables(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
 			c := qt.New(t)
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
@@ -397,6 +401,8 @@ func TestBasicVariables(t *testing.T) {
 }
 
 func TestStdlibVariables(t *testing.T) {
+	t.Parallel()
+
 	tt := []struct {
 		tName    string
 		variable interface{}
@@ -562,6 +568,8 @@ func TestStdlibVariables(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
 			c := qt.New(t)
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
