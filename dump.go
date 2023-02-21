@@ -235,7 +235,11 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	}
 
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
-	s = s + "}"
+	if v.IsZero() {
+		s = s + "(nil)}"
+	} else {
+		s = s + "}"
+	}
 	return s
 }
 

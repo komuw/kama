@@ -582,6 +582,8 @@ func TestSliceMap(t *testing.T) {
 	c := qt.New(t)
 
 	var nilSlice []string = nil
+	var nilMap map[string]int = nil
+
 	tt := []struct {
 		tName    string
 		variable interface{}
@@ -638,6 +640,43 @@ func TestSliceMap(t *testing.T) {
    "one",
    "two",
 }`,
+			},
+		},
+		{
+			tName:    "nil map",
+			variable: nilMap,
+			expected: vari{
+				Name:      "map[string]int",
+				Kind:      reflect.Map,
+				Signature: []string{"map[string]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "map[string]int{(nil)}",
+			},
+		},
+		{
+			tName:    "no element map",
+			variable: map[string]int{},
+			expected: vari{
+				Name:      "map[string]int",
+				Kind:      reflect.Map,
+				Signature: []string{"map[string]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "map[string]int{}",
+			},
+		},
+		{
+			tName:    "one element map",
+			variable: map[string]int{"o": 1},
+			expected: vari{
+				Name:      "map[string]int",
+				Kind:      reflect.Map,
+				Signature: []string{"map[string]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val: `map[string]int{
+   "o": int(1), }`,
 			},
 		},
 	}
