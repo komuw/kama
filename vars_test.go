@@ -465,18 +465,17 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: int(0),
   ProtoMinor: int(0),
-  Header: http.Header{},
+  Header: http.Header{(nil)},
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
-  TransferEncoding: []string{
-},
+  TransferEncoding: []string{(nil)},
   Close: false,
   Host: "",
-  Form: url.Values{},
-  PostForm: url.Values{},
+  Form: url.Values{(nil)},
+  PostForm: url.Values{(nil)},
   MultipartForm: *multipart.Form(nil),
-  Trailer: http.Header{},
+  Trailer: http.Header{(nil)},
   RemoteAddr: "",
   RequestURI: "",
   TLS: *tls.ConnectionState(nil),
@@ -543,18 +542,17 @@ func TestStdlibVariables(t *testing.T) {
   Proto: "",
   ProtoMajor: int(0),
   ProtoMinor: int(0),
-  Header: http.Header{},
+  Header: http.Header{(nil)},
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
-  TransferEncoding: []string{
-},
+  TransferEncoding: []string{(nil)},
   Close: false,
   Host: "",
-  Form: url.Values{},
-  PostForm: url.Values{},
+  Form: url.Values{(nil)},
+  PostForm: url.Values{(nil)},
   MultipartForm: *multipart.Form(nil),
-  Trailer: http.Header{},
+  Trailer: http.Header{(nil)},
   RemoteAddr: "",
   RequestURI: "",
   TLS: *tls.ConnectionState(nil),
@@ -572,6 +570,7 @@ func TestStdlibVariables(t *testing.T) {
 
 			c := qt.New(t)
 			res := newVari(v.variable)
+			fmt.Println(res)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
