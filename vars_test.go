@@ -679,6 +679,20 @@ func TestSliceMap(t *testing.T) {
    "o": int(1), }`,
 			},
 		},
+		{
+			tName:    "two element map",
+			variable: map[string]int{"o": 1, "two": 2},
+			expected: vari{
+				Name:      "map[string]int",
+				Kind:      reflect.Map,
+				Signature: []string{"map[string]int"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val: `map[string]int{
+   "o": int(1), 
+   "two": int(2), }`,
+			},
+		},
 	}
 
 	for _, v := range tt {
