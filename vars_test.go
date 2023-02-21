@@ -438,10 +438,8 @@ func TestBasicVariables(t *testing.T) {
 				Name:      "github.com/komuw/kama.Hey",
 				Kind:      reflect.Struct,
 				Signature: []string{"kama.Hey", "*kama.Hey"},
-				Fields: []string{
-					`Another struct { Allowed bool "json:\"enabled\""; Name string "json:\"their_name\"" }`,
-				},
-				Methods: []string{},
+				Fields:    []string{"Another struct {Allowed bool, Name string}"},
+				Methods:   []string{},
 				Val: `Hey{
   Another: {
     Allowed: true,
