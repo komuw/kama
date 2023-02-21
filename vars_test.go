@@ -113,6 +113,8 @@ type SomeStructWIthSlice struct {
 	MyAwesome []int
 }
 
+var zeroValuePointer *http.Request
+
 func TestBasicVariables(t *testing.T) {
 	t.Parallel()
 
@@ -151,6 +153,16 @@ func TestBasicVariables(t *testing.T) {
   Age: int(0),
   Height: float32(0),
 }`,
+			},
+		},
+		{
+			tName:    "zero value pointer",
+			variable: zeroValuePointer,
+			expected: vari{
+				Name:      "unknown",
+				Kind:      reflect.Ptr,
+				Signature: []string{"*http.Request"},
+				Val:       `*http.Request(nil)`,
 			},
 		},
 		{
