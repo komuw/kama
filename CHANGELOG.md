@@ -7,6 +7,7 @@ Most recent version is listed first.
 - Update to Go 1.20: https://github.com/komuw/kama/pull/34
 - Better formatting for zero-length slices and maps: https://github.com/komuw/kama/pull/36
 - Zero value pointers should not panic: https://github.com/komuw/kama/pull/37
+- Add tests for embedded structs with tags: https://github.com/komuw/kama/pull/41
 
 # v0.0.6
 - Update dependencies: https://github.com/komuw/kama/pull/32
