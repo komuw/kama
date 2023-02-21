@@ -576,3 +576,99 @@ func TestStdlibVariables(t *testing.T) {
 		})
 	}
 }
+
+func TestSliceMap(t *testing.T) {
+	t.Parallel()
+	c := qt.New(t)
+
+	var nilSlice []string = nil
+	tt := []struct {
+		tName    string
+		variable interface{}
+		expected vari
+	}{
+		{
+			tName:    "nil slice",
+			variable: nilSlice,
+			expected: vari{
+				Name:      "[]string",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[]string{(nil)}",
+			},
+		},
+		{
+			tName:    "no element slice",
+			variable: []string{},
+			expected: vari{
+				Name:      "[]string",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val:       "[]string{}",
+			},
+		},
+		{
+			tName:    "one element slice",
+			variable: []string{"hello"},
+			expected: vari{
+				Name:      "[]string",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val: `[]string{
+   "hello",
+}`,
+			},
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := newVari(v.variable)
+			c.Assert(res, qt.DeepEquals, v.expected)
+
+			// req, _ := http.NewRequest("GET", "https://example.com", bytes.NewBuffer([]byte("hello")))
+			// req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+
+			// {
+			// 	req := []string{}
+			// 	res := newVari(req)
+			// 	fmt.Println(res)
+			// 	_ = c
+			// 	// c.Assert(res, qt.DeepEquals, v.expected)
+			// }
+
+			// {
+			// 	req := []string{"hello"}
+			// 	res := newVari(req)
+			// 	fmt.Println(res)
+			// 	_ = c
+			// 	// c.Assert(res, qt.DeepEquals, v.expected)
+			// }
+			// {
+			// 	req := []string{"one", "two"}
+			// 	res := newVari(req)
+			// 	fmt.Println(res)
+			// 	_ = c
+			// 	// c.Assert(res, qt.DeepEquals, v.expected)
+			// }
+
+			// {
+			// 	req := map[string]int{"o": 1}
+			// 	res := newVari(req)
+			// 	fmt.Println(res)
+			// 	_ = c
+			// 	// c.Assert(res, qt.DeepEquals, v.expected)
+			// }
+		})
+	}
+}
