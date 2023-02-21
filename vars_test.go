@@ -703,14 +703,6 @@ func TestSliceMap(t *testing.T) {
 
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
-
-			// {
-			// 	req := map[string]int{"o": 1}
-			// 	res := newVari(req)
-			// 	fmt.Println(res)
-			// 	_ = c
-			// 	// c.Assert(res, qt.DeepEquals, v.expected)
-			// }
 		})
 	}
 }
