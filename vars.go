@@ -184,6 +184,7 @@ func getFields(iType reflect.Type) []string {
 		// TODO: If a structField happens to be a func,
 		// We should enhance that signature.
 		// Look at `dumpFunc()` for implementation
+		// https://github.com/komuw/kama/issues/38
 
 		numFields := iType.NumField()
 		for i := 0; i < numFields; i++ {
@@ -244,6 +245,7 @@ func getMethods(iType reflect.Type) []string {
 		//   func(main.Foo, int, int) int
 		// it would be cooler to display as;
 		//   func(main.Foo, price int, commission int) int
+		// https://github.com/komuw/kama/issues/39
 		methods = append(methods, methName+" "+methSig)
 	}
 
