@@ -115,6 +115,18 @@ type SomeStructWIthSlice struct {
 
 var zeroValuePointer *http.Request
 
+type StructWithTags struct {
+	Allowed bool   `json:"enabled"`
+	Name    string `json:"their_name"`
+}
+
+type Hey struct {
+	Another struct {
+		Allowed bool   `json:"enabled"`
+		Name    string `json:"their_name"`
+	}
+}
+
 func TestBasicVariables(t *testing.T) {
 	t.Parallel()
 
@@ -395,6 +407,46 @@ func TestBasicVariables(t *testing.T) {
    int(18),
    int(19),
  ...<9980 more redacted>..},
+}`,
+			},
+		},
+		{
+			tName:    "struct with tags",
+			variable: StructWithTags{},
+			expected: vari{
+				Name:      "github.com/komuw/kama.StructWithTags",
+				Kind:      reflect.Struct,
+				Signature: []string{"kama.StructWithTags", "*kama.StructWithTags"},
+				Fields:    []string{"Allowed bool", "Name string"},
+				Methods:   []string{},
+				Val: `StructWithTags{
+  Allowed: false,
+  Name: "",
+}`,
+			},
+		},
+		{
+			tName: "embedded struct with tags",
+			variable: Hey{Another: struct {
+				Allowed bool   `json:"enabled"`
+				Name    string `json:"their_name"`
+			}{
+				Allowed: true,
+				Name:    "Jane",
+			}},
+			expected: vari{
+				Name:      "github.com/komuw/kama.Hey",
+				Kind:      reflect.Struct,
+				Signature: []string{"kama.Hey", "*kama.Hey"},
+				Fields: []string{
+					`Another struct { Allowed bool "json:\"enabled\""; Name string "json:\"their_name\"" }`,
+				},
+				Methods: []string{},
+				Val: `Hey{
+  Another: {
+    Allowed: true,
+    Name: "Jane",
+  },
 }`,
 			},
 		},
