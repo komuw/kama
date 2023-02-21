@@ -10,7 +10,9 @@ It can be used to aid debugging and testing.
 If you have heard of [kr/pretty](https://github.com/kr/pretty), [sanity-io/litter](https://github.com/sanity-io/litter), [davecgh/go-spew](https://github.com/davecgh/go-spew) etc; then `kama` is like those except that it;   
 (a) prints the exported API of types, modules etc     
 and     
-(b) pretty prints data structures.        
+(b) pretty prints data structures.         
+
+It is heavily inspired by Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin function.       
 
 It's name is derived from Kenyan hip hop artiste, `Kama`(One third of the hiphop group `Kalamashaka`).                               
 
@@ -184,7 +186,7 @@ SNIPPET: &Request{
 
 
 ## Inspiration
-1. Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin.    
+1. Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin function.    
 2. [`godex`](https://pkg.go.dev/golang.org/x/tools/cmd/godex).   
 3. [`sanity-io/litter`](https://github.com/sanity-io/litter).
 
