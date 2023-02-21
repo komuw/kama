@@ -75,8 +75,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 			// If `IsValid` returns false, all other methods except String panic.
 			return val.Type().String() + "(nil)"
 		}
-	case reflect.Array,
-		reflect.Slice:
+	case reflect.Array, reflect.Slice:
 		return dumpSlice(val, hideZeroValues, indentLevel)
 	case reflect.Chan:
 		return dumpChan(val, hideZeroValues, indentLevel)
