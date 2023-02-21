@@ -625,6 +625,21 @@ func TestSliceMap(t *testing.T) {
 }`,
 			},
 		},
+		{
+			tName:    "two element slice",
+			variable: []string{"one", "two"},
+			expected: vari{
+				Name:      "[]string",
+				Kind:      reflect.Slice,
+				Signature: []string{"[]string"},
+				Fields:    []string{},
+				Methods:   []string{},
+				Val: `[]string{
+   "one",
+   "two",
+}`,
+			},
+		},
 	}
 
 	for _, v := range tt {
@@ -635,32 +650,6 @@ func TestSliceMap(t *testing.T) {
 
 			res := newVari(v.variable)
 			c.Assert(res, qt.DeepEquals, v.expected)
-
-			// req, _ := http.NewRequest("GET", "https://example.com", bytes.NewBuffer([]byte("hello")))
-			// req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
-
-			// {
-			// 	req := []string{}
-			// 	res := newVari(req)
-			// 	fmt.Println(res)
-			// 	_ = c
-			// 	// c.Assert(res, qt.DeepEquals, v.expected)
-			// }
-
-			// {
-			// 	req := []string{"hello"}
-			// 	res := newVari(req)
-			// 	fmt.Println(res)
-			// 	_ = c
-			// 	// c.Assert(res, qt.DeepEquals, v.expected)
-			// }
-			// {
-			// 	req := []string{"one", "two"}
-			// 	res := newVari(req)
-			// 	fmt.Println(res)
-			// 	_ = c
-			// 	// c.Assert(res, qt.DeepEquals, v.expected)
-			// }
 
 			// {
 			// 	req := map[string]int{"o": 1}
