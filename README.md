@@ -169,7 +169,7 @@ SNIPPET: &Request{
   TransferEncoding: []string{(nil)},
   Close: false,
   Host: "example.com",
-Form: url.Values{(nil)},
+  Form: url.Values{(nil)},
   PostForm: url.Values{(nil)},
   MultipartForm: *multipart.Form(nil),
   Trailer: http.Header{(nil)},
