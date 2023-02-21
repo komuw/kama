@@ -193,7 +193,18 @@ func getFields(iType reflect.Type) []string {
 				// private field
 				continue
 			}
-			fields = append(fields, f.Name+" "+f.Type.String())
+			name := f.Name + " " + f.Type.String()
+
+			if f.Type.Kind() == reflect.Struct {
+				name = fmt.Sprintf("%s struct {", f.Name)
+				for _, v := range getFields(f.Type) {
+					name = name + v + ", "
+				}
+				name = strings.TrimRight(name, " ,") // remove space & comma
+				name = name + "}"
+			}
+
+			fields = append(fields, name)
 		}
 	}
 

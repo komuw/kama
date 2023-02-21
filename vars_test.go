@@ -120,6 +120,13 @@ type StructWithTags struct {
 	Name    string `json:"their_name"`
 }
 
+type Hey struct {
+	Another struct {
+		Allowed bool   `json:"enabled"`
+		Name    string `json:"their_name"`
+	}
+}
+
 func TestBasicVariables(t *testing.T) {
 	t.Parallel()
 
@@ -415,6 +422,29 @@ func TestBasicVariables(t *testing.T) {
 				Val: `StructWithTags{
   Allowed: false,
   Name: "",
+}`,
+			},
+		},
+		{
+			tName: "embedded struct with tags",
+			variable: Hey{Another: struct {
+				Allowed bool   `json:"enabled"`
+				Name    string `json:"their_name"`
+			}{
+				Allowed: true,
+				Name:    "Jane",
+			}},
+			expected: vari{
+				Name:      "github.com/komuw/kama.Hey",
+				Kind:      reflect.Struct,
+				Signature: []string{"kama.Hey", "*kama.Hey"},
+				Fields:    []string{"Another struct {Allowed bool, Name string}"},
+				Methods:   []string{},
+				Val: `Hey{
+  Another: {
+    Allowed: true,
+    Name: "Jane",
+  },
 }`,
 			},
 		},
