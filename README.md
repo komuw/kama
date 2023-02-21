@@ -1,5 +1,6 @@
 ## kama          
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/komuw/kama.svg)](https://pkg.go.dev/github.com/komuw/kama)
 [![ci](https://github.com/komuw/kama/workflows/kama%20ci/badge.svg)](https://github.com/komuw/kama/actions)
 [![codecov](https://codecov.io/gh/komuw/kama/branch/main/graph/badge.svg)](https://codecov.io/gh/komuw/kama)
 
@@ -15,8 +16,6 @@ and
 It is heavily inspired by Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin function.       
 
 It's name is derived from Kenyan hip hop artiste, `Kama`(One third of the hiphop group `Kalamashaka`).                               
-
-Comprehensive documetion is available -> [Documentation](https://pkg.go.dev/github.com/komuw/kama)
 
 
 ## Installation
