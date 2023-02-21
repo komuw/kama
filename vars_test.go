@@ -570,7 +570,6 @@ func TestStdlibVariables(t *testing.T) {
 
 			c := qt.New(t)
 			res := newVari(v.variable)
-			fmt.Println(res)
 			c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
