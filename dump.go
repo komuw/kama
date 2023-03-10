@@ -155,7 +155,14 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 			}
 		}
 	}
-	s = s + lastBracketSep + "}"
+
+	if v.IsZero() && indentLevel > 1 {
+		s = strings.TrimRight(s, ",\n")
+		s = s + "}"
+	} else {
+		s = s + lastBracketSep + "}"
+	}
+
 	return s
 }
 
