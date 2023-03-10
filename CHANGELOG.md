@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.8
+- Zero value struct should not indent: https://github.com/komuw/kama/pull/44
+
 # v0.0.7
 - Update to Go 1.20: https://github.com/komuw/kama/pull/34
 - Better formatting for zero-length slices and maps: https://github.com/komuw/kama/pull/36
