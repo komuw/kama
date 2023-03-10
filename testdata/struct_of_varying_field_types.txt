@@ -165,8 +165,7 @@ SNIPPET: SomeStruct{
   IntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
   IntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
   ZeroPointerStruct: *url.URL(nil),
-  NonZeroPointerStruct: &URL{
-  },
+  NonZeroPointerStruct: &URL{},
   EvenMoreUrl: &URL{
     Path: "/some/path",
   },
