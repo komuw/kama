@@ -199,6 +199,7 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 		s = s + "(nil)}"
 	} else {
 		ident := strings.Repeat("  ", indentLevel)
+		s = strings.TrimRight(s, ",") // maybe use `strings.TrimSuffix`
 		s = s + ident + "}"
 	}
 	return s

@@ -793,8 +793,9 @@ func TestYes(t *testing.T) {
 	type Header map[string][]string
 	hdr := Header{
 		"ONE": []string{"a", "b", "c"},
-		// "TWO": []string{"x", "y", "z"},
+		"TWO": []string{"x", "y", "z"},
 	}
+	_ = hdr
 
 	tt := []struct {
 		tName    string
@@ -810,7 +811,7 @@ func TestYes(t *testing.T) {
 			// 	},
 			// 	SomeStuff: map[string]int{"o": 1, "two": 2},
 			// },
-			variable: hdr,
+			variable: req,
 			expected: vari{
 				Name:      "[]string",
 				Kind:      reflect.Slice,
