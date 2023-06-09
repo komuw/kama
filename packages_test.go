@@ -44,38 +44,10 @@ func TestThirdPartyPackages(t *testing.T) {
 	tt := []struct {
 		tName      string
 		importPath string
-		expected   pak
 	}{
 		{
-			"third party github.com/pkg/errors",
-			"github.com/pkg/errors",
-			pak{
-				Name:      "github.com/pkg/errors",
-				Constants: []string{},
-				Variables: []string{},
-				Functions: []string{
-					"As(err error, target interface{}) bool",
-					"Cause(err error) error",
-					"Errorf(format string, args ...interface{}) error",
-					"Is(err error, target error) bool",
-					"New(message string) error",
-					"Unwrap(err error) error",
-					"WithMessage(err error, message string) error",
-					"WithMessagef(err error, format string, args ...interface{}) error",
-					"WithStack(err error) error",
-					"Wrap(err error, message string) error",
-					"Wrapf(err error, format string, args ...interface{}) error",
-				},
-				Types: map[string][]string{
-					"Frame uintptr": {
-						"(Frame) Format(s fmt.State, verb rune)",
-						"(Frame) MarshalText() ([]byte, error)",
-					},
-					"StackTrace []Frame": {
-						"(StackTrace) Format(s fmt.State, verb rune)",
-					},
-				},
-			},
+			tName:      "third party github.com/pkg/errors",
+			importPath: "github.com/pkg/errors",
 		},
 	}
 
@@ -85,11 +57,10 @@ func TestThirdPartyPackages(t *testing.T) {
 			t.Parallel()
 
 			p, err := newPak(v.importPath)
-			if err != nil {
-				t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
-			}
+			attest.Ok(t, err)
 
-			attest.Equal(t, p, v.expected)
+			path := getDataPath(t, "packages_test.go", v.tName)
+			dealWithTestData(t, path, p.String())
 		})
 	}
 }
