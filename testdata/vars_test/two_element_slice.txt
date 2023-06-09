@@ -8,5 +8,5 @@ METHODS: []
 SNIPPET: []string{
    "one",
    "two",
-}
+  }
 ]
