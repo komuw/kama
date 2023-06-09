@@ -141,6 +141,8 @@ type SomeStruct struct {
 func dealWithTestData(t *testing.T, path, gotContent string) {
 	t.Helper()
 
+	path = strings.ReplaceAll(path, ".go", "")
+
 	p, e := filepath.Abs(path)
 	attest.Ok(t, e)
 
