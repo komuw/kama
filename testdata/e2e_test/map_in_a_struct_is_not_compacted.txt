@@ -31,6 +31,7 @@ SNIPPET: someStructWithMap{
    int(1014): "1014", 
    int(1015): "1015", 
    int(1016): "1016", 
-   ...<9980 more redacted>..},
+   ...<9980 more redacted>..
+    },
 }
 ]
