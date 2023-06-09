@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.9
+- Use testdata in more testcases: https://github.com/komuw/kama/pull/46
+
 # v0.0.8
 - Zero value struct should not indent: https://github.com/komuw/kama/pull/44
 
