@@ -1,0 +1,12 @@
+
+[
+NAME: errors.errorString
+KIND: struct
+SIGNATURE: [*errors.errorString errors.errorString]
+FIELDS: []
+METHODS: [
+	Error func(*errors.errorString) string 
+	]
+SNIPPET: &errorString{
+}
+]
