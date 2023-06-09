@@ -10,7 +10,6 @@ require (
 
 require (
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/quasilyte/go-ruleguard/dsl v0.3.22 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 )
 
