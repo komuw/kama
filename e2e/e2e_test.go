@@ -132,15 +132,25 @@ type SomeStruct struct {
 	SomeUnsafety        unsafe.Pointer
 }
 
-func readTestData(t *testing.T, path string) (content string) {
+func dealWithTestData(t *testing.T, path, gotContent string) {
 	t.Helper()
 
 	p, e := filepath.Abs(path)
 	attest.Ok(t, e)
+
+	writeData := os.Getenv("KAMA_TEST_WRITE_DATA") != ""
+	if writeData {
+		e := os.WriteFile(path, []byte(gotContent), 0o644)
+		attest.Ok(t, e)
+		t.Logf("written testdata to %s", path)
+		return
+	}
+
 	b, e := os.ReadFile(p)
 	attest.Ok(t, e)
 
-	return string(b)
+	expectedContent := string(b)
+	attest.Equal(t, gotContent, expectedContent)
 }
 
 func TestDir(t *testing.T) {
@@ -417,8 +427,6 @@ SNIPPET: some{
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
 
-		expected := readTestData(t, "../testdata/struct_of_varying_field_types.txt")
-
 		someIntEight := int8(14)
 		s := SomeStruct{
 			SomeInt:            13,
@@ -468,13 +476,11 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		attest.Equal(t, res, expected)
+		dealWithTestData(t, "../testdata/struct_of_varying_field_types.txt", res)
 	})
 
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
 		t.Parallel()
-
-		expected := readTestData(t, "../testdata/pointer_to_struct_of_varying_field_types.txt")
 
 		someIntEight := int8(14)
 		s := &SomeStruct{
@@ -525,13 +531,11 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		attest.Equal(t, res, expected)
+		dealWithTestData(t, "../testdata/pointer_to_struct_of_varying_field_types.txt", res)
 	})
 
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
 		t.Parallel()
-
-		expected := readTestData(t, "../testdata/slice_of_http_Request_value_structs.txt")
 
 		sliceOfStruct := func() []http.Request {
 			xx := []http.Request{}
@@ -543,7 +547,7 @@ SNIPPET: some{
 
 		s := sliceOfStruct()
 		res := kama.Dir(s)
-		attest.Equal(t, res, expected)
+		dealWithTestData(t, "../testdata/slice_of_http_Request_value_structs.txt", res)
 	})
 }
 
