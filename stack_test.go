@@ -3,7 +3,7 @@ package kama
 import (
 	"testing"
 
-	qt "github.com/frankban/quicktest"
+	"go.akshayshah.org/attest"
 )
 
 func Test_getStackTrace(t *testing.T) {
@@ -12,11 +12,9 @@ func Test_getStackTrace(t *testing.T) {
 	t.Run("test-get-stacktraces", func(t *testing.T) {
 		t.Parallel()
 
-		c := qt.New(t)
-
 		got := a()
 
-		c.Assert(got[1], qt.Contains, "func a() []string {")
+		attest.Subsequence(t, got[1], "func a() []string {")
 	})
 }
 
