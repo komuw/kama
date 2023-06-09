@@ -183,7 +183,6 @@ SNIPPET: &Request{
 ]
 ```
 
-
 ## Inspiration
 1. Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin function.    
 2. [`godex`](https://pkg.go.dev/golang.org/x/tools/cmd/godex).   
