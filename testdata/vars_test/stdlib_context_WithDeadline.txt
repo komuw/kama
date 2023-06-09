@@ -1,0 +1,15 @@
+
+[
+NAME: context.timerCtx
+KIND: struct
+SIGNATURE: [*context.timerCtx context.timerCtx]
+FIELDS: []
+METHODS: [
+	Done func(context.timerCtx) <-chan struct {} 
+	Err func(context.timerCtx) error 
+	Value func(context.timerCtx, interface {}) interface {} 
+	Deadline func(*context.timerCtx) (time.Time, bool) 
+	String func(*context.timerCtx) string 
+	]
+SNIPPET: context.Background.WithDeadline(2013-02-03 00:00:00 +0000 UTC [-90682h28m25.527727675s])
+]

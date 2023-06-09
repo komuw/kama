@@ -13,5 +13,5 @@ METHODS: [
 	String func(*context.valueCtx) string 
 	Value func(*context.valueCtx, interface {}) interface {} 
 	]
-SNIPPET: context.Background.WithDeadline(2023-06-09 13:24:42.054128407 +0300 EAT m=+1020.006746794 [16m59.954727151s]).WithValue(type kama.myContextKeyType, val ThisIsSomeContextValue)
+SNIPPET: context.Background.WithCancel.WithValue(type kama.myContextKeyType, val ThisIsSomeContextValue)
 ]

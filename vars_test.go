@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"testing"
 	"time"
+
+	"go.akshayshah.org/attest"
 )
 
 type Person struct {
@@ -315,9 +317,12 @@ func TestContexts(t *testing.T) {
 
 	type myContextKeyType string
 
-	ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Minute*17)
+	const shortForm = "2006-Jan-02"
+	when, err := time.ParseInLocation(shortForm, "2013-Feb-03", time.UTC)
+	attest.Ok(t, err)
+
+	ctxWithDeadline, cancel := context.WithDeadline(context.Background(), when)
 	defer cancel()
-	encapsulatedStdlibCtx := context.WithValue(ctxWithTimeout, myContextKeyType("myContextKeyType"), "ThisIsSomeContextValue")
 
 	type StructWithContext struct {
 		Name   string
@@ -328,6 +333,8 @@ func TestContexts(t *testing.T) {
 	defer cancel()
 
 	ctxWithValue := context.WithValue(context.TODO(), myContextKeyType("ctxWithValueType"), "OKAYY")
+
+	encapsulatedStdlibCtx := context.WithValue(ctxWithCancel, myContextKeyType("myContextKeyType"), "ThisIsSomeContextValue")
 
 	tt := []struct {
 		tName    string
@@ -346,8 +353,8 @@ func TestContexts(t *testing.T) {
 			variable: ctxWithCancel,
 		},
 		{
-			tName:    "stdlib context WithTimeout",
-			variable: ctxWithTimeout,
+			tName:    "stdlib context WithDeadline",
+			variable: ctxWithDeadline,
 		},
 		{
 			tName:    "stdlib context WithValue",
