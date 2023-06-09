@@ -1,9 +1,11 @@
 package kama
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 )
 
 type Person struct {
@@ -297,6 +299,88 @@ func TestSliceMap(t *testing.T) {
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
+		})
+	}
+}
+
+type customContext struct{ parent context.Context }
+
+func (d customContext) Deadline() (time.Time, bool)       { return time.Time{}, false }
+func (d customContext) Done() <-chan struct{}             { return nil }
+func (d customContext) Err() error                        { return nil }
+func (d customContext) Value(key interface{}) interface{} { return d.parent.Value(key) }
+
+func TestContexts(t *testing.T) {
+	t.Parallel()
+
+	type myContextKeyType string
+
+	ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Minute*17)
+	defer cancel()
+	encapsulatedStdlibCtx := context.WithValue(ctxWithTimeout, myContextKeyType("myContextKeyType"), "ThisIsSomeContextValue")
+
+	type StructWithContext struct {
+		Name   string
+		Age    int64
+		OurCtx context.Context
+	}
+	ctxWithCancel, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ctxWithValue := context.WithValue(context.TODO(), myContextKeyType("ctxWithValueType"), "OKAYY")
+
+	tt := []struct {
+		tName    string
+		variable interface{}
+	}{
+		{
+			tName:    "stdlib context TODO",
+			variable: context.TODO(),
+		},
+		{
+			tName:    "stdlib context Background",
+			variable: context.Background(),
+		},
+		{
+			tName:    "stdlib context WithCancel",
+			variable: ctxWithCancel,
+		},
+		{
+			tName:    "stdlib context WithTimeout",
+			variable: ctxWithTimeout,
+		},
+		{
+			tName:    "stdlib context WithValue",
+			variable: ctxWithValue,
+		},
+		{
+			tName:    "stdlib context encapsulated",
+			variable: encapsulatedStdlibCtx,
+		},
+		{
+			tName:    "custom context",
+			variable: customContext{context.Background()},
+		},
+		{
+			tName:    "context inside struct",
+			variable: StructWithContext{Name: "John", Age: 763, OurCtx: encapsulatedStdlibCtx},
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := newVari(v.variable)
+
+			// fmt.Println("\n\t encapsulatedStdlibCtx: ", encapsulatedStdlibCtx, "\n.")
+			// fmt.Println("\n\t customContext: ", customContext{context.Background()}, "\n.")
+			fmt.Println("\n\t res.String(): ", v.tName, res.String())
+
+			// path := getDataPath(t, "vars_test.go", v.tName)
+			// dealWithTestData(t, path, res.String())
+			_ = res
 		})
 	}
 }

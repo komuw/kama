@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 	"unicode"
+
+	"golang.org/x/exp/slices"
 )
 
 func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
@@ -31,8 +33,84 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 
 	iType := val.Type()
 	indentLevel = indentLevel + 1
+	iTypeKind := iType.Kind()
+	iTypeStr := strings.ReplaceAll(fmt.Sprint(iType), "*", "") // remove the pointer symbol.
+	deValStr := fmt.Sprint(deVal)
 
-	switch iType.Kind() {
+	if slices.Contains(
+		[]string{
+			// This are taken from; https://github.com/golang/go/blob/master/src/context/context.go
+			"context.emptyCtx",
+			"context.valueCtx",
+			"context.backgroundCtx",
+			"context.todoCtx",
+			"context.withoutCancelCtx",
+			"context.timerCtx",
+			"context.cancelCtx",
+		},
+		iTypeStr,
+	) {
+
+		// This could be a context.Context type.
+		// Let's use the formatting that is provided by the stdlib;
+		// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L197-L206
+		//
+		// This will not handle custom types that implement context.Context
+		return deValStr
+	}
+
+	fmt.Println("\t deVal: ", deVal)
+	fmt.Println("\t iType: ", iType, iTypeStr)
+	fmt.Println("\t iTypeKind: ", iTypeKind)
+	fmt.Println()
+	// type emptyCtx struct{}
+	// type backgroundCtx struct{ emptyCtx }
+	// type todoCtx struct{ emptyCtx }
+	// type withoutCancelCtx
+	// timerCtx
+	//
+	// emptyCtx
+	// valueCtx
+	// backgroundCtx
+	// todoCtx
+	// withoutCancelCtx
+	// timerCtx
+	// cancelCtx
+
+	// deValStr := fmt.Sprint(deVal)
+	// if strings.Contains(
+	// 	deValStr,
+	// 	"context.Background",
+	// ) ||
+	// 	strings.Contains(
+	// 		deValStr,
+	// 		"context.TODO",
+	// 	) ||
+	// 	strings.Contains(
+	// 		deValStr,
+	// 		".WithCancel",
+	// 	) ||
+	// 	strings.Contains(
+	// 		deValStr,
+	// 		".WithoutCancel",
+	// 	) ||
+	// 	strings.Contains(
+	// 		deValStr,
+	// 		".WithDeadline",
+	// 	) ||
+	// 	strings.Contains(
+	// 		deValStr,
+	// 		".WithValue",
+	// 	) {
+	// 	// This could be a context.Context type.
+	// 	// Let's use the formatting that is provided by the stdlib;
+	// 	// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L197-L206
+	// 	//
+	// 	// This will not handle custom types that implement context.Context
+	// 	return deValStr
+	// }
+
+	switch iTypeKind {
 	case reflect.Invalid:
 		return "<invalid>"
 	case reflect.String:
@@ -96,7 +174,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	case reflect.Interface:
 		return dumpInterface(val, hideZeroValues, indentLevel)
 	default:
-		return fmt.Sprintf("%v NotImplemented", iType.Kind())
+		return fmt.Sprintf("%v NotImplemented", iTypeKind)
 	}
 }
 
@@ -330,8 +408,9 @@ func dumpNumbers(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps numbers.
 
 	iType := v.Type()
+	iTypeKind := iType.Kind()
 
-	switch iType.Kind() {
+	switch iTypeKind {
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
@@ -352,7 +431,7 @@ func dumpNumbers(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 		name := v.Type().String()
 		return fmt.Sprintf("%s(%v)", name, v)
 	default:
-		return fmt.Sprintf("%v NotImplemented", iType.Kind())
+		return fmt.Sprintf("%v NotImplemented", iTypeKind)
 	}
 }
 
