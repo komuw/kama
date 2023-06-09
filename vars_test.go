@@ -3,11 +3,8 @@ package kama
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 	"strings"
 	"testing"
-
-	"go.akshayshah.org/attest"
 )
 
 type Person struct {
@@ -256,111 +253,38 @@ func TestSliceMap(t *testing.T) {
 	tt := []struct {
 		tName    string
 		variable interface{}
-		expected vari
 	}{
 		{
 			tName:    "nil slice",
 			variable: nilSlice,
-			expected: vari{
-				Name:      "[]string",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]string"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "[]string{(nil)}",
-			},
 		},
 		{
 			tName:    "no element slice",
 			variable: []string{},
-			expected: vari{
-				Name:      "[]string",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]string"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "[]string{}",
-			},
 		},
 		{
 			tName:    "one element slice",
 			variable: []string{"hello"},
-			expected: vari{
-				Name:      "[]string",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]string"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val: `[]string{
-   "hello",
-}`,
-			},
 		},
 		{
 			tName:    "two element slice",
 			variable: []string{"one", "two"},
-			expected: vari{
-				Name:      "[]string",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]string"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val: `[]string{
-   "one",
-   "two",
-}`,
-			},
 		},
 		{
 			tName:    "nil map",
 			variable: nilMap,
-			expected: vari{
-				Name:      "map[string]int",
-				Kind:      reflect.Map,
-				Signature: []string{"map[string]int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "map[string]int{(nil)}",
-			},
 		},
 		{
 			tName:    "no element map",
 			variable: map[string]int{},
-			expected: vari{
-				Name:      "map[string]int",
-				Kind:      reflect.Map,
-				Signature: []string{"map[string]int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "map[string]int{}",
-			},
 		},
 		{
 			tName:    "one element map",
 			variable: map[string]int{"o": 1},
-			expected: vari{
-				Name:      "map[string]int",
-				Kind:      reflect.Map,
-				Signature: []string{"map[string]int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val: `map[string]int{
-   "o": int(1), }`,
-			},
 		},
 		{
 			tName:    "two element map",
 			variable: map[string]int{"o": 1, "two": 2},
-			expected: vari{
-				Name:      "map[string]int",
-				Kind:      reflect.Map,
-				Signature: []string{"map[string]int"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val: `map[string]int{
-   "o": int(1), 
-   "two": int(2), }`,
-			},
 		},
 	}
 
@@ -371,7 +295,9 @@ func TestSliceMap(t *testing.T) {
 			t.Parallel()
 
 			res := newVari(v.variable)
-			attest.Equal(t, res, v.expected)
+
+			path := "testdata/" + "vars_test.go/" + strings.ReplaceAll(v.tName, " ", "_") + ".txt"
+			dealWithTestData(t, path, res.String())
 		})
 	}
 }
