@@ -1,0 +1,15 @@
+
+[
+NAME: github.com/komuw/kama.customContext
+KIND: struct
+SIGNATURE: [kama.customContext *kama.customContext]
+FIELDS: []
+METHODS: [
+	Deadline func(kama.customContext) (time.Time, bool) 
+	Done func(kama.customContext) <-chan struct {} 
+	Err func(kama.customContext) error 
+	Value func(kama.customContext, interface {}) interface {} 
+	]
+SNIPPET: customContext{
+}
+]

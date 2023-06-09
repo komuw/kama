@@ -1,0 +1,17 @@
+
+[
+NAME: github.com/komuw/kama.StructWithContext
+KIND: struct
+SIGNATURE: [kama.StructWithContext *kama.StructWithContext]
+FIELDS: [
+	Name string 
+	Age int64 
+	OurCtx context.Context 
+	]
+METHODS: []
+SNIPPET: StructWithContext{
+  Name: "John",
+  Age: int64(763),
+  OurCtx: context.Context(*context.valueCtx),
+}
+]

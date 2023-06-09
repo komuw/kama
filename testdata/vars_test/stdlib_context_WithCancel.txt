@@ -1,0 +1,17 @@
+
+[
+NAME: context.cancelCtx
+KIND: struct
+SIGNATURE: [*context.cancelCtx context.cancelCtx]
+FIELDS: [
+	Context context.Context 
+	]
+METHODS: [
+	Deadline func(context.cancelCtx) (time.Time, bool) 
+	Done func(*context.cancelCtx) <-chan struct {} 
+	Err func(*context.cancelCtx) error 
+	String func(*context.cancelCtx) string 
+	Value func(*context.cancelCtx, interface {}) interface {} 
+	]
+SNIPPET: context.Background.WithCancel
+]

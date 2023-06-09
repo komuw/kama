@@ -1,9 +1,11 @@
 package kama
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 )
 
 type Person struct {
@@ -290,6 +292,94 @@ func TestSliceMap(t *testing.T) {
 	for _, v := range tt {
 		v := v
 
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := newVari(v.variable)
+
+			path := getDataPath(t, "vars_test.go", v.tName)
+			dealWithTestData(t, path, res.String())
+		})
+	}
+}
+
+type customContext struct{ parent context.Context }
+
+func (d customContext) Deadline() (time.Time, bool)       { return time.Time{}, false }
+func (d customContext) Done() <-chan struct{}             { return nil }
+func (d customContext) Err() error                        { return nil }
+func (d customContext) Value(key interface{}) interface{} { return d.parent.Value(key) }
+
+func TestContexts(t *testing.T) {
+	t.Parallel()
+
+	type myContextKeyType string
+
+	{
+		// const shortForm = "2006-Jan-02"
+		// when, err := time.ParseInLocation(shortForm, "2013-Feb-03", time.UTC)
+		// attest.Ok(t, err)
+
+		// // This WithDeadline does not work because the printed value of WithDeadline is not stable
+		// // https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L654-L657
+		// ctxWithDeadline, cancel := context.WithDeadline(context.Background(), when)
+		// defer cancel()
+	}
+
+	type StructWithContext struct {
+		Name   string
+		Age    int64
+		OurCtx context.Context
+	}
+	ctxWithCancel, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	ctxWithValue := context.WithValue(context.TODO(), myContextKeyType("ctxWithValueType"), "OKAYY") //nolint:gocritic
+
+	encapsulatedStdlibCtx := context.WithValue(ctxWithCancel, myContextKeyType("myContextKeyType"), "ThisIsSomeContextValue")
+
+	tt := []struct {
+		tName    string
+		variable interface{}
+	}{
+		{
+			tName:    "stdlib context TODO",
+			variable: context.TODO(), //nolint:gocritic
+		},
+		{
+			tName:    "stdlib context Background",
+			variable: context.Background(),
+		},
+		{
+			tName:    "stdlib context WithCancel",
+			variable: ctxWithCancel,
+		},
+		// This WithDeadline does not work because the printed value of WithDeadline is not stable
+		// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L654-L657
+		// {
+		// 	tName:    "stdlib context WithDeadline",
+		// 	variable: ctxWithDeadline,
+		// },
+		{
+			tName:    "stdlib context WithValue",
+			variable: ctxWithValue,
+		},
+		{
+			tName:    "stdlib context encapsulated",
+			variable: encapsulatedStdlibCtx,
+		},
+		{
+			tName:    "custom context",
+			variable: customContext{context.Background()},
+		},
+		{
+			tName:    "context inside struct",
+			variable: StructWithContext{Name: "John", Age: 763, OurCtx: encapsulatedStdlibCtx},
+		},
+	}
+
+	for _, v := range tt {
+		v := v
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
