@@ -5,6 +5,7 @@ import (
 	"go/types"
 	"strings"
 
+	"golang.org/x/exp/slices"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/types/typeutil"
 )
@@ -83,6 +84,7 @@ func (p pak) String() string {
 		}
 		sliceTypeMeths = append(sliceTypeMeths, t)
 	}
+	slices.Sort(sliceTypeMeths)
 
 	return fmt.Sprintf(
 		`

@@ -1,0 +1,9 @@
+
+[
+NAME: int32
+KIND: int32
+SIGNATURE: [int32]
+FIELDS: []
+METHODS: []
+SNIPPET: int32(32)
+]

@@ -1,0 +1,10 @@
+
+[
+NAME: map[string]int
+KIND: map
+SIGNATURE: [map[string]int]
+FIELDS: []
+METHODS: []
+SNIPPET: map[string]int{
+   "o": int(1), }
+]

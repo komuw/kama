@@ -1,0 +1,9 @@
+
+[
+NAME: []string
+KIND: slice
+SIGNATURE: [[]string]
+FIELDS: []
+METHODS: []
+SNIPPET: []string{}
+]

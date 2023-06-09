@@ -1,0 +1,9 @@
+
+[
+NAME: uintptr
+KIND: uintptr
+SIGNATURE: [uintptr]
+FIELDS: []
+METHODS: []
+SNIPPET: uintptr(123)
+]

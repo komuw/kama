@@ -1,0 +1,11 @@
+
+[
+NAME: github.com/komuw/kama.customerID
+KIND: uint16
+SIGNATURE: [kama.customerID]
+FIELDS: []
+METHODS: [
+	ID func(kama.customerID) uint16 
+	]
+SNIPPET: kama.customerID(9)
+]

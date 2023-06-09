@@ -1,0 +1,9 @@
+
+[
+NAME: float64
+KIND: float64
+SIGNATURE: [float64]
+FIELDS: []
+METHODS: []
+SNIPPET: float64(64)
+]

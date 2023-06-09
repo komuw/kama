@@ -1,4 +1,4 @@
-package e2e_test
+package kama_test
 
 import (
 	"errors"
@@ -12,9 +12,11 @@ import (
 	"testing"
 	"unsafe"
 
-	qt "github.com/frankban/quicktest"
 	"github.com/komuw/kama"
+	"go.akshayshah.org/attest"
 )
+
+const kamaWriteDataForTests = "KAMA_WRITE_DATA_FOR_TESTS"
 
 var longText = `AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It became the absorbing topic of village talk immediately. Tom could not get away from it. Every reference to the murder sent a shudder to his heart, for his troubled conscience and fears almost persuaded him that these remarks were put forth in his hearing as “feelers”; he did not see how he could be suspected of knowing anything about the murder, but still he could not be comfortable in the midst of this gossip. It kept him in a cold shiver all the time. He took Huck to a lonely place to have a talk with him. It would be some relief to unseal his tongue for a little while; to divide his burden of distress with another sufferer. Moreover, he wanted to assure himself that Huck had remained discreet.
 “Huck, have you ever told anybody about—that?”
@@ -132,287 +134,121 @@ type SomeStruct struct {
 	SomeUnsafety        unsafe.Pointer
 }
 
+// dealWithTestData asserts that gotContent is equal to data found at path.
+//
+// If the environment variable [kamaWriteDataForTests] is set, this func
+// will write gotContent to path instead.
+func dealWithTestData(t *testing.T, path, gotContent string) {
+	t.Helper()
+
+	path = strings.ReplaceAll(path, ".go", "")
+
+	p, e := filepath.Abs(path)
+	attest.Ok(t, e)
+
+	writeData := os.Getenv(kamaWriteDataForTests) != ""
+	if writeData {
+		attest.Ok(t,
+			os.WriteFile(path, []byte(gotContent), 0o644),
+		)
+		t.Logf("\n\t written testdata to %s\n", path)
+		return
+	}
+
+	b, e := os.ReadFile(p)
+	attest.Ok(t, e)
+
+	expectedContent := string(b)
+	attest.Equal(t, gotContent, expectedContent, attest.Sprintf("path: %s", path))
+}
+
+func getDataPath(t *testing.T, testPath, testName string) string {
+	s := strings.ReplaceAll(testName, " ", "_")
+	tName := strings.ReplaceAll(s, "/", "_")
+
+	path := filepath.Join("testdata", testPath, tName) + ".txt"
+
+	return path
+}
+
 func TestDir(t *testing.T) {
 	t.Parallel()
 
-	t.Run("dump numbers", func(t *testing.T) {
-		t.Parallel()
-		c := qt.New(t)
+	type someStructWithSlice struct {
+		XX []int
+	}
+	structWithSlice := someStructWithSlice{XX: bigSlice()}
 
-		vals := map[interface{}]string{
-			int(44): `
-[
-NAME: int
-KIND: int
-SIGNATURE: [int]
-FIELDS: []
-METHODS: []
-SNIPPET: int(44)
-]
-`,
+	type someStructWithMap struct {
+		XX map[int]string
+	}
+	structWithMap := someStructWithMap{XX: bigMap()}
 
-			int32(32): `
-[
-NAME: int32
-KIND: int32
-SIGNATURE: [int32]
-FIELDS: []
-METHODS: []
-SNIPPET: int32(32)
-]
-`,
+	tt := []struct {
+		tName string
+		item  interface{}
+	}{
+		{
+			tName: "number int",
+			item:  int(44),
+		},
+		{
+			tName: "number int32",
+			item:  int32(32),
+		},
+		{
+			tName: "number int64",
+			item:  int64(64),
+		},
+		{
+			tName: "number float32",
+			item:  float32(32),
+		},
+		{
+			tName: "number float64",
+			item:  float64(64),
+		},
+		{
+			tName: "number uintptr",
+			item:  uintptr(123),
+		},
+		{
+			tName: "number uint64",
+			item:  uint64(88),
+		},
+		{
+			tName: "slice on its own is not compacted",
+			item:  bigSlice(),
+		},
+		{
+			tName: "slice in a struct is not compacted",
+			item:  structWithSlice,
+		},
+		{
+			tName: "map on its own is not compacted",
+			item:  bigMap(),
+		},
+		{
+			tName: "map in a struct is not compacted",
+			item:  structWithMap,
+		},
+	}
 
-			int64(64): `
-[
-NAME: int64
-KIND: int64
-SIGNATURE: [int64]
-FIELDS: []
-METHODS: []
-SNIPPET: int64(64)
-]
-`,
+	for _, v := range tt {
+		v := v
 
-			float32(32): `
-[
-NAME: float32
-KIND: float32
-SIGNATURE: [float32]
-FIELDS: []
-METHODS: []
-SNIPPET: float32(32)
-]
-`,
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
 
-			float64(64): `
-[
-NAME: float64
-KIND: float64
-SIGNATURE: [float64]
-FIELDS: []
-METHODS: []
-SNIPPET: float64(64)
-]
-`,
+			res := kama.Dir(v.item)
 
-			uintptr(123): `
-[
-NAME: uintptr
-KIND: uintptr
-SIGNATURE: [uintptr]
-FIELDS: []
-METHODS: []
-SNIPPET: uintptr(123)
-]
-`,
-
-			uint64(88): `
-[
-NAME: uint64
-KIND: uint64
-SIGNATURE: [uint64]
-FIELDS: []
-METHODS: []
-SNIPPET: uint64(88)
-]
-`,
-		}
-		for k, v := range vals {
-			res := kama.Dir(k)
-			c.Assert(res, qt.Equals, v)
-		}
-	})
-
-	t.Run("slice on its own is not compacted", func(t *testing.T) {
-		t.Parallel()
-		c := qt.New(t)
-		expected := `
-[
-NAME: []int
-KIND: slice
-SIGNATURE: [[]int]
-FIELDS: []
-METHODS: []
-SNIPPET: []int{
-   int(0),
-   int(1),
-   int(2),
-   int(3),
-   int(4),
-   int(5),
-   int(6),
-   int(7),
-   int(8),
-   int(9),
-   int(10),
-   int(11),
-   int(12),
-   int(13),
-   int(14),
-   int(15),
-   int(16),
-   int(17),
-   int(18),
-   int(19),
- ...<9980 more redacted>..}
-]
-`
-
-		mySlice := bigSlice()
-
-		res := kama.Dir(mySlice)
-		c.Assert(res, qt.Equals, expected)
-	})
-
-	t.Run("slice in a struct is not compacted", func(t *testing.T) {
-		t.Parallel()
-		c := qt.New(t)
-		expected := `
-[
-NAME: github.com/komuw/kama/e2e_test.some
-KIND: struct
-SIGNATURE: [e2e_test.some *e2e_test.some]
-FIELDS: [
-	XX []int 
-	]
-METHODS: []
-SNIPPET: some{
-  XX: []int{
-   int(0),
-   int(1),
-   int(2),
-   int(3),
-   int(4),
-   int(5),
-   int(6),
-   int(7),
-   int(8),
-   int(9),
-   int(10),
-   int(11),
-   int(12),
-   int(13),
-   int(14),
-   int(15),
-   int(16),
-   int(17),
-   int(18),
-   int(19),
- ...<9980 more redacted>..},
-}
-]
-`
-		type some struct {
-			XX []int
-		}
-		s := some{XX: bigSlice()}
-
-		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
-	})
-
-	t.Run("map on its own is not compacted", func(t *testing.T) {
-		t.Parallel()
-		c := qt.New(t)
-		expected := `
-[
-NAME: map[int]string
-KIND: map
-SIGNATURE: [map[int]string]
-FIELDS: []
-METHODS: []
-SNIPPET: map[int]string{
-   int(0): "0", 
-   int(1): "1", 
-   int(10): "10", 
-   int(100): "100", 
-   int(1000): "1000", 
-   int(1001): "1001", 
-   int(1002): "1002", 
-   int(1003): "1003", 
-   int(1004): "1004", 
-   int(1005): "1005", 
-   int(1006): "1006", 
-   int(1007): "1007", 
-   int(1008): "1008", 
-   int(1009): "1009", 
-   int(101): "101", 
-   int(1010): "1010", 
-   int(1011): "1011", 
-   int(1012): "1012", 
-   int(1013): "1013", 
-   int(1014): "1014", 
-   int(1015): "1015", 
-   int(1016): "1016", 
-   ...<9980 more redacted>..}
-]
-`
-
-		myMap := bigMap()
-
-		res := kama.Dir(myMap)
-		c.Assert(res, qt.Equals, expected)
-	})
-
-	t.Run("map in a struct is not compacted", func(t *testing.T) {
-		t.Parallel()
-		c := qt.New(t)
-		expected := `
-[
-NAME: github.com/komuw/kama/e2e_test.some
-KIND: struct
-SIGNATURE: [e2e_test.some *e2e_test.some]
-FIELDS: [
-	XX map[int]string 
-	]
-METHODS: []
-SNIPPET: some{
-  XX: map[int]string{
-   int(0): "0", 
-   int(1): "1", 
-   int(10): "10", 
-   int(100): "100", 
-   int(1000): "1000", 
-   int(1001): "1001", 
-   int(1002): "1002", 
-   int(1003): "1003", 
-   int(1004): "1004", 
-   int(1005): "1005", 
-   int(1006): "1006", 
-   int(1007): "1007", 
-   int(1008): "1008", 
-   int(1009): "1009", 
-   int(101): "101", 
-   int(1010): "1010", 
-   int(1011): "1011", 
-   int(1012): "1012", 
-   int(1013): "1013", 
-   int(1014): "1014", 
-   int(1015): "1015", 
-   int(1016): "1016", 
-   ...<9980 more redacted>..},
-}
-]
-`
-
-		type some struct {
-			XX map[int]string
-		}
-		s := some{XX: bigMap()}
-
-		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
-	})
+			path := getDataPath(t, "e2e_test.go", v.tName)
+			dealWithTestData(t, path, res)
+		})
+	}
 
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
-
-		p, e := filepath.Abs("../testdata/struct_of_varying_field_types.txt")
-		c.Assert(e, qt.IsNil)
-		b, e := os.ReadFile(p)
-		c.Assert(e, qt.IsNil)
-		expected := string(b)
 
 		someIntEight := int8(14)
 		s := SomeStruct{
@@ -463,18 +299,12 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		path := getDataPath(t, "e2e_test.go", "struct_of_varying_field_types.txt")
+		dealWithTestData(t, path, res)
 	})
 
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
-
-		p, e := filepath.Abs("../testdata/pointer_to_struct_of_varying_field_types.txt")
-		c.Assert(e, qt.IsNil)
-		b, e := os.ReadFile(p)
-		c.Assert(e, qt.IsNil)
-		expected := string(b)
 
 		someIntEight := int8(14)
 		s := &SomeStruct{
@@ -525,18 +355,12 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		path := getDataPath(t, "e2e_test.go", "pointer_to_struct_of_varying_field_types.txt")
+		dealWithTestData(t, path, res)
 	})
 
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
-
-		p, e := filepath.Abs("../testdata/slice_of_http_Request_value_structs.txt")
-		c.Assert(e, qt.IsNil)
-		b, e := os.ReadFile(p)
-		c.Assert(e, qt.IsNil)
-		expected := string(b)
 
 		sliceOfStruct := func() []http.Request {
 			xx := []http.Request{}
@@ -548,7 +372,8 @@ SNIPPET: some{
 
 		s := sliceOfStruct()
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		path := getDataPath(t, "e2e_test.go", "slice_of_http_Request_value_structs.txt")
+		dealWithTestData(t, path, res)
 	})
 }
 
@@ -557,7 +382,6 @@ func TestAllAboutInterfaces(t *testing.T) {
 
 	t.Run("interfaces should be well represented", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
 
 		var SomeNilError error = nil
 		var SomeConcreteError error = errors.New("unable to read from ftp file")
@@ -576,133 +400,55 @@ func TestAllAboutInterfaces(t *testing.T) {
 		}
 		someTwo := &someOne
 
-		vals := map[interface{}]string{
-			SomeNilError: `
-[
-NAME: nil
-KIND: ptr
-SIGNATURE: [nil]
-FIELDS: []
-METHODS: []
-SNIPPET: nil
-]
-`,
-
-			SomeConcreteError: `
-[
-NAME: errors.errorString
-KIND: struct
-SIGNATURE: [*errors.errorString errors.errorString]
-FIELDS: []
-METHODS: [
-	Error func(*errors.errorString) string 
-	]
-SNIPPET: &errorString{
-}
-]
-`,
-
-			&SomeConcreteError: `
-[
-NAME: .error
-KIND: interface
-SIGNATURE: [*error error]
-FIELDS: []
-METHODS: [
-	Error func() string 
-	]
-SNIPPET: &error(unable to read from ftp file)
-]
-`,
-
-			SomeReader: `
-[
-NAME: strings.Reader
-KIND: struct
-SIGNATURE: [*strings.Reader strings.Reader]
-FIELDS: []
-METHODS: [
-	Len func(*strings.Reader) int 
-	Read func(*strings.Reader, []uint8) (int, error) 
-	ReadAt func(*strings.Reader, []uint8, int64) (int, error) 
-	ReadByte func(*strings.Reader) (uint8, error) 
-	ReadRune func(*strings.Reader) (int32, int, error) 
-	Reset func(*strings.Reader, string) 
-	Seek func(*strings.Reader, int64, int) (int64, error) 
-	Size func(*strings.Reader) int64 
-	UnreadByte func(*strings.Reader) error 
-	UnreadRune func(*strings.Reader) error 
-	WriteTo func(*strings.Reader, io.Writer) (int64, error) 
-	]
-SNIPPET: &Reader{
-}
-]
-`,
-
-			NilEmptyInterface: `
-[
-NAME: nil
-KIND: ptr
-SIGNATURE: [nil]
-FIELDS: []
-METHODS: []
-SNIPPET: nil
-]
-`,
-
-			NonNilEmptyInterface: `
-[
-NAME: int
-KIND: int
-SIGNATURE: [int]
-FIELDS: []
-METHODS: []
-SNIPPET: int(9)
-]
-`,
-
-			someOne: `
-[
-NAME: github.com/komuw/kama/e2e_test.SomeStructWithInterfaces
-KIND: struct
-SIGNATURE: [e2e_test.SomeStructWithInterfaces *e2e_test.SomeStructWithInterfaces]
-FIELDS: [
-	AAA io.Reader 
-	SomeNilError error 
-	SomeConcreteError error 
-	]
-METHODS: []
-SNIPPET: SomeStructWithInterfaces{
-  AAA: io.Reader(*strings.Reader),
-  SomeNilError: error(nil),
-  SomeConcreteError: error(houston something bad happened),
-}
-]
-`,
-
-			someTwo: `
-[
-NAME: github.com/komuw/kama/e2e_test.SomeStructWithInterfaces
-KIND: struct
-SIGNATURE: [*e2e_test.SomeStructWithInterfaces e2e_test.SomeStructWithInterfaces]
-FIELDS: [
-	AAA io.Reader 
-	SomeNilError error 
-	SomeConcreteError error 
-	]
-METHODS: []
-SNIPPET: &SomeStructWithInterfaces{
-  AAA: io.Reader(*strings.Reader),
-  SomeNilError: error(nil),
-  SomeConcreteError: error(houston something bad happened),
-}
-]
-`,
+		tt := []struct {
+			tName string
+			item  interface{}
+		}{
+			{
+				tName: "SomeNilError",
+				item:  SomeNilError,
+			},
+			{
+				tName: "SomeConcreteError",
+				item:  SomeConcreteError,
+			},
+			{
+				tName: "&SomeConcreteError",
+				item:  &SomeConcreteError,
+			},
+			{
+				tName: "SomeReader",
+				item:  SomeReader,
+			},
+			{
+				tName: "NilEmptyInterface",
+				item:  NilEmptyInterface,
+			},
+			{
+				tName: "NonNilEmptyInterface",
+				item:  NonNilEmptyInterface,
+			},
+			{
+				tName: "someOne",
+				item:  someOne,
+			},
+			{
+				tName: "someTwo",
+				item:  someTwo,
+			},
 		}
 
-		for k, v := range vals {
-			res := kama.Dir(k)
-			c.Assert(res, qt.Equals, v)
+		for _, v := range tt {
+			v := v
+
+			t.Run(v.tName, func(t *testing.T) {
+				t.Parallel()
+
+				res := kama.Dir(v.item)
+
+				path := getDataPath(t, "e2e_test.go", v.tName)
+				dealWithTestData(t, path, res)
+			})
 		}
 	})
 }

@@ -1,0 +1,9 @@
+
+[
+NAME: float32
+KIND: float32
+SIGNATURE: [float32]
+FIELDS: []
+METHODS: []
+SNIPPET: float32(32)
+]

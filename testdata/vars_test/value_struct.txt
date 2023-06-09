@@ -1,0 +1,22 @@
+
+[
+NAME: github.com/komuw/kama.Person
+KIND: struct
+SIGNATURE: [kama.Person *kama.Person]
+FIELDS: [
+	Name string 
+	Age int 
+	Height float32 
+	]
+METHODS: [
+	ValueMethodOne func(kama.Person) 
+	ValueMethodTwo func(kama.Person) 
+	PtrMethodOne func(*kama.Person) 
+	PtrMethodTwo func(*kama.Person) float32 
+	]
+SNIPPET: Person{
+  Name: "John",
+  Age: int(0),
+  Height: float32(0),
+}
+]

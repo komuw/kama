@@ -1,0 +1,49 @@
+
+[
+NAME: archive/tar
+CONSTANTS: [
+	FormatGNU Format 
+	FormatPAX Format 
+	FormatUSTAR Format 
+	FormatUnknown Format 
+	TypeBlock untyped rune 
+	TypeChar untyped rune 
+	TypeCont untyped rune 
+	TypeDir untyped rune 
+	TypeFifo untyped rune 
+	TypeGNULongLink untyped rune 
+	TypeGNULongName untyped rune 
+	TypeGNUSparse untyped rune 
+	TypeLink untyped rune 
+	TypeReg untyped rune 
+	TypeRegA untyped rune 
+	TypeSymlink untyped rune 
+	TypeXGlobalHeader untyped rune 
+	TypeXHeader untyped rune 
+	]
+VARIABLES: [
+	ErrFieldTooLong error 
+	ErrHeader error 
+	ErrInsecurePath error 
+	ErrWriteAfterClose error 
+	ErrWriteTooLong error 
+	]
+FUNCTIONS: [
+	FileInfoHeader(fi io/fs.FileInfo, link string) (*Header, error) 
+	NewReader(r io.Reader) *Reader 
+	NewWriter(w io.Writer) *Writer 
+	]
+TYPES: [
+	Format int
+		(Format) String() string 
+	Header struct
+		(*Header) FileInfo() io/fs.FileInfo 
+	Reader struct
+		(*Reader) Next() (*Header, error)
+		(*Reader) Read(b []byte) (int, error) 
+	Writer struct
+		(*Writer) Close() error
+		(*Writer) Flush() error
+		(*Writer) Write(b []byte) (int, error)
+		(*Writer) WriteHeader(hdr *Header) error]
+]
