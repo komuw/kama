@@ -10,63 +10,29 @@ func TestStdlibPackages(t *testing.T) {
 	t.Parallel()
 
 	tt := []struct {
+		tName      string
 		importPath string
-		expected   pak
 	}{
 		{
-			"errors", pak{
-				Name: "errors",
-
-				Constants: []string{},
-				Variables: []string{},
-				Functions: []string{
-					"As(err error, target any) bool",
-					"Is(err error, target error) bool",
-					"Join(errs ...error) error",
-					"New(text string) error",
-					"Unwrap(err error) error",
-				},
-				Types: map[string][]string{},
-			},
+			tName:      "stdlib errors pkg",
+			importPath: "errors",
 		},
 
 		{
-			"archive/tar", pak{
-				Name:      "archive/tar",
-				Constants: []string{"FormatGNU Format", "FormatPAX Format", "FormatUSTAR Format", "FormatUnknown Format", "TypeBlock untyped rune", "TypeChar untyped rune", "TypeCont untyped rune", "TypeDir untyped rune", "TypeFifo untyped rune", "TypeGNULongLink untyped rune", "TypeGNULongName untyped rune", "TypeGNUSparse untyped rune", "TypeLink untyped rune", "TypeReg untyped rune", "TypeRegA untyped rune", "TypeSymlink untyped rune", "TypeXGlobalHeader untyped rune", "TypeXHeader untyped rune"},
-				Variables: []string{"ErrFieldTooLong error", "ErrHeader error", "ErrInsecurePath error", "ErrWriteAfterClose error", "ErrWriteTooLong error"},
-				Functions: []string{"FileInfoHeader(fi io/fs.FileInfo, link string) (*Header, error)", "NewReader(r io.Reader) *Reader", "NewWriter(w io.Writer) *Writer"},
-				Types: map[string][]string{
-					"Format int": {
-						"(Format) String() string",
-					},
-					"Header struct": {
-						"(*Header) FileInfo() io/fs.FileInfo",
-					},
-					"Reader struct": {
-						"(*Reader) Next() (*Header, error)",
-						"(*Reader) Read(b []byte) (int, error)",
-					},
-					"Writer struct": {
-						"(*Writer) Close() error",
-						"(*Writer) Flush() error",
-						"(*Writer) Write(b []byte) (int, error)",
-						"(*Writer) WriteHeader(hdr *Header) error",
-					},
-				},
-			},
+			tName:      "stdlib archive/tar pkg",
+			importPath: "archive/tar",
 		},
 	}
 
 	for _, v := range tt {
 		v := v
+		t.Run(v.tName, func(t *testing.T) {
+			p, err := newPak(v.importPath)
+			attest.Ok(t, err)
 
-		p, err := newPak(v.importPath)
-		if err != nil {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
-		}
-
-		attest.Equal(t, p, v.expected)
+			path := getDataPath(t, "packages_test.go", v.tName)
+			dealWithTestData(t, path, p.String())
+		})
 	}
 }
 

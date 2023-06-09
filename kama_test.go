@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"go.akshayshah.org/attest"
@@ -89,6 +90,18 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 
 	expectedContent := string(b)
 	attest.Equal(t, gotContent, expectedContent)
+}
+
+func getDataPath(t *testing.T, testPath, testName string) string {
+	tName := strings.ReplaceAll(
+		strings.ReplaceAll(testName, " ", "_"),
+		"/",
+		"_",
+	)
+
+	path := filepath.Join("testdata", testPath, tName) + ".txt"
+
+	return path
 }
 
 type (

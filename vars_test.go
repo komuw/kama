@@ -3,7 +3,6 @@ package kama
 import (
 	"fmt"
 	"net/http"
-	"strings"
 	"testing"
 )
 
@@ -207,7 +206,7 @@ func TestBasicVariables(t *testing.T) {
 
 			res := newVari(v.variable)
 
-			path := "testdata/" + "vars_test.go/" + strings.ReplaceAll(v.tName, " ", "_") + ".txt"
+			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
 		})
 	}
@@ -238,7 +237,7 @@ func TestStdlibVariables(t *testing.T) {
 
 			res := newVari(v.variable)
 
-			path := "testdata/" + "vars_test.go/" + strings.ReplaceAll(v.tName, " ", "_") + ".txt"
+			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
 		})
 	}
@@ -296,7 +295,7 @@ func TestSliceMap(t *testing.T) {
 
 			res := newVari(v.variable)
 
-			path := "testdata/" + "vars_test.go/" + strings.ReplaceAll(v.tName, " ", "_") + ".txt"
+			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
 		})
 	}
