@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 
+	"go.akshayshah.org/attest"
 	"go.uber.org/goleak"
 
 	pkgErrors "github.com/pkg/errors"
@@ -53,6 +55,27 @@ func leakDetector(exitCode int) int {
 		}
 	}
 	return exitCode
+}
+
+func dealWithTestData(t *testing.T, path, gotContent string) {
+	t.Helper()
+
+	p, e := filepath.Abs(path)
+	attest.Ok(t, e)
+
+	writeData := os.Getenv("KAMA_TEST_WRITE_DATA") != ""
+	if writeData {
+		e := os.WriteFile(path, []byte(gotContent), 0o644)
+		attest.Ok(t, e)
+		t.Logf("\n\t written testdata to %s\n", path)
+		return
+	}
+
+	b, e := os.ReadFile(p)
+	attest.Ok(t, e)
+
+	expectedContent := string(b)
+	attest.Equal(t, gotContent, expectedContent)
 }
 
 type (
