@@ -1,0 +1,9 @@
+
+[
+NAME: uint64
+KIND: uint64
+SIGNATURE: [uint64]
+FIELDS: []
+METHODS: []
+SNIPPET: uint64(88)
+]

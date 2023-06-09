@@ -174,92 +174,52 @@ func getDataPath(t *testing.T, testPath, testName string) string {
 func TestDir(t *testing.T) {
 	t.Parallel()
 
-	t.Run("dump numbers", func(t *testing.T) {
-		t.Parallel()
+	tt := []struct {
+		tName string
+		item  interface{}
+	}{
+		{
+			tName: "number int",
+			item:  int(44),
+		},
+		{
+			tName: "number int32",
+			item:  int32(32),
+		},
+		{
+			tName: "number int64",
+			item:  int64(64),
+		},
+		{
+			tName: "number float32",
+			item:  float32(32),
+		},
+		{
+			tName: "number float64",
+			item:  float64(64),
+		},
+		{
+			tName: "number uintptr",
+			item:  uintptr(123),
+		},
+		{
+			tName: "number uint64",
+			item:  uint64(88),
+		},
+	}
 
-		vals := map[interface{}]string{
-			int(44): `
-[
-NAME: int
-KIND: int
-SIGNATURE: [int]
-FIELDS: []
-METHODS: []
-SNIPPET: int(44)
-]
-`,
+	for _, v := range tt {
+		v := v
 
-			int32(32): `
-[
-NAME: int32
-KIND: int32
-SIGNATURE: [int32]
-FIELDS: []
-METHODS: []
-SNIPPET: int32(32)
-]
-`,
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
 
-			int64(64): `
-[
-NAME: int64
-KIND: int64
-SIGNATURE: [int64]
-FIELDS: []
-METHODS: []
-SNIPPET: int64(64)
-]
-`,
+			res := kama.Dir(v.item)
 
-			float32(32): `
-[
-NAME: float32
-KIND: float32
-SIGNATURE: [float32]
-FIELDS: []
-METHODS: []
-SNIPPET: float32(32)
-]
-`,
-
-			float64(64): `
-[
-NAME: float64
-KIND: float64
-SIGNATURE: [float64]
-FIELDS: []
-METHODS: []
-SNIPPET: float64(64)
-]
-`,
-
-			uintptr(123): `
-[
-NAME: uintptr
-KIND: uintptr
-SIGNATURE: [uintptr]
-FIELDS: []
-METHODS: []
-SNIPPET: uintptr(123)
-]
-`,
-
-			uint64(88): `
-[
-NAME: uint64
-KIND: uint64
-SIGNATURE: [uint64]
-FIELDS: []
-METHODS: []
-SNIPPET: uint64(88)
-]
-`,
-		}
-		for k, v := range vals {
-			res := kama.Dir(k)
-			attest.Equal(t, res, v)
-		}
-	})
+			path := getDataPath(t, "e2e_test.go", v.tName)
+			dealWithTestData(t, path, res)
+		})
+	}
 
 	t.Run("slice on its own is not compacted", func(t *testing.T) {
 		t.Parallel()
