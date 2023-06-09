@@ -174,6 +174,16 @@ func getDataPath(t *testing.T, testPath, testName string) string {
 func TestDir(t *testing.T) {
 	t.Parallel()
 
+	type someStructWithSlice struct {
+		XX []int
+	}
+	structWithSlice := someStructWithSlice{XX: bigSlice()}
+
+	type someStructWithMap struct {
+		XX map[int]string
+	}
+	structWithMap := someStructWithMap{XX: bigMap()}
+
 	tt := []struct {
 		tName string
 		item  interface{}
@@ -206,6 +216,22 @@ func TestDir(t *testing.T) {
 			tName: "number uint64",
 			item:  uint64(88),
 		},
+		{
+			tName: "slice on its own is not compacted",
+			item:  bigSlice(),
+		},
+		{
+			tName: "slice in a struct is not compacted",
+			item:  structWithSlice,
+		},
+		{
+			tName: "map on its own is not compacted",
+			item:  bigMap(),
+		},
+		{
+			tName: "map in a struct is not compacted",
+			item:  structWithMap,
+		},
 	}
 
 	for _, v := range tt {
@@ -220,187 +246,6 @@ func TestDir(t *testing.T) {
 			dealWithTestData(t, path, res)
 		})
 	}
-
-	t.Run("slice on its own is not compacted", func(t *testing.T) {
-		t.Parallel()
-
-		expected := `
-[
-NAME: []int
-KIND: slice
-SIGNATURE: [[]int]
-FIELDS: []
-METHODS: []
-SNIPPET: []int{
-   int(0),
-   int(1),
-   int(2),
-   int(3),
-   int(4),
-   int(5),
-   int(6),
-   int(7),
-   int(8),
-   int(9),
-   int(10),
-   int(11),
-   int(12),
-   int(13),
-   int(14),
-   int(15),
-   int(16),
-   int(17),
-   int(18),
-   int(19),
- ...<9980 more redacted>..}
-]
-`
-
-		mySlice := bigSlice()
-
-		res := kama.Dir(mySlice)
-		attest.Equal(t, res, expected)
-	})
-
-	t.Run("slice in a struct is not compacted", func(t *testing.T) {
-		t.Parallel()
-
-		expected := `
-[
-NAME: github.com/komuw/kama_test.some
-KIND: struct
-SIGNATURE: [kama_test.some *kama_test.some]
-FIELDS: [
-	XX []int 
-	]
-METHODS: []
-SNIPPET: some{
-  XX: []int{
-   int(0),
-   int(1),
-   int(2),
-   int(3),
-   int(4),
-   int(5),
-   int(6),
-   int(7),
-   int(8),
-   int(9),
-   int(10),
-   int(11),
-   int(12),
-   int(13),
-   int(14),
-   int(15),
-   int(16),
-   int(17),
-   int(18),
-   int(19),
- ...<9980 more redacted>..},
-}
-]
-`
-		type some struct {
-			XX []int
-		}
-		s := some{XX: bigSlice()}
-
-		res := kama.Dir(s)
-		attest.Equal(t, res, expected)
-	})
-
-	t.Run("map on its own is not compacted", func(t *testing.T) {
-		t.Parallel()
-
-		expected := `
-[
-NAME: map[int]string
-KIND: map
-SIGNATURE: [map[int]string]
-FIELDS: []
-METHODS: []
-SNIPPET: map[int]string{
-   int(0): "0", 
-   int(1): "1", 
-   int(10): "10", 
-   int(100): "100", 
-   int(1000): "1000", 
-   int(1001): "1001", 
-   int(1002): "1002", 
-   int(1003): "1003", 
-   int(1004): "1004", 
-   int(1005): "1005", 
-   int(1006): "1006", 
-   int(1007): "1007", 
-   int(1008): "1008", 
-   int(1009): "1009", 
-   int(101): "101", 
-   int(1010): "1010", 
-   int(1011): "1011", 
-   int(1012): "1012", 
-   int(1013): "1013", 
-   int(1014): "1014", 
-   int(1015): "1015", 
-   int(1016): "1016", 
-   ...<9980 more redacted>..}
-]
-`
-
-		myMap := bigMap()
-
-		res := kama.Dir(myMap)
-		attest.Equal(t, res, expected)
-	})
-
-	t.Run("map in a struct is not compacted", func(t *testing.T) {
-		t.Parallel()
-
-		expected := `
-[
-NAME: github.com/komuw/kama_test.some
-KIND: struct
-SIGNATURE: [kama_test.some *kama_test.some]
-FIELDS: [
-	XX map[int]string 
-	]
-METHODS: []
-SNIPPET: some{
-  XX: map[int]string{
-   int(0): "0", 
-   int(1): "1", 
-   int(10): "10", 
-   int(100): "100", 
-   int(1000): "1000", 
-   int(1001): "1001", 
-   int(1002): "1002", 
-   int(1003): "1003", 
-   int(1004): "1004", 
-   int(1005): "1005", 
-   int(1006): "1006", 
-   int(1007): "1007", 
-   int(1008): "1008", 
-   int(1009): "1009", 
-   int(101): "101", 
-   int(1010): "1010", 
-   int(1011): "1011", 
-   int(1012): "1012", 
-   int(1013): "1013", 
-   int(1014): "1014", 
-   int(1015): "1015", 
-   int(1016): "1016", 
-   ...<9980 more redacted>..},
-}
-]
-`
-
-		type some struct {
-			XX map[int]string
-		}
-		s := some{XX: bigMap()}
-
-		res := kama.Dir(s)
-		attest.Equal(t, res, expected)
-	})
 
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
