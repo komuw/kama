@@ -57,13 +57,17 @@ func leakDetector(exitCode int) int {
 	return exitCode
 }
 
+// dealWithTestData asserts that gotContent is equal to data found at path.
+//
+// If the environment variable `KAMA_WRITE_DATA_FOR_TESTS` is set, this func
+// will write gotContent to path instead.
 func dealWithTestData(t *testing.T, path, gotContent string) {
 	t.Helper()
 
 	p, e := filepath.Abs(path)
 	attest.Ok(t, e)
 
-	writeData := os.Getenv("KAMA_TEST_WRITE_DATA") != ""
+	writeData := os.Getenv("KAMA_WRITE_DATA_FOR_TESTS") != ""
 	if writeData {
 		e := os.WriteFile(path, []byte(gotContent), 0o644)
 		attest.Ok(t, e)
