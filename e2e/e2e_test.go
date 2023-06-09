@@ -476,7 +476,7 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		dealWithTestData(t, "../testdata/struct_of_varying_field_types.txt", res)
+		dealWithTestData(t, "../testdata/e2e_test.go/struct_of_varying_field_types.txt", res)
 	})
 
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
@@ -531,7 +531,7 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		dealWithTestData(t, "../testdata/pointer_to_struct_of_varying_field_types.txt", res)
+		dealWithTestData(t, "../testdata/e2e_test.go/pointer_to_struct_of_varying_field_types.txt", res)
 	})
 
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
@@ -547,7 +547,7 @@ SNIPPET: some{
 
 		s := sliceOfStruct()
 		res := kama.Dir(s)
-		dealWithTestData(t, "../testdata/slice_of_http_Request_value_structs.txt", res)
+		dealWithTestData(t, "../testdata/e2e_test.go/slice_of_http_Request_value_structs.txt", res)
 	})
 }
 
