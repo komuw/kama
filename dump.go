@@ -62,7 +62,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	case reflect.Invalid:
 		return "<invalid>"
 	case reflect.String:
-		return dumpString(val, hideZeroValues)
+		return dumpString(val)
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
@@ -76,7 +76,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		reflect.Float32,
 		reflect.Float64,
 		reflect.Uintptr:
-		return dumpNumbers(val, hideZeroValues, indentLevel)
+		return dumpNumbers(val)
 	case reflect.Struct:
 		// We used to use `sanity-io/litter` to do dumping.
 		// We however, decided to implement our own dump functionality.
@@ -104,15 +104,15 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	case reflect.Array, reflect.Slice:
 		return dumpSlice(val, hideZeroValues, indentLevel)
 	case reflect.Chan:
-		return dumpChan(val, hideZeroValues, indentLevel)
+		return dumpChan(val)
 	case reflect.Map:
 		return dumpMap(val, hideZeroValues, indentLevel)
 	case reflect.Bool:
 		return fmt.Sprint(val)
 	case reflect.Func:
-		return dumpFunc(val, hideZeroValues, indentLevel)
+		return dumpFunc(val)
 	case reflect.Complex64, reflect.Complex128:
-		return dumpComplexNum(val, hideZeroValues, indentLevel)
+		return dumpComplexNum(val)
 	case reflect.UnsafePointer:
 		// It is not generally safe to do anything with an unsafe.Pointer
 		// see: https://golang.org/pkg/unsafe/#Pointer
@@ -120,13 +120,13 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		// do note that if we wanted we could get a uintptr via `val.Pointer()`
 		return "unsafe.Pointer"
 	case reflect.Interface:
-		return dumpInterface(val, hideZeroValues, indentLevel)
+		return dumpInterface(val)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iTypeKind)
 	}
 }
 
-func dumpString(v reflect.Value, hideZeroValues bool) string {
+func dumpString(v reflect.Value) string {
 	// dumps strings
 	maxL := 100
 
@@ -284,7 +284,7 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	return s
 }
 
-func dumpChan(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func dumpChan(v reflect.Value) string {
 	// dumps channels
 	cap := v.Cap()
 	len := v.Len()
@@ -293,7 +293,7 @@ func dumpChan(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
 }
 
-func dumpFunc(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func dumpFunc(v reflect.Value) string {
 	// dumps functions
 
 	vType := v.Type()
@@ -328,7 +328,7 @@ func dumpFunc(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	return typeName
 }
 
-func dumpComplexNum(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func dumpComplexNum(v reflect.Value) string {
 	// dumps complex64 and complex128 numbers
 	bits := v.Type().Bits()
 	cmp := v.Complex() // returns complex128 even for `reflect.Complex64`
@@ -352,7 +352,7 @@ func dumpNonStructPointer(v reflect.Value, hideZeroValues bool, indentLevel int)
 	return pref + s
 }
 
-func dumpNumbers(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func dumpNumbers(v reflect.Value) string {
 	// dumps numbers.
 
 	iType := v.Type()
@@ -383,7 +383,7 @@ func dumpNumbers(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	}
 }
 
-func dumpInterface(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func dumpInterface(v reflect.Value) string {
 	// dump interface
 
 	name := v.Type().String() // eg; `io.Reader` or `error`
