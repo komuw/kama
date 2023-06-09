@@ -156,7 +156,7 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 	attest.Ok(t, e)
 
 	expectedContent := string(b)
-	attest.Equal(t, gotContent, expectedContent)
+	attest.Equal(t, gotContent, expectedContent, attest.Sprintf("path: %s", path))
 }
 
 func TestDir(t *testing.T) {

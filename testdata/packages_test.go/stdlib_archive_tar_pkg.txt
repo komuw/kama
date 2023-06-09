@@ -34,16 +34,16 @@ FUNCTIONS: [
 	NewWriter(w io.Writer) *Writer 
 	]
 TYPES: [
+	Writer struct
+		(*Writer) Close() error
+		(*Writer) Flush() error
+		(*Writer) Write(b []byte) (int, error)
+		(*Writer) WriteHeader(hdr *Header) error 
 	Format int
 		(Format) String() string 
 	Header struct
 		(*Header) FileInfo() io/fs.FileInfo 
 	Reader struct
 		(*Reader) Next() (*Header, error)
-		(*Reader) Read(b []byte) (int, error) 
-	Writer struct
-		(*Writer) Close() error
-		(*Writer) Flush() error
-		(*Writer) Write(b []byte) (int, error)
-		(*Writer) WriteHeader(hdr *Header) error]
+		(*Reader) Read(b []byte) (int, error)]
 ]
