@@ -210,6 +210,9 @@ func TestReadmeExamples(t *testing.T) {
 	// This are the examples that are displayed in the README.md file.
 	t.Parallel()
 
+	req, _ := http.NewRequest("GET", "https://example.com", nil)
+	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+
 	tt := []struct {
 		tName string
 		item  interface{}
@@ -221,6 +224,10 @@ func TestReadmeExamples(t *testing.T) {
 		{
 			tName: "package github.com/pkg/errors",
 			item:  "github.com/pkg/errors",
+		},
+		{
+			tName: "http request",
+			item:  req,
 		},
 	}
 
