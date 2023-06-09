@@ -3,7 +3,10 @@ package kama
 import (
 	"fmt"
 	"net/http"
+	"reflect"
 	"testing"
+
+	"go.akshayshah.org/attest"
 )
 
 type Person struct {
@@ -304,7 +307,6 @@ func TestSliceMap(t *testing.T) {
 // //////////
 func TestYes(t *testing.T) {
 	t.Parallel()
-	c := qt.New(t)
 
 	type Chair struct {
 		Name string
@@ -317,7 +319,8 @@ func TestYes(t *testing.T) {
 	}
 
 	req, err := http.NewRequest("GET", "someurl", nil)
-	c.Assert(err, qt.IsNil)
+	attest.Ok(t, err)
+
 	req.Header.Set("OK", "wewe")
 	req.Header.Set("TWO", "two")
 	req.Header.Set("Three", "three")
