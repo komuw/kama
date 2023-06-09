@@ -146,8 +146,9 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 
 	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
-		e := os.WriteFile(path, []byte(gotContent), 0o644)
-		attest.Ok(t, e)
+		attest.Ok(t,
+			os.WriteFile(path, []byte(gotContent), 0o644),
+		)
 		t.Logf("\n\t written testdata to %s\n", path)
 		return
 	}
