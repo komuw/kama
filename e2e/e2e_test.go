@@ -142,7 +142,7 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 	if writeData {
 		e := os.WriteFile(path, []byte(gotContent), 0o644)
 		attest.Ok(t, e)
-		t.Logf("written testdata to %s", path)
+		t.Logf("\n\t written testdata to %s\n", path)
 		return
 	}
 
