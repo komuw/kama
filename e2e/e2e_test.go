@@ -12,8 +12,8 @@ import (
 	"testing"
 	"unsafe"
 
-	qt "github.com/frankban/quicktest"
 	"github.com/komuw/kama"
+	"go.akshayshah.org/attest"
 )
 
 var longText = `AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It became the absorbing topic of village talk immediately. Tom could not get away from it. Every reference to the murder sent a shudder to his heart, for his troubled conscience and fears almost persuaded him that these remarks were put forth in his hearing as “feelers”; he did not see how he could be suspected of knowing anything about the murder, but still he could not be comfortable in the midst of this gossip. It kept him in a cold shiver all the time. He took Huck to a lonely place to have a talk with him. It would be some relief to unseal his tongue for a little while; to divide his burden of distress with another sufferer. Moreover, he wanted to assure himself that Huck had remained discreet.
@@ -137,7 +137,6 @@ func TestDir(t *testing.T) {
 
 	t.Run("dump numbers", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
 
 		vals := map[interface{}]string{
 			int(44): `
@@ -219,13 +218,13 @@ SNIPPET: uint64(88)
 		}
 		for k, v := range vals {
 			res := kama.Dir(k)
-			c.Assert(res, qt.Equals, v)
+			attest.Equal(t, res, v)
 		}
 	})
 
 	t.Run("slice on its own is not compacted", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
+
 		expected := `
 [
 NAME: []int
@@ -261,12 +260,12 @@ SNIPPET: []int{
 		mySlice := bigSlice()
 
 		res := kama.Dir(mySlice)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 
 	t.Run("slice in a struct is not compacted", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
+
 		expected := `
 [
 NAME: github.com/komuw/kama/e2e_test.some
@@ -308,12 +307,12 @@ SNIPPET: some{
 		s := some{XX: bigSlice()}
 
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 
 	t.Run("map on its own is not compacted", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
+
 		expected := `
 [
 NAME: map[int]string
@@ -351,12 +350,12 @@ SNIPPET: map[int]string{
 		myMap := bigMap()
 
 		res := kama.Dir(myMap)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 
 	t.Run("map in a struct is not compacted", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
+
 		expected := `
 [
 NAME: github.com/komuw/kama/e2e_test.some
@@ -401,17 +400,16 @@ SNIPPET: some{
 		s := some{XX: bigMap()}
 
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
 
 		p, e := filepath.Abs("../testdata/struct_of_varying_field_types.txt")
-		c.Assert(e, qt.IsNil)
+		attest.Ok(t, e)
 		b, e := os.ReadFile(p)
-		c.Assert(e, qt.IsNil)
+		attest.Ok(t, e)
 		expected := string(b)
 
 		someIntEight := int8(14)
@@ -463,17 +461,16 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
 
 		p, e := filepath.Abs("../testdata/pointer_to_struct_of_varying_field_types.txt")
-		c.Assert(e, qt.IsNil)
+		attest.Ok(t, e)
 		b, e := os.ReadFile(p)
-		c.Assert(e, qt.IsNil)
+		attest.Ok(t, e)
 		expected := string(b)
 
 		someIntEight := int8(14)
@@ -525,17 +522,16 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
 
 		p, e := filepath.Abs("../testdata/slice_of_http_Request_value_structs.txt")
-		c.Assert(e, qt.IsNil)
+		attest.Ok(t, e)
 		b, e := os.ReadFile(p)
-		c.Assert(e, qt.IsNil)
+		attest.Ok(t, e)
 		expected := string(b)
 
 		sliceOfStruct := func() []http.Request {
@@ -548,7 +544,7 @@ SNIPPET: some{
 
 		s := sliceOfStruct()
 		res := kama.Dir(s)
-		c.Assert(res, qt.Equals, expected)
+		attest.Equal(t, res, expected)
 	})
 }
 
@@ -557,7 +553,6 @@ func TestAllAboutInterfaces(t *testing.T) {
 
 	t.Run("interfaces should be well represented", func(t *testing.T) {
 		t.Parallel()
-		c := qt.New(t)
 
 		var SomeNilError error = nil
 		var SomeConcreteError error = errors.New("unable to read from ftp file")
@@ -702,7 +697,7 @@ SNIPPET: &SomeStructWithInterfaces{
 
 		for k, v := range vals {
 			res := kama.Dir(k)
-			c.Assert(res, qt.Equals, v)
+			attest.Equal(t, res, v)
 		}
 	})
 }

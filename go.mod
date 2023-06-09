@@ -18,5 +18,6 @@ require (
 require (
 	github.com/frankban/quicktest v1.14.4 // test
 	github.com/pkg/errors v0.9.1 // test
+	go.akshayshah.org/attest v1.0.2 // test
 	go.uber.org/goleak v1.2.1 // test
 )
