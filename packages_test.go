@@ -3,7 +3,7 @@ package kama
 import (
 	"testing"
 
-	qt "github.com/frankban/quicktest"
+	"go.akshayshah.org/attest"
 )
 
 func TestStdlibPackages(t *testing.T) {
@@ -60,14 +60,13 @@ func TestStdlibPackages(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		c := qt.New(t)
 
 		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		c.Assert(p, qt.DeepEquals, v.expected)
+		attest.Equal(t, p, v.expected)
 	}
 }
 
@@ -111,25 +110,22 @@ func TestThirdPartyPackages(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		c := qt.New(t)
 
 		p, err := newPak(v.importPath)
 		if err != nil {
 			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
 		}
 
-		c.Assert(p, qt.DeepEquals, v.expected)
+		attest.Equal(t, p, v.expected)
 	}
 }
 
 func TestError(t *testing.T) {
 	t.Parallel()
 
-	c := qt.New(t)
-
 	_, err := newPak("github.com/pkg/NoSuchModule")
 	if err == nil {
 		t.Errorf("got no error, yet expected an error")
 	}
-	c.Assert(err.Error(), qt.Contains, "no required module provides package")
+	attest.Subsequence(t, err.Error(), "no required module provides package")
 }
