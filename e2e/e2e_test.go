@@ -132,6 +132,17 @@ type SomeStruct struct {
 	SomeUnsafety        unsafe.Pointer
 }
 
+func readTestData(t *testing.T, path string) (content string) {
+	t.Helper()
+
+	p, e := filepath.Abs(path)
+	attest.Ok(t, e)
+	b, e := os.ReadFile(p)
+	attest.Ok(t, e)
+
+	return string(b)
+}
+
 func TestDir(t *testing.T) {
 	t.Parallel()
 
@@ -406,11 +417,7 @@ SNIPPET: some{
 	t.Run("struct of varying field types", func(t *testing.T) {
 		t.Parallel()
 
-		p, e := filepath.Abs("../testdata/struct_of_varying_field_types.txt")
-		attest.Ok(t, e)
-		b, e := os.ReadFile(p)
-		attest.Ok(t, e)
-		expected := string(b)
+		expected := readTestData(t, "../testdata/struct_of_varying_field_types.txt")
 
 		someIntEight := int8(14)
 		s := SomeStruct{
@@ -467,11 +474,7 @@ SNIPPET: some{
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
 		t.Parallel()
 
-		p, e := filepath.Abs("../testdata/pointer_to_struct_of_varying_field_types.txt")
-		attest.Ok(t, e)
-		b, e := os.ReadFile(p)
-		attest.Ok(t, e)
-		expected := string(b)
+		expected := readTestData(t, "../testdata/pointer_to_struct_of_varying_field_types.txt")
 
 		someIntEight := int8(14)
 		s := &SomeStruct{
@@ -528,11 +531,7 @@ SNIPPET: some{
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
 		t.Parallel()
 
-		p, e := filepath.Abs("../testdata/slice_of_http_Request_value_structs.txt")
-		attest.Ok(t, e)
-		b, e := os.ReadFile(p)
-		attest.Ok(t, e)
-		expected := string(b)
+		expected := readTestData(t, "../testdata/slice_of_http_Request_value_structs.txt")
 
 		sliceOfStruct := func() []http.Request {
 			xx := []http.Request{}
