@@ -27,6 +27,8 @@ func TestStdlibPackages(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
 			p, err := newPak(v.importPath)
 			attest.Ok(t, err)
 
@@ -40,11 +42,14 @@ func TestThirdPartyPackages(t *testing.T) {
 	t.Parallel()
 
 	tt := []struct {
+		tName      string
 		importPath string
 		expected   pak
 	}{
 		{
-			"github.com/pkg/errors", pak{
+			"third party github.com/pkg/errors",
+			"github.com/pkg/errors",
+			pak{
 				Name:      "github.com/pkg/errors",
 				Constants: []string{},
 				Variables: []string{},
@@ -76,13 +81,16 @@ func TestThirdPartyPackages(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
 
-		p, err := newPak(v.importPath)
-		if err != nil {
-			t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
-		}
+			p, err := newPak(v.importPath)
+			if err != nil {
+				t.Errorf("\ngot \n\t%#+v \nwanted \n\t%#+v", err, v.expected)
+			}
 
-		attest.Equal(t, p, v.expected)
+			attest.Equal(t, p, v.expected)
+		})
 	}
 }
 

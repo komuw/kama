@@ -93,11 +93,8 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 }
 
 func getDataPath(t *testing.T, testPath, testName string) string {
-	tName := strings.ReplaceAll(
-		strings.ReplaceAll(testName, " ", "_"),
-		"/",
-		"_",
-	)
+	s := strings.ReplaceAll(testName, " ", "_")
+	tName := strings.ReplaceAll(s, "/", "_")
 
 	path := filepath.Join("testdata", testPath, tName) + ".txt"
 
