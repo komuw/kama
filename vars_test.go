@@ -38,7 +38,7 @@ func ThisFunction(arg1 string, arg2 int) (string, error) {
 	return "", nil
 }
 
-var thisFunctionVar = ThisFunction
+var thisFunctionVar = ThisFunction //nolint:gochecknoglobals
 
 type customerID uint16
 
@@ -53,7 +53,7 @@ func bigSlice() []int {
 	return x
 }
 
-var MyBigSlice = bigSlice()
+var MyBigSlice = bigSlice() //nolint:gochecknoglobals
 
 func bigMap() map[int]string {
 	y := map[int]string{}
@@ -79,7 +79,7 @@ func bigArray() [10_000]int {
 	return a
 }
 
-var BigString = `AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It became the absorbing topic of village talk immediately. Tom could not get away from it. Every reference to the murder sent a shudder to his heart, for his troubled conscience and fears almost persuaded him that these remarks were put forth in his hearing as “feelers”; he did not see how he could be suspected of knowing anything about the murder, but still he could not be comfortable in the midst of this gossip. It kept him in a cold shiver all the time. He took Huck to a lonely place to have a talk with him. It would be some relief to unseal his tongue for a little while; to divide his burden of distress with another sufferer. Moreover, he wanted to assure himself that Huck had remained discreet.
+const BigString = `AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It became the absorbing topic of village talk immediately. Tom could not get away from it. Every reference to the murder sent a shudder to his heart, for his troubled conscience and fears almost persuaded him that these remarks were put forth in his hearing as “feelers”; he did not see how he could be suspected of knowing anything about the murder, but still he could not be comfortable in the midst of this gossip. It kept him in a cold shiver all the time. He took Huck to a lonely place to have a talk with him. It would be some relief to unseal his tongue for a little while; to divide his burden of distress with another sufferer. Moreover, he wanted to assure himself that Huck had remained discreet.
 “Huck, have you ever told anybody about—that?”
 “'Bout what?”
 “You know what.”
@@ -112,7 +112,7 @@ type SomeStructWIthSlice struct {
 	MyAwesome []int
 }
 
-var zeroValuePointer *http.Request
+var zeroValuePointer *http.Request //nolint:gochecknoglobals
 
 type StructWithTags struct {
 	Allowed bool   `json:"enabled"`
@@ -323,7 +323,9 @@ func TestContexts(t *testing.T) {
 		// // This WithDeadline does not work because the printed value of WithDeadline is not stable
 		// // https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L654-L657
 		// ctxWithDeadline, cancel := context.WithDeadline(context.Background(), when)
-		// defer cancel()
+		// t.Cleanup(func() {
+		// 	cancel()
+		// })
 	}
 
 	type StructWithContext struct {
@@ -332,7 +334,9 @@ func TestContexts(t *testing.T) {
 		OurCtx context.Context
 	}
 	ctxWithCancel, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	t.Cleanup(func() {
+		cancel()
+	})
 
 	ctxWithValue := context.WithValue(context.TODO(), myContextKeyType("ctxWithValueType"), "OKAYY") //nolint:gocritic
 

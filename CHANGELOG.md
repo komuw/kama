@@ -7,6 +7,7 @@ Most recent version is listed first.
 - Use testdata in more testcases: https://github.com/komuw/kama/pull/46
 - Implement better identation: https://github.com/komuw/kama/pull/47
 - Pretty print context.Context: https://github.com/komuw/kama/pull/48
+- Fix Static analysis: https://github.com/komuw/kama/pull/49
 
 # v0.0.8
 - Zero value struct should not indent: https://github.com/komuw/kama/pull/44
