@@ -46,7 +46,7 @@ func TestMain(m *testing.M) {
 
 	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
-		fmt.Printf("env var %s is set.", kamaWriteDataForTests)
+		fmt.Printf("\n\t env var %s is set.\n\n", kamaWriteDataForTests)
 		os.Exit(77)
 	}
 
