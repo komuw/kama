@@ -96,6 +96,8 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 }
 
 func getDataPath(t *testing.T, testPath, testName string) string {
+	t.Helper()
+
 	s := strings.ReplaceAll(testName, " ", "_")
 	tName := strings.ReplaceAll(s, "/", "_")
 

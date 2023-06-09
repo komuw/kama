@@ -97,7 +97,7 @@ func getName(i interface{}) string {
 	typeKind := iType.Kind()
 
 	typeName := ""
-	switch typeKind {
+	switch typeKind { //nolint:exhaustive
 	case reflect.Func:
 		typeName = runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 		if typeName == "" {
