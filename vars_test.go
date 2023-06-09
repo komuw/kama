@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	qt "github.com/frankban/quicktest"
+	"go.akshayshah.org/attest"
 )
 
 type Person struct {
@@ -457,9 +457,8 @@ func TestBasicVariables(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			c := qt.New(t)
 			res := newVari(v.variable)
-			c.Assert(res, qt.DeepEquals, v.expected)
+			attest.Equal(t, res, v.expected)
 		})
 	}
 }
@@ -632,16 +631,14 @@ func TestStdlibVariables(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			c := qt.New(t)
 			res := newVari(v.variable)
-			c.Assert(res, qt.DeepEquals, v.expected)
+			attest.Equal(t, res, v.expected)
 		})
 	}
 }
 
 func TestSliceMap(t *testing.T) {
 	t.Parallel()
-	c := qt.New(t)
 
 	var nilSlice []string = nil
 	var nilMap map[string]int = nil
@@ -764,7 +761,7 @@ func TestSliceMap(t *testing.T) {
 			t.Parallel()
 
 			res := newVari(v.variable)
-			c.Assert(res, qt.DeepEquals, v.expected)
+			attest.Equal(t, res, v.expected)
 		})
 	}
 }
