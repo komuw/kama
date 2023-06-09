@@ -162,6 +162,15 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 	attest.Equal(t, gotContent, expectedContent, attest.Sprintf("path: %s", path))
 }
 
+func getDataPath(t *testing.T, testPath, testName string) string {
+	s := strings.ReplaceAll(testName, " ", "_")
+	tName := strings.ReplaceAll(s, "/", "_")
+
+	path := filepath.Join("testdata", testPath, tName) + ".txt"
+
+	return path
+}
+
 func TestDir(t *testing.T) {
 	t.Parallel()
 
@@ -485,7 +494,8 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		dealWithTestData(t, "testdata/kama_test.go/struct_of_varying_field_types.txt", res)
+		path := getDataPath(t, "e2e_test.go", "struct_of_varying_field_types.txt")
+		dealWithTestData(t, path, res)
 	})
 
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
@@ -540,7 +550,8 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		dealWithTestData(t, "testdata/kama_test.go/pointer_to_struct_of_varying_field_types.txt", res)
+		path := getDataPath(t, "e2e_test.go", "pointer_to_struct_of_varying_field_types.txt")
+		dealWithTestData(t, path, res)
 	})
 
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
@@ -556,7 +567,8 @@ SNIPPET: some{
 
 		s := sliceOfStruct()
 		res := kama.Dir(s)
-		dealWithTestData(t, "testdata/kama_test.go/slice_of_http_Request_value_structs.txt", res)
+		path := getDataPath(t, "e2e_test.go", "slice_of_http_Request_value_structs.txt")
+		dealWithTestData(t, path, res)
 	})
 }
 
@@ -582,6 +594,57 @@ func TestAllAboutInterfaces(t *testing.T) {
 			SomeConcreteError: errors.New("houston something bad happened"),
 		}
 		someTwo := &someOne
+
+		tt := []struct {
+			tName string
+			item  interface{}
+		}{
+			{
+				tName: "SomeNilError",
+				item:  SomeNilError,
+			},
+			{
+				tName: "SomeConcreteError",
+				item:  SomeConcreteError,
+			},
+			{
+				tName: "&SomeConcreteError",
+				item:  &SomeConcreteError,
+			},
+			{
+				tName: "SomeReader",
+				item:  SomeReader,
+			},
+			{
+				tName: "NilEmptyInterface",
+				item:  NilEmptyInterface,
+			},
+			{
+				tName: "NonNilEmptyInterface",
+				item:  NonNilEmptyInterface,
+			},
+			{
+				tName: "someOne",
+				item:  someOne,
+			},
+			{
+				tName: "someTwo",
+				item:  someTwo,
+			},
+		}
+
+		for _, v := range tt {
+			v := v
+
+			t.Run(v.tName, func(t *testing.T) {
+				t.Parallel()
+
+				res := kama.Dir(v.item)
+
+				path := getDataPath(t, "e2e_test.go", v.tName)
+				dealWithTestData(t, path, res)
+			})
+		}
 
 		vals := map[interface{}]string{
 			SomeNilError: `
