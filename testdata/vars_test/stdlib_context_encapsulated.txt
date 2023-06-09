@@ -1,0 +1,17 @@
+
+[
+NAME: context.valueCtx
+KIND: struct
+SIGNATURE: [*context.valueCtx context.valueCtx]
+FIELDS: [
+	Context context.Context 
+	]
+METHODS: [
+	Deadline func(context.valueCtx) (time.Time, bool) 
+	Done func(context.valueCtx) <-chan struct {} 
+	Err func(context.valueCtx) error 
+	String func(*context.valueCtx) string 
+	Value func(*context.valueCtx, interface {}) interface {} 
+	]
+SNIPPET: context.Background.WithDeadline(2023-06-09 13:24:42.054128407 +0300 EAT m=+1020.006746794 [16m59.954727151s]).WithValue(type kama.myContextKeyType, val ThisIsSomeContextValue)
+]

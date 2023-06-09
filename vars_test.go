@@ -378,9 +378,8 @@ func TestContexts(t *testing.T) {
 			// fmt.Println("\n\t customContext: ", customContext{context.Background()}, "\n.")
 			fmt.Println("\n\t res.String(): ", v.tName, res.String())
 
-			// path := getDataPath(t, "vars_test.go", v.tName)
-			// dealWithTestData(t, path, res.String())
-			_ = res
+			path := getDataPath(t, "vars_test.go", v.tName)
+			dealWithTestData(t, path, res.String())
 		})
 	}
 }

@@ -50,7 +50,6 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		},
 		iTypeStr,
 	) {
-
 		// This could be a context.Context type.
 		// Let's use the formatting that is provided by the stdlib;
 		// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L197-L206
@@ -58,57 +57,6 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		// This will not handle custom types that implement context.Context
 		return deValStr
 	}
-
-	fmt.Println("\t deVal: ", deVal)
-	fmt.Println("\t iType: ", iType, iTypeStr)
-	fmt.Println("\t iTypeKind: ", iTypeKind)
-	fmt.Println()
-	// type emptyCtx struct{}
-	// type backgroundCtx struct{ emptyCtx }
-	// type todoCtx struct{ emptyCtx }
-	// type withoutCancelCtx
-	// timerCtx
-	//
-	// emptyCtx
-	// valueCtx
-	// backgroundCtx
-	// todoCtx
-	// withoutCancelCtx
-	// timerCtx
-	// cancelCtx
-
-	// deValStr := fmt.Sprint(deVal)
-	// if strings.Contains(
-	// 	deValStr,
-	// 	"context.Background",
-	// ) ||
-	// 	strings.Contains(
-	// 		deValStr,
-	// 		"context.TODO",
-	// 	) ||
-	// 	strings.Contains(
-	// 		deValStr,
-	// 		".WithCancel",
-	// 	) ||
-	// 	strings.Contains(
-	// 		deValStr,
-	// 		".WithoutCancel",
-	// 	) ||
-	// 	strings.Contains(
-	// 		deValStr,
-	// 		".WithDeadline",
-	// 	) ||
-	// 	strings.Contains(
-	// 		deValStr,
-	// 		".WithValue",
-	// 	) {
-	// 	// This could be a context.Context type.
-	// 	// Let's use the formatting that is provided by the stdlib;
-	// 	// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L197-L206
-	// 	//
-	// 	// This will not handle custom types that implement context.Context
-	// 	return deValStr
-	// }
 
 	switch iTypeKind {
 	case reflect.Invalid:
