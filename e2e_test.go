@@ -298,9 +298,9 @@ SNIPPET: []int{
 
 		expected := `
 [
-NAME: github.com/komuw/kama/e2e_test.some
+NAME: github.com/komuw/kama_test.some
 KIND: struct
-SIGNATURE: [e2e_test.some *e2e_test.some]
+SIGNATURE: [kama_test.some *kama_test.some]
 FIELDS: [
 	XX []int 
 	]
@@ -388,9 +388,9 @@ SNIPPET: map[int]string{
 
 		expected := `
 [
-NAME: github.com/komuw/kama/e2e_test.some
+NAME: github.com/komuw/kama_test.some
 KIND: struct
-SIGNATURE: [e2e_test.some *e2e_test.some]
+SIGNATURE: [kama_test.some *kama_test.some]
 FIELDS: [
 	XX map[int]string 
 	]
@@ -485,7 +485,7 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		dealWithTestData(t, "testdata/e2e_test.go/struct_of_varying_field_types.txt", res)
+		dealWithTestData(t, "testdata/kama_test.go/struct_of_varying_field_types.txt", res)
 	})
 
 	t.Run("pointer to struct of varying field types", func(t *testing.T) {
@@ -540,7 +540,7 @@ SNIPPET: some{
 		}
 
 		res := kama.Dir(s)
-		dealWithTestData(t, "testdata/e2e_test.go/pointer_to_struct_of_varying_field_types.txt", res)
+		dealWithTestData(t, "testdata/kama_test.go/pointer_to_struct_of_varying_field_types.txt", res)
 	})
 
 	t.Run("slice of http.Request value structs", func(t *testing.T) {
@@ -556,7 +556,7 @@ SNIPPET: some{
 
 		s := sliceOfStruct()
 		res := kama.Dir(s)
-		dealWithTestData(t, "testdata/e2e_test.go/slice_of_http_Request_value_structs.txt", res)
+		dealWithTestData(t, "testdata/kama_test.go/slice_of_http_Request_value_structs.txt", res)
 	})
 }
 
@@ -670,9 +670,9 @@ SNIPPET: int(9)
 
 			someOne: `
 [
-NAME: github.com/komuw/kama/e2e_test.SomeStructWithInterfaces
+NAME: github.com/komuw/kama_test.someStructWithInterfaces
 KIND: struct
-SIGNATURE: [e2e_test.SomeStructWithInterfaces *e2e_test.SomeStructWithInterfaces]
+SIGNATURE: [kama_test.SomeStructWithInterfaces *kama_test.SomeStructWithInterfaces]
 FIELDS: [
 	AAA io.Reader 
 	SomeNilError error 
@@ -689,9 +689,9 @@ SNIPPET: SomeStructWithInterfaces{
 
 			someTwo: `
 [
-NAME: github.com/komuw/kama/e2e_test.SomeStructWithInterfaces
+NAME: github.com/komuw/kama_test.someStructWithInterfaces
 KIND: struct
-SIGNATURE: [*e2e_test.SomeStructWithInterfaces e2e_test.SomeStructWithInterfaces]
+SIGNATURE: [*kama_test.SomeStructWithInterfaces kama_test.SomeStructWithInterfaces]
 FIELDS: [
 	AAA io.Reader 
 	SomeNilError error 
