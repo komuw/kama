@@ -58,7 +58,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		return deValStr
 	}
 
-	switch iTypeKind {
+	switch iTypeKind { //nolint:exhaustive
 	case reflect.Invalid:
 		return "<invalid>"
 	case reflect.String:
@@ -358,7 +358,7 @@ func dumpNumbers(v reflect.Value) string {
 	iType := v.Type()
 	iTypeKind := iType.Kind()
 
-	switch iTypeKind {
+	switch iTypeKind { //nolint:exhaustive
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
@@ -425,7 +425,7 @@ func isPointerValue(v reflect.Value) bool {
 	// Taken from https://github.com/sanity-io/litter/blob/v1.5.1/util.go
 	// under the MIT license;
 	// https://github.com/sanity-io/litter/blob/v1.5.1/LICENSE
-	switch v.Kind() {
+	switch v.Kind() { //nolint:exhaustive
 	case reflect.Chan, reflect.Func, reflect.Map, reflect.Ptr, reflect.Slice, reflect.UnsafePointer:
 		return true
 	}
