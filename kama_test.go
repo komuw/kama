@@ -25,7 +25,10 @@ import (
   https://github.com/sanity-io/litter/blob/b3546bd0a12c8738436e565b9e016bcd1876403d/LICENSE
 */
 
-const acceptableCodeCoverage = 0.8 // 80%
+const (
+	acceptableCodeCoverage = 0.8 // 80%
+	kamaWriteDataForTests  = "KAMA_WRITE_DATA_FOR_TESTS"
+)
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
@@ -39,6 +42,12 @@ func TestMain(m *testing.M) {
 			fmt.Printf("\n\tThe test code coverage has fallen below the acceptable value of %v. The current value is %v. \n", acceptableCodeCoverage, coverage)
 			exitCode = -1
 		}
+	}
+
+	writeData := os.Getenv(kamaWriteDataForTests) != ""
+	if writeData {
+		fmt.Printf("env var %s is set.", kamaWriteDataForTests)
+		os.Exit(77)
 	}
 
 	exitCode = leakDetector(exitCode)
@@ -59,7 +68,7 @@ func leakDetector(exitCode int) int {
 
 // dealWithTestData asserts that gotContent is equal to data found at path.
 //
-// If the environment variable `KAMA_WRITE_DATA_FOR_TESTS` is set, this func
+// If the environment variable [kamaWriteDataForTests] is set, this func
 // will write gotContent to path instead.
 func dealWithTestData(t *testing.T, path, gotContent string) {
 	t.Helper()
@@ -67,7 +76,7 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 	p, e := filepath.Abs(path)
 	attest.Ok(t, e)
 
-	writeData := os.Getenv("KAMA_WRITE_DATA_FOR_TESTS") != ""
+	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
 		e := os.WriteFile(path, []byte(gotContent), 0o644)
 		attest.Ok(t, e)

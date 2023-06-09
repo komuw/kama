@@ -16,6 +16,8 @@ import (
 	"go.akshayshah.org/attest"
 )
 
+const kamaWriteDataForTests = "KAMA_WRITE_DATA_FOR_TESTS"
+
 var longText = `AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It became the absorbing topic of village talk immediately. Tom could not get away from it. Every reference to the murder sent a shudder to his heart, for his troubled conscience and fears almost persuaded him that these remarks were put forth in his hearing as “feelers”; he did not see how he could be suspected of knowing anything about the murder, but still he could not be comfortable in the midst of this gossip. It kept him in a cold shiver all the time. He took Huck to a lonely place to have a talk with him. It would be some relief to unseal his tongue for a little while; to divide his burden of distress with another sufferer. Moreover, he wanted to assure himself that Huck had remained discreet.
 “Huck, have you ever told anybody about—that?”
 “’Bout what?”
@@ -134,7 +136,7 @@ type SomeStruct struct {
 
 // dealWithTestData asserts that gotContent is equal to data found at path.
 //
-// If the environment variable `KAMA_WRITE_DATA_FOR_TESTS` is set, this func
+// If the environment variable [kamaWriteDataForTests] is set, this func
 // will write gotContent to path instead.
 func dealWithTestData(t *testing.T, path, gotContent string) {
 	t.Helper()
@@ -142,7 +144,7 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 	p, e := filepath.Abs(path)
 	attest.Ok(t, e)
 
-	writeData := os.Getenv("KAMA_WRITE_DATA_FOR_TESTS") != ""
+	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
 		e := os.WriteFile(path, []byte(gotContent), 0o644)
 		attest.Ok(t, e)
