@@ -195,6 +195,7 @@ SNIPPET: &Request{
 }
 ]
 ```
+See [testdata](testdata) directory for more examples.    
 
 
 ## Inspiration
