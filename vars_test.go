@@ -3,10 +3,7 @@ package kama
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
-
-	"go.akshayshah.org/attest"
 )
 
 type Person struct {
@@ -300,73 +297,6 @@ func TestSliceMap(t *testing.T) {
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
-		})
-	}
-}
-
-// //////////
-func TestYes(t *testing.T) {
-	t.Parallel()
-
-	type Chair struct {
-		Name string
-		Size int
-	}
-
-	type House struct {
-		Chair     Chair
-		SomeStuff map[string]int
-	}
-
-	req, err := http.NewRequest("GET", "someurl", nil)
-	attest.Ok(t, err)
-
-	req.Header.Set("OK", "wewe")
-	req.Header.Set("TWO", "two")
-	req.Header.Set("Three", "three")
-
-	type Header map[string][]string
-	hdr := Header{
-		"ONE": []string{"a", "b", "c"},
-		"TWO": []string{"x", "y", "z"},
-	}
-	_ = hdr
-
-	tt := []struct {
-		tName    string
-		variable interface{}
-		expected vari
-	}{
-		{
-			tName: "xxx",
-			// variable: House{
-			// 	Chair: Chair{
-			// 		Name: "aeron",
-			// 		Size: 98,
-			// 	},
-			// 	SomeStuff: map[string]int{"o": 1, "two": 2},
-			// },
-			variable: req,
-			expected: vari{
-				Name:      "[]string",
-				Kind:      reflect.Slice,
-				Signature: []string{"[]string"},
-				Fields:    []string{},
-				Methods:   []string{},
-				Val:       "[]string{(nil)}",
-			},
-		},
-	}
-
-	for _, v := range tt {
-		v := v
-
-		t.Run(v.tName, func(t *testing.T) {
-			t.Parallel()
-
-			res := newVari(v.variable)
-			fmt.Println("res: ", res)
-			// c.Assert(res, qt.DeepEquals, v.expected)
 		})
 	}
 }
