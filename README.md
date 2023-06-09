@@ -22,7 +22,14 @@ It's name is derived from Kenyan hip hop artiste, `Kama`(One third of the hiphop
 
 ```shell
 go get -u github.com/komuw/kama
-```           
+```   
+
+```shell
+# run tests:
+export KAMA_WRITE_DATA_FOR_TESTS=YES
+unset KAMA_WRITE_DATA_FOR_TESTS
+go test -race ./... -count=1
+```
 
 
 ## Usage:    
