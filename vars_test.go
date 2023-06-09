@@ -334,7 +334,7 @@ func TestContexts(t *testing.T) {
 	ctxWithCancel, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	ctxWithValue := context.WithValue(context.TODO(), myContextKeyType("ctxWithValueType"), "OKAYY")
+	ctxWithValue := context.WithValue(context.TODO(), myContextKeyType("ctxWithValueType"), "OKAYY") //nolint:gocritic
 
 	encapsulatedStdlibCtx := context.WithValue(ctxWithCancel, myContextKeyType("myContextKeyType"), "ThisIsSomeContextValue")
 
@@ -344,7 +344,7 @@ func TestContexts(t *testing.T) {
 	}{
 		{
 			tName:    "stdlib context TODO",
-			variable: context.TODO(),
+			variable: context.TODO(), //nolint:gocritic
 		},
 		{
 			tName:    "stdlib context Background",
