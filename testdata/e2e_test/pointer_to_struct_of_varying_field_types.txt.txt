@@ -99,7 +99,8 @@ SNIPPET: &SomeStruct{
    Request{
       Method: "19",
     },
- ...<80 more redacted>..},
+     ...<80 more redacted>..
+    },
   OneHttpRequest: Request{
     Method: "Hello",
   },
@@ -130,7 +131,8 @@ SNIPPET: &SomeStruct{
    int(17),
    int(18),
    int(19),
- ...<9980 more redacted>..},
+     ...<9980 more redacted>..
+    },
   LargeMap: map[int]string{
    int(0): "0", 
    int(1): "1", 
@@ -154,7 +156,8 @@ SNIPPET: &SomeStruct{
    int(1014): "1014", 
    int(1015): "1015", 
    int(1016): "1016", 
-   ...<9980 more redacted>..},
+   ...<9980 more redacted>..
+    },
   UndirectedChan: chan int (len=122, cap=10000),
   DirectedChan: chan<- bool (len=1, cap=13),
   SomeBool: true,
@@ -194,7 +197,7 @@ SNIPPET: &SomeStruct{
    &URL{
       Path: "8",
     },
-},
+    },
   ComplexxySixFour: complex64(5+7i),
   ComplexyOneTwoEight: complex128(5+7i),
   NonStructPointer: &int8(14),

@@ -466,5 +466,6 @@ SNIPPET: []http.Request{
     Cancel: <-chan struct {} (len=0, cap=0),
     Response: *http.Response(nil),
   },
- ...<9980 more redacted>..}
+   ...<9980 more redacted>..
+  }
 ]
