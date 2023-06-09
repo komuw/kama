@@ -193,7 +193,7 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	}
 	if numEntries > constraint {
 		remainder := numEntries - constraint
-		s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder)
+		s = s + fmt.Sprintf(" ...<%d more redacted>..", remainder) + newline
 	}
 	if v.IsZero() {
 		s = s + "(nil)}"
