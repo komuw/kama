@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
+	"go.akshayshah.org/attest"
 	"go.uber.org/goleak"
 
 	pkgErrors "github.com/pkg/errors"
@@ -23,7 +26,10 @@ import (
   https://github.com/sanity-io/litter/blob/b3546bd0a12c8738436e565b9e016bcd1876403d/LICENSE
 */
 
-const acceptableCodeCoverage = 0.8 // 80%
+const (
+	acceptableCodeCoverage = 0.8 // 80%
+	kamaWriteDataForTests  = "KAMA_WRITE_DATA_FOR_TESTS"
+)
 
 func TestMain(m *testing.M) {
 	// call flag.Parse() here if TestMain uses flags
@@ -37,6 +43,12 @@ func TestMain(m *testing.M) {
 			fmt.Printf("\n\tThe test code coverage has fallen below the acceptable value of %v. The current value is %v. \n", acceptableCodeCoverage, coverage)
 			exitCode = -1
 		}
+	}
+
+	writeData := os.Getenv(kamaWriteDataForTests) != ""
+	if writeData {
+		fmt.Printf("\n\t env var %s is set.\n\n", kamaWriteDataForTests)
+		os.Exit(77)
 	}
 
 	exitCode = leakDetector(exitCode)
@@ -53,6 +65,43 @@ func leakDetector(exitCode int) int {
 		}
 	}
 	return exitCode
+}
+
+// dealWithTestData asserts that gotContent is equal to data found at path.
+//
+// If the environment variable [kamaWriteDataForTests] is set, this func
+// will write gotContent to path instead.
+func dealWithTestData(t *testing.T, path, gotContent string) {
+	t.Helper()
+
+	path = strings.ReplaceAll(path, ".go", "")
+
+	p, e := filepath.Abs(path)
+	attest.Ok(t, e)
+
+	writeData := os.Getenv(kamaWriteDataForTests) != ""
+	if writeData {
+		attest.Ok(t,
+			os.WriteFile(path, []byte(gotContent), 0o644),
+		)
+		t.Logf("\n\t written testdata to %s\n", path)
+		return
+	}
+
+	b, e := os.ReadFile(p)
+	attest.Ok(t, e)
+
+	expectedContent := string(b)
+	attest.Equal(t, gotContent, expectedContent, attest.Sprintf("path: %s", path))
+}
+
+func getDataPath(t *testing.T, testPath, testName string) string {
+	s := strings.ReplaceAll(testName, " ", "_")
+	tName := strings.ReplaceAll(s, "/", "_")
+
+	path := filepath.Join("testdata", testPath, tName) + ".txt"
+
+	return path
 }
 
 type (
@@ -154,5 +203,44 @@ func TestThirdPartyTypes(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		Dir(v)
+	}
+}
+
+func TestReadmeExamples(t *testing.T) {
+	// This are the examples that are displayed in the README.md file.
+	t.Parallel()
+
+	req, _ := http.NewRequest("GET", "https://example.com", nil)
+	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+
+	tt := []struct {
+		tName string
+		item  interface{}
+	}{
+		{
+			tName: "package compress/flate",
+			item:  "compress/flate",
+		},
+		{
+			tName: "package github.com/pkg/errors",
+			item:  "github.com/pkg/errors",
+		},
+		{
+			tName: "http request",
+			item:  req,
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := Dir(v.item)
+
+			path := getDataPath(t, "kama_test.go", v.tName)
+			dealWithTestData(t, path, res)
+		})
 	}
 }

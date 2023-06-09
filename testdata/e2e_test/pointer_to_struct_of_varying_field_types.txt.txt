@@ -1,8 +1,8 @@
 
 [
-NAME: github.com/komuw/kama/e2e_test.SomeStruct
+NAME: github.com/komuw/kama_test.SomeStruct
 KIND: struct
-SIGNATURE: [*e2e_test.SomeStruct e2e_test.SomeStruct]
+SIGNATURE: [*kama_test.SomeStruct kama_test.SomeStruct]
 FIELDS: [
 	SomeInt int16 
 	SomeUintptr uintptr 
@@ -11,7 +11,7 @@ FIELDS: [
 	EmptyString string 
 	SmallString string 
 	LargeString string 
-	DistinctType e2e_test.Distance 
+	DistinctType kama_test.Distance 
 	SomeNilError error 
 	SomeConcreteError error 
 	LargeSlice []int 
@@ -21,10 +21,10 @@ FIELDS: [
 	SomeBool bool 
 	NonIntializedFuncClosure func() (io.ReadCloser, error) 
 	NonIntializedFuncFromStdLib http.HandlerFunc 
-	NonIntializedFuncWithReturn e2e_test.FuncWithReturn 
+	NonIntializedFuncWithReturn kama_test.FuncWithReturn 
 	IntializedFuncClosure func() (io.ReadCloser, error) 
 	IntializedFuncFromStdLib http.HandlerFunc 
-	IntializedFuncWithReturn e2e_test.FuncWithReturn 
+	IntializedFuncWithReturn kama_test.FuncWithReturn 
 	ZeroPointerStruct *url.URL 
 	NonZeroPointerStruct *url.URL 
 	EvenMoreUrl *url.URL 
@@ -106,7 +106,7 @@ SNIPPET: &SomeStruct{
   EmptyString: "",
   SmallString: "What up?",
   LargeString: "AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It ...<3404 more redacted>..,
-  DistinctType: e2e_test.Distance(9131),
+  DistinctType: kama_test.Distance(9131),
   SomeNilError: error(nil),
   SomeConcreteError: error(Houston something bad happened),
   LargeSlice: []int{
@@ -160,10 +160,10 @@ SNIPPET: &SomeStruct{
   SomeBool: true,
   NonIntializedFuncClosure: func() (io.ReadCloser, error),
   NonIntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
-  NonIntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
+  NonIntializedFuncWithReturn: kama_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
   IntializedFuncClosure: func() (io.ReadCloser, error),
   IntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
-  IntializedFuncWithReturn: e2e_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
+  IntializedFuncWithReturn: kama_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
   ZeroPointerStruct: *url.URL(nil),
   NonZeroPointerStruct: &URL{},
   EvenMoreUrl: &URL{

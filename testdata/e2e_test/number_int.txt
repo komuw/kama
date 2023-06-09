@@ -1,0 +1,9 @@
+
+[
+NAME: int
+KIND: int
+SIGNATURE: [int]
+FIELDS: []
+METHODS: []
+SNIPPET: int(44)
+]

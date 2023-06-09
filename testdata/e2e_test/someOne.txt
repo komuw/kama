@@ -1,0 +1,17 @@
+
+[
+NAME: github.com/komuw/kama_test.SomeStructWithInterfaces
+KIND: struct
+SIGNATURE: [kama_test.SomeStructWithInterfaces *kama_test.SomeStructWithInterfaces]
+FIELDS: [
+	AAA io.Reader 
+	SomeNilError error 
+	SomeConcreteError error 
+	]
+METHODS: []
+SNIPPET: SomeStructWithInterfaces{
+  AAA: io.Reader(*strings.Reader),
+  SomeNilError: error(nil),
+  SomeConcreteError: error(houston something bad happened),
+}
+]

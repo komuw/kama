@@ -1,0 +1,9 @@
+
+[
+NAME: chan int
+KIND: chan
+SIGNATURE: [chan int]
+FIELDS: []
+METHODS: []
+SNIPPET: chan int (len=10000, cap=10000)
+]
