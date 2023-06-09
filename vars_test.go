@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"testing"
 	"time"
-
-	"go.akshayshah.org/attest"
 )
 
 type Person struct {
@@ -317,12 +315,16 @@ func TestContexts(t *testing.T) {
 
 	type myContextKeyType string
 
-	const shortForm = "2006-Jan-02"
-	when, err := time.ParseInLocation(shortForm, "2013-Feb-03", time.UTC)
-	attest.Ok(t, err)
+	{
+		// const shortForm = "2006-Jan-02"
+		// when, err := time.ParseInLocation(shortForm, "2013-Feb-03", time.UTC)
+		// attest.Ok(t, err)
 
-	ctxWithDeadline, cancel := context.WithDeadline(context.Background(), when)
-	defer cancel()
+		// // This WithDeadline does not work because the printed value of WithDeadline is not stable
+		// // https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L654-L657
+		// ctxWithDeadline, cancel := context.WithDeadline(context.Background(), when)
+		// defer cancel()
+	}
 
 	type StructWithContext struct {
 		Name   string
@@ -352,10 +354,12 @@ func TestContexts(t *testing.T) {
 			tName:    "stdlib context WithCancel",
 			variable: ctxWithCancel,
 		},
-		{
-			tName:    "stdlib context WithDeadline",
-			variable: ctxWithDeadline,
-		},
+		// This WithDeadline does not work because the printed value of WithDeadline is not stable
+		// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L654-L657
+		// {
+		// 	tName:    "stdlib context WithDeadline",
+		// 	variable: ctxWithDeadline,
+		// },
 		{
 			tName:    "stdlib context WithValue",
 			variable: ctxWithValue,
@@ -380,10 +384,6 @@ func TestContexts(t *testing.T) {
 			t.Parallel()
 
 			res := newVari(v.variable)
-
-			// fmt.Println("\n\t encapsulatedStdlibCtx: ", encapsulatedStdlibCtx, "\n.")
-			// fmt.Println("\n\t customContext: ", customContext{context.Background()}, "\n.")
-			fmt.Println("\n\t res.String(): ", v.tName, res.String())
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
