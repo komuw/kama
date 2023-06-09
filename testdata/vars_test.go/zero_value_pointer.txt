@@ -1,0 +1,9 @@
+
+[
+NAME: unknown
+KIND: ptr
+SIGNATURE: [*http.Request]
+FIELDS: []
+METHODS: []
+SNIPPET: *http.Request(nil)
+]

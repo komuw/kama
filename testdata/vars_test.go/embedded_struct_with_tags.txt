@@ -1,0 +1,16 @@
+
+[
+NAME: github.com/komuw/kama.Hey
+KIND: struct
+SIGNATURE: [kama.Hey *kama.Hey]
+FIELDS: [
+	Another struct { Allowed bool "json:\"enabled\""; Name string "json:\"their_name\"" } 
+	]
+METHODS: []
+SNIPPET: Hey{
+  Another: {
+    Allowed: true,
+    Name: "Jane",
+  },
+}
+]

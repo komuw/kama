@@ -1,0 +1,9 @@
+
+[
+NAME: github.com/komuw/kama.ThisFunction
+KIND: func
+SIGNATURE: [func(string, int) (string, error)]
+FIELDS: []
+METHODS: []
+SNIPPET: func(string, int) (string, error)
+]

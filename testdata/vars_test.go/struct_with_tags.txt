@@ -1,0 +1,15 @@
+
+[
+NAME: github.com/komuw/kama.StructWithTags
+KIND: struct
+SIGNATURE: [kama.StructWithTags *kama.StructWithTags]
+FIELDS: [
+	Allowed bool 
+	Name string 
+	]
+METHODS: []
+SNIPPET: StructWithTags{
+  Allowed: false,
+  Name: "",
+}
+]
