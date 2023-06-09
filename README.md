@@ -46,38 +46,38 @@ that will print:
 [
 NAME: compress/flate
 CONSTANTS: [
-	BestCompression untyped int
-	BestSpeed untyped int
-	DefaultCompression untyped int
-	HuffmanOnly untyped int
-	NoCompression untyped int
+	BestCompression untyped int 
+	BestSpeed untyped int 
+	DefaultCompression untyped int 
+	HuffmanOnly untyped int 
+	NoCompression untyped int 
 	]
 VARIABLES: []
 FUNCTIONS: [
-	NewReader(r io.Reader) io.ReadCloser
-	NewReaderDict(r io.Reader, dict []byte) io.ReadCloser
-	NewWriter(w io.Writer, level int) (*Writer, error)
-	NewWriterDict(w io.Writer, level int, dict []byte) (*Writer, error)
+	NewReader(r io.Reader) io.ReadCloser 
+	NewReaderDict(r io.Reader, dict []byte) io.ReadCloser 
+	NewWriter(w io.Writer, level int) (*Writer, error) 
+	NewWriterDict(w io.Writer, level int, dict []byte) (*Writer, error) 
 	]
 TYPES: [
+	CorruptInputError int64
+		(CorruptInputError) Error() string 
+	InternalError string
+		(InternalError) Error() string 
+	ReadError struct
+		(*ReadError) Error() string 
+	Reader interface
+		(Reader) Read(p []byte) (n int, err error)
+		(Reader) ReadByte() (byte, error) 
+	Resetter interface
+		(Resetter) Reset(r io.Reader, dict []byte) error 
+	WriteError struct
+		(*WriteError) Error() string 
 	Writer struct
 		(*Writer) Close() error
 		(*Writer) Flush() error
 		(*Writer) Reset(dst io.Writer)
-		(*Writer) Write(data []byte) (n int, err error)
-	CorruptInputError int64
-		(CorruptInputError) Error() string
-	InternalError string
-		(InternalError) Error() string
-	ReadError struct
-		(*ReadError) Error() string
-	Reader interface
-		(Reader) Read(p []byte) (n int, err error)
-		(Reader) ReadByte() (byte, error)
-	Resetter interface
-		(Resetter) Reset(r io.Reader, dict []byte) error
-	WriteError struct
-		(*WriteError) Error() string]
+		(*Writer) Write(data []byte) (n int, err error)]
 ]
 ```
 ```bash
@@ -86,22 +86,22 @@ NAME: github.com/pkg/errors
 CONSTANTS: []
 VARIABLES: []
 FUNCTIONS: [
-	As(err error, target any) bool
-	Cause(err error) error
-	Errorf(format string, args ...interface{}) error
-	Is(err error, target error) bool
-	New(message string) error
-	Unwrap(err error) error
-	WithMessage(err error, message string) error
-	WithMessagef(err error, format string, args ...interface{}) error
-	WithStack(err error) error
-	Wrap(err error, message string) error
-	Wrapf(err error, format string, args ...interface{}) error
+	As(err error, target interface{}) bool 
+	Cause(err error) error 
+	Errorf(format string, args ...interface{}) error 
+	Is(err error, target error) bool 
+	New(message string) error 
+	Unwrap(err error) error 
+	WithMessage(err error, message string) error 
+	WithMessagef(err error, format string, args ...interface{}) error 
+	WithStack(err error) error 
+	Wrap(err error, message string) error 
+	Wrapf(err error, format string, args ...interface{}) error 
 	]
 TYPES: [
 	Frame uintptr
 		(Frame) Format(s fmt.State, verb rune)
-		(Frame) MarshalText() ([]byte, error)
+		(Frame) MarshalText() ([]byte, error) 
 	StackTrace []Frame
 		(StackTrace) Format(s fmt.State, verb rune)]
 ]
@@ -121,56 +121,62 @@ NAME: net/http.Request
 KIND: struct
 SIGNATURE: [*http.Request http.Request]
 FIELDS: [
-	Method string
-	URL *url.URL
-	Proto string
-	ProtoMajor int
-	ProtoMinor int
-	Header http.Header
-	Body io.ReadCloser
-	GetBody func() (io.ReadCloser, error)
-	ContentLength int64
-	TransferEncoding []string
-	Close bool
-	Host string
-	Form url.Values
-	PostForm url.Values
-	MultipartForm *multipart.Form
-	Trailer http.Header
-	RemoteAddr string
-	RequestURI string
-	TLS *tls.ConnectionState
-	Cancel <-chan struct {}
-	Response *http.Response
+	Method string 
+	URL *url.URL 
+	Proto string 
+	ProtoMajor int 
+	ProtoMinor int 
+	Header http.Header 
+	Body io.ReadCloser 
+	GetBody func() (io.ReadCloser, error) 
+	ContentLength int64 
+	TransferEncoding []string 
+	Close bool 
+	Host string 
+	Form url.Values 
+	PostForm url.Values 
+	MultipartForm *multipart.Form 
+	Trailer http.Header 
+	RemoteAddr string 
+	RequestURI string 
+	TLS *tls.ConnectionState 
+	Cancel <-chan struct {} 
+	Response *http.Response 
 	]
 METHODS: [
-	AddCookie func(*http.Request, *http.Cookie)
-	BasicAuth func(*http.Request) (string, string, bool)
-	Clone func(*http.Request, context.Context) *http.Request
-	Context func(*http.Request) context.Context
-	Cookie func(*http.Request, string) (*http.Cookie, error)
-	Cookies func(*http.Request) []*http.Cookie
-	FormFile func(*http.Request, string) (multipart.File, *multipart.FileHeader, error)
-	FormValue func(*http.Request, string) string
-	MultipartReader func(*http.Request) (*multipart.Reader, error)
-	ParseForm func(*http.Request) error
-	ParseMultipartForm func(*http.Request, int64) error
-	PostFormValue func(*http.Request, string) string
-	ProtoAtLeast func(*http.Request, int, int) bool
-	Referer func(*http.Request) string
-	SetBasicAuth func(*http.Request, string, string)
-	UserAgent func(*http.Request) string
-	WithContext func(*http.Request, context.Context) *http.Request
-	Write func(*http.Request, io.Writer) error
-	WriteProxy func(*http.Request, io.Writer) error
+	AddCookie func(*http.Request, *http.Cookie) 
+	BasicAuth func(*http.Request) (string, string, bool) 
+	Clone func(*http.Request, context.Context) *http.Request 
+	Context func(*http.Request) context.Context 
+	Cookie func(*http.Request, string) (*http.Cookie, error) 
+	Cookies func(*http.Request) []*http.Cookie 
+	FormFile func(*http.Request, string) (multipart.File, *multipart.FileHeader, error) 
+	FormValue func(*http.Request, string) string 
+	MultipartReader func(*http.Request) (*multipart.Reader, error) 
+	ParseForm func(*http.Request) error 
+	ParseMultipartForm func(*http.Request, int64) error 
+	PostFormValue func(*http.Request, string) string 
+	ProtoAtLeast func(*http.Request, int, int) bool 
+	Referer func(*http.Request) string 
+	SetBasicAuth func(*http.Request, string, string) 
+	UserAgent func(*http.Request) string 
+	WithContext func(*http.Request, context.Context) *http.Request 
+	Write func(*http.Request, io.Writer) error 
+	WriteProxy func(*http.Request, io.Writer) error 
 	]
 SNIPPET: &Request{
   Method: "GET",
-  URL: &URL{Scheme: "https",Host: "example.com",},
+  URL: &URL{
+    Scheme: "https",
+    Host: "example.com",
+  },
   Proto: "HTTP/1.1",
   ProtoMajor: int(1),
   ProtoMinor: int(1),
-  Header: http.Header{"Cookie":[]string{"hello=world",}, },
+  Header: http.Header{
+   "Cookie": []string{
+   "hello=world",
+}, },
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
