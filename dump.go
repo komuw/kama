@@ -224,7 +224,7 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	}
 	if v.IsZero() {
 		s = s + "(nil)}"
-	} else if numEntries <= 1 {
+	} else if numEntries <= 0 {
 		s = s + "}"
 	} else {
 		ident := strings.Repeat("  ", indentLevel)
@@ -275,7 +275,7 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
 	if v.IsZero() {
 		s = s + "(nil)}"
-	} else if numEntries <= 1 {
+	} else if numEntries <= 0 {
 		s = s + "}"
 	} else {
 		ident := strings.Repeat("  ", indentLevel)

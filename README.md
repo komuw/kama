@@ -177,10 +177,10 @@ SNIPPET: &Request{
   Header: http.Header{
    "Content-Type": []string{
    "application/octet-stream",
-}, 
+      }, 
    "Cookie": []string{
    "hello=world",
-}, 
+      }, 
     },
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
