@@ -116,7 +116,7 @@ req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 kama.Dirp(req)
 ```
 that will print:
-```bash
+```go
 [
 NAME: net/http.Request
 KIND: struct
@@ -177,10 +177,10 @@ SNIPPET: &Request{
   Header: http.Header{
    "Content-Type": []string{
    "application/octet-stream",
-}, 
+      }, 
    "Cookie": []string{
    "hello=world",
-}, 
+      }, 
     },
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
