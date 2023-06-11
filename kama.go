@@ -49,14 +49,14 @@ func Dir(i interface{}) string {
 			for _, eMsg := range []string{
 				// We check if it is truly a module error. We check all the errors that can be returned.
 				// Unfortunately `ImportMissingError` is an internal error so we cant use errors.Is/As
-				// https://github.com/golang/go/blob/go1.16.4/src/cmd/go/internal/modload/import.go#L49-L81
+				// https://github.com/golang/go/blob/go1.20.5/src/cmd/go/internal/modload/import.go#L57-L96
 				//
 				// This list will need to be kept uptodate with Go versions
 				"is not in GOROOT",
+				"cannot find module providing package",
 				"cannot find module",
 				"is replaced but not required",
 				"no required module",
-				"to add it:",
 				"but not at required version",
 				"missing module",
 			} {
