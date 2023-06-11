@@ -130,8 +130,13 @@ func dumpString(v reflect.Value) string {
 	// dumps strings
 	maxL := 100
 
+	adder := 1 // this is a custom string type.
+	if strings.HasPrefix(fmt.Sprintf("%#v", v), `"`) {
+		adder = 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
+	}
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(maxL))) + 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
+	constraint := int(math.Min(float64(numEntries), float64(maxL))) + adder
+
 	s := fmt.Sprintf("%#v", v)[:constraint]
 
 	if numEntries > constraint {
