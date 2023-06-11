@@ -1,0 +1,12 @@
+
+[
+NAME: github.com/komuw/kama_test.secretKey
+KIND: string
+SIGNATURE: [kama_test.secretKey]
+FIELDS: []
+METHODS: [
+	GoString func(kama_test.secretKey) string 
+	String func(kama_test.secretKey) string 
+	]
+SNIPPET: secretKey(T<REDACTED>)
+]
