@@ -116,7 +116,7 @@ req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 kama.Dirp(req)
 ```
 that will print:
-```go
+```bash
 [
 NAME: net/http.Request
 KIND: struct
