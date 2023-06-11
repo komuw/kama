@@ -134,6 +134,19 @@ type SomeStruct struct {
 	SomeUnsafety        unsafe.Pointer
 }
 
+type secretKey string
+
+func (s secretKey) String() string {
+	if len(s) <= 0 {
+		return "secretKey(<EMPTY>)"
+	}
+	return fmt.Sprintf("secretKey(%s<REDACTED>)", string(s[0]))
+}
+
+func (s secretKey) GoString() string {
+	return s.String()
+}
+
 // dealWithTestData asserts that gotContent is equal to data found at path.
 //
 // If the environment variable [kamaWriteDataForTests] is set, this func
@@ -186,6 +199,8 @@ func TestDir(t *testing.T) {
 	}
 	structWithMap := someStructWithMap{XX: bigMap()}
 
+	normalString := "heyWorldOkay"
+
 	tt := []struct {
 		tName string
 		item  interface{}
@@ -234,6 +249,14 @@ func TestDir(t *testing.T) {
 			tName: "map in a struct is not compacted",
 			item:  structWithMap,
 		},
+		{
+			tName: "normal string",
+			item:  normalString,
+		},
+		{
+			tName: "custom string type",
+			item:  secretKey("ThisIsMyPrivateApiKey"),
+		},
 	}
 
 	for _, v := range tt {
@@ -243,7 +266,6 @@ func TestDir(t *testing.T) {
 			t.Parallel()
 
 			res := kama.Dir(v.item)
-
 			path := getDataPath(t, "e2e_test.go", v.tName)
 			dealWithTestData(t, path, res)
 		})

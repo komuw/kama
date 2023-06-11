@@ -46,20 +46,27 @@ func Dir(i interface{}) string {
 
 		res, err := newPak(pat)
 		if err != nil {
+			specialErr := "is not in GOROOT"
 			for _, eMsg := range []string{
 				// We check if it is truly a module error. We check all the errors that can be returned.
 				// Unfortunately `ImportMissingError` is an internal error so we cant use errors.Is/As
-				// https://github.com/golang/go/blob/go1.16.4/src/cmd/go/internal/modload/import.go#L49-L81
+				// https://github.com/golang/go/blob/go1.20.5/src/cmd/go/internal/modload/import.go#L57-L96
 				//
 				// This list will need to be kept uptodate with Go versions
-				"is not in GOROOT",
+				specialErr,
+				"cannot find module providing package",
 				"cannot find module",
 				"is replaced but not required",
 				"no required module",
-				"to add it:",
 				"but not at required version",
 				"missing module",
 			} {
+				if strings.Contains(eMsg, specialErr) {
+					// `package heyWorld is not in GOROOT`
+					// This error message means that this is really not a module.
+					// This means that someone is most probably trying to `Dir` a string variable.
+					continue
+				}
 				if strings.Contains(err.Error(), eMsg) {
 					return err.Error()
 				}

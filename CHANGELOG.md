@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.11
+- Fix formatting of custom string types: https://github.com/komuw/kama/pull/52
+
 # v0.0.10
 - Implement better indentation for maps and slices: https://github.com/komuw/kama/pull/51
 
