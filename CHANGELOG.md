@@ -3,9 +3,12 @@
 Most recent version is listed first.  
 
 
+# v0.0.10
+- Implement better indentation for maps and slices: https://github.com/komuw/kama/pull/51
+
 # v0.0.9
 - Use testdata in more testcases: https://github.com/komuw/kama/pull/46
-- Implement better identation: https://github.com/komuw/kama/pull/47
+- Implement better indentation: https://github.com/komuw/kama/pull/47
 - Pretty print context.Context: https://github.com/komuw/kama/pull/48
 - Fix Static analysis: https://github.com/komuw/kama/pull/49
 
