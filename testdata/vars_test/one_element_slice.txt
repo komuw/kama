@@ -7,5 +7,5 @@ FIELDS: []
 METHODS: []
 SNIPPET: []string{
    "hello",
-}
+  }
 ]

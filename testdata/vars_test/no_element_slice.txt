@@ -5,5 +5,5 @@ KIND: slice
 SIGNATURE: [[]string]
 FIELDS: []
 METHODS: []
-SNIPPET: []string{}
+SNIPPET: []string{  }
 ]

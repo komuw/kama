@@ -274,7 +274,7 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 		}
 	}
 
-	fmt.Println("\n\t map here", numEntries)
+	// fmt.Println("\n\t map here", numEntries)
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
 	if v.IsZero() {
 		s = s + "(nil)}"
