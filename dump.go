@@ -224,10 +224,11 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	}
 	if v.IsZero() {
 		s = s + "(nil)}"
-	} else if numEntries <= 1 {
+	} else if numEntries <= 0 {
 		// s = strings.TrimRight(s, "\n")
-		ident := strings.Repeat("  ", indentLevel)
-		s = s + ident + "}"
+		// ident := strings.Repeat("  ", indentLevel)
+		// s = s + ident + "}"
+		s = s + "}"
 	} else {
 		ident := strings.Repeat("  ", indentLevel)
 		s = strings.TrimRight(s, ",") // maybe use `strings.TrimSuffix`
@@ -278,9 +279,8 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	s = strings.TrimRight(s, ",\n") // maybe use `strings.TrimSuffix`
 	if v.IsZero() {
 		s = s + "(nil)}"
-	} else if numEntries <= 1 {
-		ident := strings.Repeat("  ", indentLevel)
-		s = s + "\n" + ident + "}"
+	} else if numEntries <= 0 {
+		s = s + "}"
 	} else {
 		ident := strings.Repeat("  ", indentLevel)
 		s = s + "\n" + ident + "}"
