@@ -110,6 +110,7 @@ TYPES: [
 #### (b) pretty data structures:
 ```go
 req, _ := http.NewRequest("GET", "https://example.com", nil)
+req.Header.Set("Content-Type", "application/octet-stream")
 req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 
 kama.Dirp(req)
@@ -174,9 +175,13 @@ SNIPPET: &Request{
   ProtoMajor: int(1),
   ProtoMinor: int(1),
   Header: http.Header{
+   "Content-Type": []string{
+   "application/octet-stream",
+}, 
    "Cookie": []string{
    "hello=world",
-}, },
+}, 
+    },
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),

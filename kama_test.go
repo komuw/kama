@@ -213,6 +213,7 @@ func TestReadmeExamples(t *testing.T) {
 	t.Parallel()
 
 	req, _ := http.NewRequest("GET", "https://example.com", nil)
+	req.Header.Set("Content-Type", "application/octet-stream")
 	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 
 	tt := []struct {
