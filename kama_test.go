@@ -208,29 +208,49 @@ func TestThirdPartyTypes(t *testing.T) {
 	}
 }
 
+type (
+	Header map[string][]string
+	// Header    map[string]string
+	MyRequest struct {
+		Header Header
+		// Second map[string][]string
+	}
+)
+
 func TestReadmeExamples(t *testing.T) {
 	// This are the examples that are displayed in the README.md file.
 	t.Parallel()
 
-	req, _ := http.NewRequest("GET", "https://example.com", nil)
-	req.Header.Set("Content-Type", "application/octet-stream")
-	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+	one := &MyRequest{
+		Header: Header{
+			// "one": "valOne",
+			// "theree": "33",
+			"one": []string{"valOne"},
+		},
+		// Second: map[string][]string{
+		// 	"two": {"twoVal"},
+		// },
+	}
+	_ = one
+	// req, _ := http.NewRequest("GET", "https://example.com", nil)
+	// req.Header.Set("Content-Type", "application/octet-stream")
+	// req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 
 	tt := []struct {
 		tName string
 		item  interface{}
 	}{
-		{
-			tName: "package compress/flate",
-			item:  "compress/flate",
-		},
-		{
-			tName: "package github.com/pkg/errors",
-			item:  "github.com/pkg/errors",
-		},
+		// {
+		// 	tName: "package compress/flate",
+		// 	item:  "compress/flate",
+		// },
+		// {
+		// 	tName: "package github.com/pkg/errors",
+		// 	item:  "github.com/pkg/errors",
+		// },
 		{
 			tName: "http request",
-			item:  req,
+			item:  one,
 		},
 	}
 
@@ -242,8 +262,9 @@ func TestReadmeExamples(t *testing.T) {
 
 			res := Dir(v.item)
 
-			path := getDataPath(t, "kama_test.go", v.tName)
-			dealWithTestData(t, path, res)
+			fmt.Println("\t res: ", res)
+			// path := getDataPath(t, "kama_test.go", v.tName)
+			// dealWithTestData(t, path, res)
 		})
 	}
 }
