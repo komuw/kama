@@ -24,14 +24,6 @@ It's name is derived from Kenyan hip hop artiste, `Kama`(One third of the hiphop
 go get -u github.com/komuw/kama
 ```   
 
-```shell
-# run tests:
-export KAMA_WRITE_DATA_FOR_TESTS=YES
-unset KAMA_WRITE_DATA_FOR_TESTS
-go test -race ./... -count=1
-```
-
-
 ## Usage:    
 
 #### (a) print exported api of modules
@@ -202,6 +194,13 @@ SNIPPET: &Request{
 ```
 See [testdata](testdata) directory for more examples.    
 
+## Testing
+```shell
+# run tests:
+export KAMA_WRITE_DATA_FOR_TESTS=YES
+unset KAMA_WRITE_DATA_FOR_TESTS
+go test -race ./... -count=1
+```
 
 ## Inspiration
 1. Python's [`dir`](https://docs.python.org/3/library/functions.html#dir) builtin function.    
