@@ -214,4 +214,4 @@ go test -race ./... -count=1
 4. https://github.com/hexops/valast
 5. https://github.com/alecthomas/repr
 6. https://github.com/k0kubun/pp
-7. github.com/jba/printsrc
+7. https://github.com/jba/printsrc
