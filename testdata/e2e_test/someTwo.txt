@@ -10,7 +10,7 @@ FIELDS: [
 	]
 METHODS: []
 SNIPPET: &SomeStructWithInterfaces{
-  AAA: io.Reader(*strings.Reader),
+  AAA: io.Reader(*strings.Reader) &{hello 0 -1},
   SomeNilError: error(nil),
   SomeConcreteError: error(houston something bad happened),
 }

@@ -12,6 +12,6 @@ METHODS: []
 SNIPPET: StructWithContext{
   Name: "John",
   Age: int64(763),
-  OurCtx: context.Context(*context.valueCtx),
+  OurCtx: context.Context(*context.valueCtx) context.Background.WithCancel.WithValue(type kama.myContextKeyType, val ThisIsSomeContextValue),
 }
 ]

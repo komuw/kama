@@ -7,6 +7,5 @@ FIELDS: []
 METHODS: [
 	Error func(*errors.errorString) string 
 	]
-SNIPPET: &errorString{
-}
+SNIPPET: error(unable to read from ftp file)
 ]
