@@ -37,25 +37,39 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	iTypeStr := strings.ReplaceAll(fmt.Sprint(iType), "*", "") // remove the pointer symbol.
 	deValStr := fmt.Sprint(deVal)
 
-	if slices.Contains(
-		[]string{
-			// This are taken from; https://github.com/golang/go/blob/master/src/context/context.go
-			"context.emptyCtx",
-			"context.valueCtx",
-			"context.backgroundCtx",
-			"context.todoCtx",
-			"context.withoutCancelCtx",
-			"context.timerCtx",
-			"context.cancelCtx",
-		},
-		iTypeStr,
-	) {
-		// This could be a context.Context type.
-		// Let's use the formatting that is provided by the stdlib;
-		// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L197-L206
-		//
-		// This will not handle custom types that implement context.Context
-		return deValStr
+	{
+		if slices.Contains(
+			// todo: Ideally this should be handled inside the `dumpInterface` func.
+			[]string{
+				// This are taken from; https://github.com/golang/go/blob/master/src/context/context.go
+				"context.emptyCtx",
+				"context.valueCtx",
+				"context.backgroundCtx",
+				"context.todoCtx",
+				"context.withoutCancelCtx",
+				"context.timerCtx",
+				"context.cancelCtx",
+			},
+			iTypeStr,
+		) {
+			// This could be a context.Context type.
+			// Let's use the formatting that is provided by the stdlib;
+			// https://github.com/golang/go/blob/39effbc105f5c54117a6011af3c48e3c8f14eca9/src/context/context.go#L197-L206
+			//
+			// This will not handle custom types that implement context.Context
+			return deValStr
+		}
+
+		if slices.Contains(
+			// todo: Ideally this should be handled inside the `dumpInterface` func.
+			[]string{
+				"errors.errorString",
+			},
+			iTypeStr,
+		) {
+			// This will not handle custom types that implement Error interface.
+			return "error(" + deValStr + ")"
+		}
 	}
 
 	switch iTypeKind { //nolint:exhaustive
@@ -405,8 +419,8 @@ func dumpInterface(v reflect.Value) string {
 		// TODO: add more cases here as we recognise how to handle them
 		case "error":
 			actualVal = fmt.Sprint(elm) // this will be the string content of the error
-			// default:
-			// 	actualVal = fmt.Sprint(elm) // this will be the string content of the error
+		default:
+			panic(fmt.Sprintf("dumpInterface unable to handle: %v. please open a github issue.", name))
 		}
 	} else {
 		actualVal = "nil"
