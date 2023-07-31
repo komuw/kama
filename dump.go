@@ -420,7 +420,7 @@ func dumpInterface(v reflect.Value) string {
 		case "error":
 			actualVal = fmt.Sprint(elm) // this will be the string content of the error
 		default:
-			panic(fmt.Sprintf("dumpInterface unable to handle: %v. please open a github issue.", name))
+			panic(fmt.Sprintf("dumpInterface unable to handle: `%v`. please open a github issue.", name))
 		}
 	} else {
 		actualVal = "nil"
