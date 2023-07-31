@@ -422,7 +422,10 @@ func dumpInterface(v reflect.Value) string {
 		case "context.Context":
 			actualVal = fmt.Sprint(elm)
 		default:
-			panic(fmt.Sprintf("dumpInterface unable to handle: `%v`. please open a github issue.", name))
+			actualVal = fmt.Sprint(elm)
+
+			// default:
+			// 	panic(fmt.Sprintf("dumpInterface unable to handle: `%v`. please open a github issue.", name))
 		}
 	} else {
 		actualVal = "nil"
