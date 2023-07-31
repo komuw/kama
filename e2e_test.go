@@ -419,7 +419,7 @@ func TestAllAboutInterfaces(t *testing.T) {
 			SomeConcreteError error
 		}
 		someOne := SomeStructWithInterfaces{
-			AAA:               strings.NewReader("hello"),
+			AAA:               strings.NewReader("hello from strings NewReader"),
 			SomeConcreteError: errors.New("houston something bad happened"),
 		}
 		someTwo := &someOne
