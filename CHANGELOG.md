@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.12
+- Pretty print errors: https://github.com/komuw/kama/pull/54
+
 # v0.0.11
 - Fix formatting of custom string types: https://github.com/komuw/kama/pull/52
 
