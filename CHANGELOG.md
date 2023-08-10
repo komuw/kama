@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.13
+- Update Go version: https://github.com/komuw/kama/pull/56
+
 # v0.0.12
 - Pretty print errors: https://github.com/komuw/kama/pull/54
 - Handle more interfaces: https://github.com/komuw/kama/pull/55

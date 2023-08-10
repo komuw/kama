@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 	"unicode"
-
-	"golang.org/x/exp/slices"
 )
 
 func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {

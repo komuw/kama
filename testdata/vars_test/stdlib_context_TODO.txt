@@ -1,15 +1,15 @@
 
 [
-NAME: context.emptyCtx
-KIND: int
-SIGNATURE: [*context.emptyCtx context.emptyCtx]
+NAME: context.todoCtx
+KIND: struct
+SIGNATURE: [context.todoCtx *context.todoCtx]
 FIELDS: []
 METHODS: [
-	Deadline func(*context.emptyCtx) (time.Time, bool) 
-	Done func(*context.emptyCtx) <-chan struct {} 
-	Err func(*context.emptyCtx) error 
-	String func(*context.emptyCtx) string 
-	Value func(*context.emptyCtx, interface {}) interface {} 
+	Deadline func(context.todoCtx) (time.Time, bool) 
+	Done func(context.todoCtx) <-chan struct {} 
+	Err func(context.todoCtx) error 
+	String func(context.todoCtx) string 
+	Value func(context.todoCtx, interface {}) interface {} 
 	]
 SNIPPET: context.TODO
 ]
