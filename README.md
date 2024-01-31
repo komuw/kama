@@ -106,6 +106,7 @@ req.Header.Set("Content-Type", "application/octet-stream")
 req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 
 kama.Dirp(req)
+// kama.Dirp(req, kama.Config{MaxLength: 14}) // pass in an optional config value.
 ```
 that will print:
 ```bash
