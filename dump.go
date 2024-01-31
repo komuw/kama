@@ -154,16 +154,7 @@ func dumpString(v reflect.Value) string {
 
 	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength+50))) + adder + newLineCount
 
-	// fmt.Println("\n\t adder: ", adder)
-	// fmt.Println("\t numEntries: ", numEntries)
-	// fmt.Println("\t constraint: ", constraint)
-
 	s := fmt.Sprintf("%#v", v)[:constraint]
-
-	// fmt.Println("\t vv: ", fmt.Sprintf("%#v", v))
-	// fmt.Println("\t s: ", s)
-	// fmt.Println("\t nLine: ", strings.Count(s, "\n"))
-	// fmt.Println("\t nLine: ", strings.Count(fmt.Sprintf("%s", v), "\n"))
 
 	if numEntries > constraint {
 		remainder := numEntries - constraint
