@@ -19,7 +19,7 @@ import (
 
 var (
 	cfg     = Config{MaxLength: 14} //nolint:gochecknoglobals
-	onceCfg sync.Once               //nolint:gochecknoglobals
+	onceCfg *sync.Once              //nolint:gochecknoglobals
 )
 
 // Config controls how printing is going to be done.
@@ -49,6 +49,9 @@ func Dir(i interface{}, c ...Config) string {
 	if len(c) > 0 {
 		onceCfg.Do(func() {
 			cfg = c[0]
+			if cfg.MaxLength < 1 {
+				cfg.MaxLength = 1
+			}
 		})
 	}
 

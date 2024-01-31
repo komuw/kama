@@ -1,0 +1,30 @@
+
+[
+NAME: github.com/komuw/kama.Hey
+KIND: struct
+SIGNATURE: [kama.Hey *kama.Hey]
+FIELDS: [
+	BigSlice []int 
+	BigArray [10000]int 
+	BigMap map[int]string 
+	BigString string 
+	]
+METHODS: []
+SNIPPET: Hey{
+  BigSlice: []int{
+   int(0),
+     ...<9999 more redacted>..
+    },
+  BigArray: [10000]int{
+   int(0),
+     ...<9999 more redacted>..
+    },
+  BigMap: map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   ...<9999 more redacted>..
+    },
+  BigString: "AT last the sleepy atmosphere was stirred—and vigo ...<3381 more redacted>..,
+}
+]

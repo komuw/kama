@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"sync"
 	"testing"
 	"time"
 )
@@ -396,7 +397,9 @@ func TestContexts(t *testing.T) {
 }
 
 func TestLong(t *testing.T) {
-	t.Parallel()
+	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+	oldCfg := cfg
 
 	type Hey struct {
 		BigSlice  []int
@@ -417,12 +420,13 @@ func TestLong(t *testing.T) {
 		c        Config
 	}{
 		{
-			tName:    "long-default_config",
+			tName:    "no_config",
 			variable: h,
 		},
 		{
-			tName:    "long-default_config",
+			tName:    "default_config",
 			variable: h,
+			c:        oldCfg,
 		},
 	}
 
@@ -430,7 +434,13 @@ func TestLong(t *testing.T) {
 		v := v
 
 		t.Run(v.tName, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			onceCfg = &sync.Once{}
+			_ = Dir("", v.c)
+			t.Cleanup(func() {
+				cfg = oldCfg
+			})
 
 			res := newVari(v.variable)
 
