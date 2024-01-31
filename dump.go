@@ -147,9 +147,22 @@ func dumpString(v reflect.Value) string {
 		adder = 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
 	}
 	numEntries := v.Len()
+	if numEntries > 0 && (
+	// 34 is the char("")
+	fmt.Sprintf("%#v", v)[0] == 34) {
+		adder = 2
+	}
 	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength+50))) + adder
 
+	// fmt.Println("\n\t adder: ", adder)
+	// fmt.Println("\t numEntries: ", numEntries)
+	// fmt.Println("\t constraint: ", constraint)
+
 	s := fmt.Sprintf("%#v", v)[:constraint]
+
+	// fmt.Println("\t vv: ", fmt.Sprintf("%#v", v))
+	// fmt.Println("\t s: ", s)
+	// fmt.Println("\t nLine: ", strings.Count(s, "\n"))
 
 	if numEntries > constraint {
 		remainder := numEntries - constraint
