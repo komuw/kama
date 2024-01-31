@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.14
+- Add config option for how many slices/maps to display: https://github.com/komuw/kama/pull/58
+
 # v0.0.13
 - Update Go version: https://github.com/komuw/kama/pull/56
 
