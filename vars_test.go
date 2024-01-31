@@ -435,8 +435,13 @@ func TestLong(t *testing.T) {
 			c:        Config{MaxLength: math.MaxInt},
 		},
 		{
-			tName:    "maxLength_string_config",
+			tName:    "maxLength_big-string_config",
 			variable: BigString,
+			c:        Config{MaxLength: math.MaxInt},
+		},
+		{
+			tName:    "maxLength_empty-string_config",
+			variable: "",
 			c:        Config{MaxLength: math.MaxInt},
 		},
 	}

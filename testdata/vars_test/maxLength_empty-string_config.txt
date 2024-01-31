@@ -1,0 +1,9 @@
+
+[
+NAME: string
+KIND: string
+SIGNATURE: [string]
+FIELDS: []
+METHODS: []
+SNIPPET: ""
+]

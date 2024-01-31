@@ -88,7 +88,7 @@ SNIPPET: &SomeStruct{
   },
   EmptyString: "",
   SmallString: "What up?",
-  LargeString: "AT last the sleepy atmosphere was stirred—and vigorously: the m ...<3440 more redacted>..,
+  LargeString: "AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the ...<3414 more redacted>..,
   DistinctType: kama_test.Distance(9131),
   SomeNilError: error(nil),
   SomeConcreteError: error(Houston something bad happened),

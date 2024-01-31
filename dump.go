@@ -162,8 +162,8 @@ func dumpString(v reflect.Value) string {
 
 	// fmt.Println("\t vv: ", fmt.Sprintf("%#v", v))
 	// fmt.Println("\t s: ", s)
-	fmt.Println("\t nLine: ", strings.Count(s, "\n"))
-	fmt.Println("\t nLine: ", strings.Count(fmt.Sprintf("%s", v), "\n"))
+	// fmt.Println("\t nLine: ", strings.Count(s, "\n"))
+	// fmt.Println("\t nLine: ", strings.Count(fmt.Sprintf("%s", v), "\n"))
 
 	if numEntries > constraint {
 		remainder := numEntries - constraint
