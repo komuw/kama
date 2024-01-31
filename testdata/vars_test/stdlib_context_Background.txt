@@ -1,15 +1,15 @@
 
 [
-NAME: context.backgroundCtx
-KIND: struct
-SIGNATURE: [context.backgroundCtx *context.backgroundCtx]
+NAME: context.emptyCtx
+KIND: int
+SIGNATURE: [*context.emptyCtx context.emptyCtx]
 FIELDS: []
 METHODS: [
-	Deadline func(context.backgroundCtx) (time.Time, bool) 
-	Done func(context.backgroundCtx) <-chan struct {} 
-	Err func(context.backgroundCtx) error 
-	String func(context.backgroundCtx) string 
-	Value func(context.backgroundCtx, interface {}) interface {} 
+	Deadline func(*context.emptyCtx) (time.Time, bool) 
+	Done func(*context.emptyCtx) <-chan struct {} 
+	Err func(*context.emptyCtx) error 
+	String func(*context.emptyCtx) string 
+	Value func(*context.emptyCtx, interface {}) interface {} 
 	]
 SNIPPET: context.Background
 ]
