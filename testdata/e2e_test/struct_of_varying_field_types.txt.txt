@@ -81,32 +81,14 @@ SNIPPET: SomeStruct{
    Request{
       Method: "13",
     },
-   Request{
-      Method: "14",
-    },
-   Request{
-      Method: "15",
-    },
-   Request{
-      Method: "16",
-    },
-   Request{
-      Method: "17",
-    },
-   Request{
-      Method: "18",
-    },
-   Request{
-      Method: "19",
-    },
-     ...<80 more redacted>..
+     ...<86 more redacted>..
     },
   OneHttpRequest: Request{
     Method: "Hello",
   },
   EmptyString: "",
   SmallString: "What up?",
-  LargeString: "AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It ...<3404 more redacted>..,
+  LargeString: "AT last the sleepy atmosphere was stirred—and vigorously: the m ...<3440 more redacted>..,
   DistinctType: kama_test.Distance(9131),
   SomeNilError: error(nil),
   SomeConcreteError: error(Houston something bad happened),
@@ -125,13 +107,7 @@ SNIPPET: SomeStruct{
    int(11),
    int(12),
    int(13),
-   int(14),
-   int(15),
-   int(16),
-   int(17),
-   int(18),
-   int(19),
-     ...<9980 more redacted>..
+     ...<9986 more redacted>..
     },
   LargeMap: map[int]string{
    int(0): "0", 
@@ -150,13 +126,7 @@ SNIPPET: SomeStruct{
    int(1009): "1009", 
    int(101): "101", 
    int(1010): "1010", 
-   int(1011): "1011", 
-   int(1012): "1012", 
-   int(1013): "1013", 
-   int(1014): "1014", 
-   int(1015): "1015", 
-   int(1016): "1016", 
-   ...<9980 more redacted>..
+   ...<9986 more redacted>..
     },
   UndirectedChan: chan int (len=122, cap=10000),
   DirectedChan: chan<- bool (len=1, cap=13),

@@ -394,3 +394,48 @@ func TestContexts(t *testing.T) {
 		})
 	}
 }
+
+func TestLong(t *testing.T) {
+	t.Parallel()
+
+	type Hey struct {
+		BigSlice  []int
+		BigArray  [10_000]int
+		BigMap    map[int]string
+		BigString string
+	}
+	h := Hey{
+		BigSlice:  bigSlice(),
+		BigArray:  bigArray(),
+		BigMap:    bigMap(),
+		BigString: BigString,
+	}
+
+	tt := []struct {
+		tName    string
+		variable interface{}
+		c        Config
+	}{
+		{
+			tName:    "long-default_config",
+			variable: h,
+		},
+		{
+			tName:    "long-default_config",
+			variable: h,
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := newVari(v.variable)
+
+			path := getDataPath(t, "vars_test.go", v.tName)
+			dealWithTestData(t, path, res.String())
+		})
+	}
+}
