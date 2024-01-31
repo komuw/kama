@@ -23,13 +23,7 @@ SNIPPET: someStructWithSlice{
    int(11),
    int(12),
    int(13),
-   int(14),
-   int(15),
-   int(16),
-   int(17),
-   int(18),
-   int(19),
-     ...<9980 more redacted>..
+     ...<9986 more redacted>..
     },
 }
 ]

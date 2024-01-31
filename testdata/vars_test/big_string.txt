@@ -5,5 +5,5 @@ KIND: string
 SIGNATURE: [string]
 FIELDS: []
 METHODS: []
-SNIPPET: "AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the court. It ...<3332 more redacted>..
+SNIPPET: "AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the ...<3342 more redacted>..
 ]

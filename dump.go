@@ -141,14 +141,18 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 
 func dumpString(v reflect.Value) string {
 	// dumps strings
-	maxL := 100
 
 	adder := 1 // this is a custom string type.
 	if strings.HasPrefix(fmt.Sprintf("%#v", v), `"`) {
 		adder = 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
 	}
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(maxL))) + adder
+	if numEntries > 0 && (fmt.Sprintf("%#v", v)[0] == 34) { // 34 is the char("")
+		adder = 2
+	}
+	newLineCount := strings.Count(fmt.Sprintf("%s", v), "\n")
+
+	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength+50))) + adder + newLineCount
 
 	s := fmt.Sprintf("%#v", v)[:constraint]
 
@@ -218,9 +222,8 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	//     1. https://github.com/sanity-io/litter/pull/43
 	//     2. https://github.com/komuw/kama/pull/28
 
-	maxL := 20
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(maxL)))
+	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength)))
 	typeName := v.Type().String()
 
 	newline := "\n"
@@ -260,9 +263,8 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	//     1. https://github.com/sanity-io/litter/pull/43
 	//     2. https://github.com/komuw/kama/pull/28
 
-	maxL := 20
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(maxL)))
+	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength)))
 	typeName := v.Type().String()
 
 	newline := "\n"

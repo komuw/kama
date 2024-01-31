@@ -3,7 +3,9 @@ package kama
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
+	"sync"
 	"testing"
 	"time"
 )
@@ -386,6 +388,77 @@ func TestContexts(t *testing.T) {
 		v := v
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
+
+			res := newVari(v.variable)
+
+			path := getDataPath(t, "vars_test.go", v.tName)
+			dealWithTestData(t, path, res.String())
+		})
+	}
+}
+
+func TestLong(t *testing.T) {
+	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+	oldCfg := cfg
+
+	type Hey struct {
+		BigSlice  []int
+		BigArray  [10_000]int
+		BigMap    map[int]string
+		BigString string
+	}
+	h := Hey{
+		BigSlice:  bigSlice(),
+		BigArray:  bigArray(),
+		BigMap:    bigMap(),
+		BigString: BigString,
+	}
+
+	tt := []struct {
+		tName    string
+		variable interface{}
+		c        Config
+	}{
+		{
+			tName:    "no_config",
+			variable: h,
+		},
+		{
+			tName:    "default_config",
+			variable: h,
+			c:        oldCfg,
+		},
+		{
+			tName:    "maxLength_config",
+			variable: h,
+			c:        Config{MaxLength: math.MaxInt},
+		},
+		{
+			tName:    "maxLength_big-string_config",
+			variable: BigString,
+			c:        Config{MaxLength: math.MaxInt},
+		},
+		{
+			tName:    "maxLength_empty-string_config",
+			variable: "",
+			c:        Config{MaxLength: math.MaxInt},
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+
+		t.Run(v.tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				_ = Dir("", v.c)
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
 
 			res := newVari(v.variable)
 

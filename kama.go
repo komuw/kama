@@ -14,7 +14,19 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 )
+
+var (
+	cfg     = Config{MaxLength: 14} //nolint:gochecknoglobals
+	onceCfg *sync.Once              //nolint:gochecknoglobals
+)
+
+// Config controls how printing is going to be done.
+type Config struct {
+	// MaxLength is the length of slices/maps/strings that is going to be printed.
+	MaxLength int
+}
 
 // Dirp prints (to stdout) exported information of types, variables, packages, modules, imports
 // It also pretty prints data structures.
@@ -27,12 +39,27 @@ import (
 //	kama.Dirp(&http.Request{})
 //	kama.Dirp("github.com/pkg/errors")
 //	kama.Dirp(http.Request{})
-func Dirp(i interface{}) {
-	fmt.Println(Dir(i))
+//	kama.Dirp(http.Request{}, Config{999})
+func Dirp(i interface{}, c ...Config) {
+	fmt.Println(Dir(i, c...))
 }
 
 // Dir returns exported information of types, variables, packages, modules, imports
-func Dir(i interface{}) string {
+func Dir(i interface{}, c ...Config) string {
+	if len(c) > 0 {
+		onceCfg.Do(func() {
+			cfg = c[0]
+			if cfg.MaxLength < 1 {
+				cfg.MaxLength = 1
+			}
+			if cfg.MaxLength > 10_000 {
+				// the upper limit of a slice is some significant fraction of the address space of a process.
+				// https://github.com/golang/go/issues/38673#issuecomment-643885108
+				cfg.MaxLength = 10_000
+			}
+		})
+	}
+
 	iType := reflect.TypeOf(i)
 	if iType == nil {
 		res := newVari(i)
