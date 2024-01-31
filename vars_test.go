@@ -3,6 +3,7 @@ package kama
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	"sync"
 	"testing"
@@ -428,6 +429,11 @@ func TestLong(t *testing.T) {
 			variable: h,
 			c:        oldCfg,
 		},
+		{
+			tName:    "maxLength_config",
+			variable: h,
+			c:        Config{MaxLength: math.MaxInt},
+		},
 	}
 
 	for _, v := range tt {
@@ -436,11 +442,13 @@ func TestLong(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
 
-			onceCfg = &sync.Once{}
-			_ = Dir("", v.c)
-			t.Cleanup(func() {
-				cfg = oldCfg
-			})
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				_ = Dir("", v.c)
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
 
 			res := newVari(v.variable)
 

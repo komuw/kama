@@ -52,6 +52,11 @@ func Dir(i interface{}, c ...Config) string {
 			if cfg.MaxLength < 1 {
 				cfg.MaxLength = 1
 			}
+			if cfg.MaxLength > 10_000 {
+				// the upper limit of a slice is some significant fraction of the address space of a process.
+				// https://github.com/golang/go/issues/38673#issuecomment-643885108
+				cfg.MaxLength = 10_000
+			}
 		})
 	}
 
