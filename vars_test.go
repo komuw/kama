@@ -434,6 +434,11 @@ func TestLong(t *testing.T) {
 			variable: h,
 			c:        Config{MaxLength: math.MaxInt},
 		},
+		{
+			tName:    "maxLength_string_config",
+			variable: BigString,
+			c:        Config{MaxLength: math.MaxInt},
+		},
 	}
 
 	for _, v := range tt {
