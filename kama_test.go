@@ -163,7 +163,7 @@ func TestPrimitives(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		Dir(v)
+		_ = Dir(v)
 	}
 }
 
@@ -191,7 +191,8 @@ func TestStdlibTypes(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		Dir(v)
+		_ = Dir(v)
+		_ = Dir(v, Config{8})
 	}
 }
 
@@ -204,7 +205,7 @@ func TestThirdPartyTypes(t *testing.T) {
 
 	for _, v := range tt {
 		v := v
-		Dir(v)
+		_ = Dir(v)
 	}
 }
 

@@ -17,3 +17,5 @@ require (
 	go.akshayshah.org/attest v1.0.2 // test
 	go.uber.org/goleak v1.3.0 // test
 )
+
+retract v0.0.14 // Contains a bug.
