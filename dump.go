@@ -147,12 +147,12 @@ func dumpString(v reflect.Value) string {
 		adder = 2 // the `+2` is important so that the final quote `"` at end of string is not cut off
 	}
 	numEntries := v.Len()
-	if numEntries > 0 && (
-	// 34 is the char("")
-	fmt.Sprintf("%#v", v)[0] == 34) {
+	if numEntries > 0 && (fmt.Sprintf("%#v", v)[0] == 34) { // 34 is the char("")
 		adder = 2
 	}
-	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength+50))) + adder
+	newLineCount := strings.Count(fmt.Sprintf("%s", v), "\n")
+
+	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength+50))) + adder + newLineCount
 
 	// fmt.Println("\n\t adder: ", adder)
 	// fmt.Println("\t numEntries: ", numEntries)
@@ -162,7 +162,8 @@ func dumpString(v reflect.Value) string {
 
 	// fmt.Println("\t vv: ", fmt.Sprintf("%#v", v))
 	// fmt.Println("\t s: ", s)
-	// fmt.Println("\t nLine: ", strings.Count(s, "\n"))
+	fmt.Println("\t nLine: ", strings.Count(s, "\n"))
+	fmt.Println("\t nLine: ", strings.Count(fmt.Sprintf("%s", v), "\n"))
 
 	if numEntries > constraint {
 		remainder := numEntries - constraint
