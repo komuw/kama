@@ -19,7 +19,7 @@ import (
 
 var (
 	cfg     = Config{MaxLength: 14} //nolint:gochecknoglobals
-	onceCfg *sync.Once              //nolint:gochecknoglobals
+	onceCfg = &sync.Once{}          //nolint:gochecknoglobals
 )
 
 // Config controls how printing is going to be done.
