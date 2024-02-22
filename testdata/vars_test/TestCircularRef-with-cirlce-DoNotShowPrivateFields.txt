@@ -15,7 +15,19 @@ SNIPPET: &Client{
       srv: srvRef{
         cli: &Client{
           Public: "PublicName",
-          srv: srvRef: kama warning(indentation `6` exceeds max of `5`. Possible circular reference),
+          srv: srvRef{
+            cli: &Client{
+              Public: "PublicName",
+              srv: srvRef{
+                cli: &Client{
+                  Public: "PublicName",
+                  srv: srvRef{
+                    cli: &Client: kama warning(indentation `11` exceeds max of `10`. Possible circular reference),
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

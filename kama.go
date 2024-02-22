@@ -21,7 +21,7 @@ var (
 	cfg = Config{
 		MaxLength:         14,
 		ShowPrivateFields: false,
-		MaxIndentLevel:    5,
+		MaxIndentLevel:    10,
 	} //nolint:gochecknoglobals
 
 	onceCfg = &sync.Once{} //nolint:gochecknoglobals
@@ -69,7 +69,7 @@ func Dir(i interface{}, c ...Config) string {
 			}
 
 			if cfg.MaxIndentLevel < 1 {
-				cfg.MaxIndentLevel = 5 // ie, the default
+				cfg.MaxIndentLevel = 10 // ie, the default
 			}
 			if cfg.MaxIndentLevel > 100 {
 				cfg.MaxIndentLevel = 100
