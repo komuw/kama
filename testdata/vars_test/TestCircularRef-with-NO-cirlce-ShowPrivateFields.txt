@@ -1,0 +1,19 @@
+
+[
+NAME: github.com/komuw/kama.Client
+KIND: struct
+SIGNATURE: [*kama.Client kama.Client]
+FIELDS: [
+	Public string 
+	]
+METHODS: []
+SNIPPET: &Client{
+  Public: "PublicName",
+  srv: srvRef{
+    cli: &Client{
+      Public: "NewPubNamw",
+      srv: srvRef{},
+    },
+  },
+}
+]

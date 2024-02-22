@@ -575,10 +575,6 @@ func TestCircularRef(t *testing.T) {
 
 	oldCfg := cfg
 
-	x := &Client{Public: "PublicName"}
-	x.srv.cli = x
-	// x.srv.cli = &Client{Public: "NewPub"} // TODO: also test this.
-
 	{ // Set the new config and schedule to return old config.
 		onceCfg = &sync.Once{}
 		t.Cleanup(func() {
@@ -588,7 +584,35 @@ func TestCircularRef(t *testing.T) {
 
 	for _, name := range []string{"ShowPrivateFields", "DoNotShowPrivateFields"} {
 		name := name
-		tName := fmt.Sprintf("TestCircularRef-%s", name)
+		tName := fmt.Sprintf("TestCircularRef-with-cirlce-%s", name)
+
+		x := &Client{Public: "PublicName"}
+		x.srv.cli = x // circular
+
+		t.Run(tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			var res string
+			switch name {
+			default:
+				t.Fatalf("option `%s` is not expected", name)
+			case "ShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: true})
+			case "DoNotShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: false})
+			}
+
+			path := getDataPath(t, "vars_test.go", tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+
+	for _, name := range []string{"ShowPrivateFields", "DoNotShowPrivateFields"} {
+		name := name
+		tName := fmt.Sprintf("TestCircularRef-with-NO-cirlce-%s", name)
+
+		x := &Client{Public: "PublicName"}
+		x.srv.cli = &Client{Public: "NewPubNamw"} // no circle
 
 		t.Run(tName, func(t *testing.T) {
 			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
