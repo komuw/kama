@@ -5,8 +5,6 @@
 package kama
 
 import (
-	"fmt"
-	"net/http"
 	"strings"
 	"testing"
 )
@@ -44,12 +42,4 @@ func TestSmallDiff(t *testing.T) {
 			t.Errorf("diff(%q, %q) = %q, want %q", text1, text2, out, tt.diff)
 		}
 	}
-}
-
-func TestOya(t *testing.T) {
-	a := Dir(http.Request{Method: "GET"})
-	b := Dir(http.Request{Method: "POST"})
-
-	x := diff(a, b)
-	fmt.Println("x: ", x)
 }

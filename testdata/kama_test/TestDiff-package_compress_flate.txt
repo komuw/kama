@@ -1,0 +1,36 @@
+ 
+ [
+ NAME: compress/flate
+ CONSTANTS: [
+ 	BestCompression untyped int 
+ 	BestSpeed untyped int 
+ 	DefaultCompression untyped int 
+ 	HuffmanOnly untyped int 
+ 	NoCompression untyped int 
+ 	]
+ VARIABLES: []
+ FUNCTIONS: [
+ 	NewReader(r io.Reader) io.ReadCloser 
+ 	NewReaderDict(r io.Reader, dict []byte) io.ReadCloser 
+ 	NewWriter(w io.Writer, level int) (*Writer, error) 
+ 	NewWriterDict(w io.Writer, level int, dict []byte) (*Writer, error) 
+ 	]
+ TYPES: [
+ 	CorruptInputError int64
+ 		(CorruptInputError) Error() string 
+ 	InternalError string
+ 		(InternalError) Error() string 
+ 	ReadError struct
+ 		(*ReadError) Error() string 
+ 	Reader interface
+ 		(Reader) Read(p []byte) (n int, err error)
+ 		(Reader) ReadByte() (byte, error) 
+ 	Resetter interface
+ 		(Resetter) Reset(r io.Reader, dict []byte) error 
+ 	WriteError struct
+ 		(*WriteError) Error() string 
+ 	Writer struct
+ 		(*Writer) Close() error
+ 		(*Writer) Flush() error
+ 		(*Writer) Reset(dst io.Writer)
+ 		(*Writer) Write(data []byte) (n int, err error)]
