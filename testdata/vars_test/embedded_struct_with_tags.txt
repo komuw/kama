@@ -9,8 +9,8 @@ FIELDS: [
 METHODS: []
 SNIPPET: Hey{
   Another: {
-    Allowed: same thing,
-    Name: same thing,
+    Allowed: true,
+    Name: "Jane",
   },
 }
 ]

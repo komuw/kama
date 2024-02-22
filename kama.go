@@ -18,8 +18,13 @@ import (
 )
 
 var (
-	cfg     = Config{MaxLength: 14} //nolint:gochecknoglobals
-	onceCfg = &sync.Once{}          //nolint:gochecknoglobals
+	cfg = Config{
+		MaxLength:         14,
+		ShowPrivateFields: false,
+		MaxIndentLevel:    5,
+	} //nolint:gochecknoglobals
+
+	onceCfg = &sync.Once{} //nolint:gochecknoglobals
 )
 
 // Config controls how printing is going to be done.

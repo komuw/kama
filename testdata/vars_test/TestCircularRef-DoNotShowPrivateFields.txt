@@ -1,13 +1,24 @@
 
 [
-NAME: github.com/komuw/kama.ClientTestCircularRef
+NAME: github.com/komuw/kama.Client
 KIND: struct
-SIGNATURE: [*kama.ClientTestCircularRef kama.ClientTestCircularRef]
+SIGNATURE: [*kama.Client kama.Client]
 FIELDS: [
 	Public string 
 	]
 METHODS: []
-SNIPPET: &ClientTestCircularRef{
+SNIPPET: &Client{
   Public: "PublicName",
+  srv: srvRef{
+    cli: &Client{
+      Public: "PublicName",
+      srv: srvRef{
+        cli: &Client{
+          Public: "PublicName",
+          srv: srvRef: kama warning(indentation `6` exceeds max of `5`. Possible circular reference),
+        },
+      },
+    },
+  },
 }
 ]
