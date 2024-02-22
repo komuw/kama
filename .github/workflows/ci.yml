@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 1
     strategy:
       matrix:
-        go-version: ['>=1.21.0']
+        go-version: ['>=1.22.0']
         platform: [ubuntu-22.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -68,7 +68,7 @@ jobs:
     timeout-minutes: 7
     strategy:
       matrix:
-        go-version: ['>=1.21.0']
+        go-version: ['>=1.22.0']
         platform: [ubuntu-22.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -105,7 +105,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        go-version: ['>=1.21.0']
+        go-version: ['>=1.22.0']
         platform: [ubuntu-22.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -149,7 +149,7 @@ jobs:
           /home/runner/go/bin/staticcheck -tests -go 1.20 ./...
           # /home/runner/go/bin/gosec ./...       # does not yet support generics.
           # /home/runner/go/bin/structslop ./...  # does not yet support generics.
-          /home/runner/go/bin/httperroryzer ./...
+          # /home/runner/go/bin/httperroryzer ./... # re-enable after https://github.com/komuw/kama/issues/63
           # see: https://github.com/golang/go/commit/a98589711da5e9d935e8d690cfca92892e86d557
           /home/runner/go/bin/errcheck -ignoregenerated -ignoretests -asserts ./...         
  
@@ -190,7 +190,7 @@ jobs:
     timeout-minutes: 3
     strategy:
       matrix:
-        go-version: ['>=1.21.0']
+        go-version: ['>=1.22.0']
         platform: [ubuntu-22.04]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -214,7 +214,7 @@ jobs:
   #   timeout-minutes: 2
   #   strategy:
   #     matrix:
-  #       go-version: ['>=1.21.0']
+  #       go-version: ['>=1.22.0']
   #       platform: [ubuntu-22.04]
   #   runs-on: ${{ matrix.platform }}
   #   steps:

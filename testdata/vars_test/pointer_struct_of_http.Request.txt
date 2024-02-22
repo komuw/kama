@@ -38,10 +38,12 @@ METHODS: [
 	MultipartReader func(*http.Request) (*multipart.Reader, error) 
 	ParseForm func(*http.Request) error 
 	ParseMultipartForm func(*http.Request, int64) error 
+	PathValue func(*http.Request, string) string 
 	PostFormValue func(*http.Request, string) string 
 	ProtoAtLeast func(*http.Request, int, int) bool 
 	Referer func(*http.Request) string 
 	SetBasicAuth func(*http.Request, string, string) 
+	SetPathValue func(*http.Request, string, string) 
 	UserAgent func(*http.Request) string 
 	WithContext func(*http.Request, context.Context) *http.Request 
 	Write func(*http.Request, io.Writer) error 
