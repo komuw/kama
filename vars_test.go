@@ -2,9 +2,12 @@ package kama
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"math"
 	"net/http"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -464,6 +467,96 @@ func TestLong(t *testing.T) {
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
+		})
+	}
+}
+
+func TestPublicPrivate(t *testing.T) {
+	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+	oldCfg := cfg
+
+	type Hey struct {
+		Name       string
+		agePrivate int
+	}
+
+	type SomeStruct struct {
+		AAA               io.Reader
+		SomeNilError      error
+		SomeConcreteError error
+		SomePublic        Hey
+		privateThing      string
+		anotherPrivate    Hey
+	}
+
+	for _, name := range []string{"default", "ShowPrivateFields", "DoNotShowPrivateFields"} {
+		name := name
+		tName := fmt.Sprintf("TestPublicPrivate-custom-%s", name)
+		x := SomeStruct{
+			AAA:               strings.NewReader("hello from strings NewReader"),
+			SomeConcreteError: errors.New("houston something bad happened"),
+			SomePublic:        Hey{Name: "SomePublicName", agePrivate: 67},
+			privateThing:      "privateThing",
+			anotherPrivate:    Hey{Name: "anotherPrivateName", agePrivate: 12},
+		}
+
+		t.Run(tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
+
+			var res string
+			switch name {
+			default:
+				t.Fatalf("option `%s` is not expected", name)
+			case "default":
+				res = Dir(x)
+			case "ShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: true})
+			case "DoNotShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: false})
+			}
+
+			path := getDataPath(t, "vars_test.go", tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+
+	for _, name := range []string{"default", "ShowPrivateFields", "DoNotShowPrivateFields"} {
+		name := name
+		tName := fmt.Sprintf("TestPublicPrivate-stdlib-%s", name)
+		x := http.Request{Method: "Hello"}
+
+		t.Run(tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
+
+			var res string
+			switch name {
+			default:
+				t.Fatalf("option `%s` is not expected", name)
+			case "default":
+				res = Dir(x)
+			case "ShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: true})
+			case "DoNotShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: false})
+			}
+
+			path := getDataPath(t, "vars_test.go", tName)
+			dealWithTestData(t, path, res)
 		})
 	}
 }

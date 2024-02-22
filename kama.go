@@ -24,8 +24,10 @@ var (
 
 // Config controls how printing is going to be done.
 type Config struct {
-	// MaxLength is the length of slices/maps/strings that is going to be printed.
+	// MaxLength is the length of slices/maps/strings that is going to be dumped.
 	MaxLength int
+	// ShowPrivateFields dictates whether private struct fields will be dumped.
+	ShowPrivateFields bool
 }
 
 // Dirp prints (to stdout) exported information of types, variables, packages, modules, imports

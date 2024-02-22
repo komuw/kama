@@ -1,0 +1,21 @@
+
+[
+NAME: github.com/komuw/kama.SomeStruct
+KIND: struct
+SIGNATURE: [kama.SomeStruct *kama.SomeStruct]
+FIELDS: [
+	AAA io.Reader 
+	SomeNilError error 
+	SomeConcreteError error 
+	SomePublic kama.Hey 
+	]
+METHODS: []
+SNIPPET: SomeStruct{
+  AAA: io.Reader(*strings.Reader) &{hello from strings NewReader 0 -1},
+  SomeNilError: error(nil),
+  SomeConcreteError: error(houston something bad happened),
+  SomePublic: Hey{
+    Name: "SomePublicName",
+  },
+}
+]
