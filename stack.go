@@ -12,6 +12,12 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+const (
+	compilerColor   = "blue"
+	thirdPartyColor = "yellow"
+	yourColor       = "red"
+)
+
 func stackp() {
 	goModCache := os.Getenv("GOMODCACHE")
 	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
@@ -20,18 +26,23 @@ func stackp() {
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
 			// compiler
-			printWithColor(v, "cyan", false)
+			printWithColor(v, compilerColor, false)
 		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
-			printWithColor(v, "magenta", false)
+			printWithColor(v, thirdPartyColor, false)
 		} else if re.MatchString(v) {
 			// this is code snippets
-			printWithColor(v, "green", false)
+			printWithColor(v, yourColor, false)
 		} else {
 			// your code
-			printWithColor(v, "green", true)
+			printWithColor(v, yourColor, true)
 		}
 	}
+
+	printWithColor(
+		fmt.Sprintf("\nLEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s", compilerColor, thirdPartyColor, yourColor),
+		"DEFAULT",
+		true)
 }
 
 // frm is like a runtime.Frame
@@ -137,9 +148,9 @@ func setColor(code int, bold bool) {
 func printWithColor(s, color string, bold bool) {
 	// TODO: should be iota
 	colors := map[string]int{
-		// Go compiler == cyan
-		// Third party == magenta
-		// Your code == green
+		// Go compiler == compilerColor
+		// Third party == thirdPartyColor
+		// Your code == yourColor
 
 		"black":   30,
 		"red":     31,
