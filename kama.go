@@ -135,3 +135,18 @@ func Dir(i interface{}, c ...Config) string {
 func Stackp() {
 	stackp()
 }
+
+// TODO: docs
+func Diffp(old, new interface{}, c ...Config) {
+	fmt.Println(
+		Diff(old, new, c...),
+	)
+}
+
+// TODO: docs
+func Diff(old, new interface{}, c ...Config) string {
+	return diff(
+		Dir(old, c...),
+		Dir(new, c...),
+	)
+}
