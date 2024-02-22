@@ -5,14 +5,16 @@
 package kama
 
 import (
+	"fmt"
+	"net/http"
 	"strings"
 	"testing"
 )
 
-func TestFormat(t *testing.T) {
+func TestSmallDiff(t *testing.T) {
 	t.Parallel()
 
-	formatTests := []struct {
+	tests := []struct {
 		text1 string
 		text2 string
 		diff  string
@@ -25,7 +27,7 @@ func TestFormat(t *testing.T) {
 		{"a b c e f", "a b c d e f", "a b c +d e f"},
 	}
 
-	for _, tt := range formatTests {
+	for _, tt := range tests {
 		// Turn spaces into \n.
 		text1 := strings.ReplaceAll(tt.text1, " ", "\n")
 		if text1 != "" {
@@ -35,11 +37,19 @@ func TestFormat(t *testing.T) {
 		if text2 != "" {
 			text2 += "\n"
 		}
-		out := Format(text1, text2)
+		out := diff(text1, text2)
 		// Cut final \n, cut spaces, turn remaining \n into spaces.
 		out = strings.ReplaceAll(strings.ReplaceAll(strings.TrimSuffix(out, "\n"), " ", ""), "\n", " ")
 		if out != tt.diff {
 			t.Errorf("diff(%q, %q) = %q, want %q", text1, text2, out, tt.diff)
 		}
 	}
+}
+
+func TestOya(t *testing.T) {
+	a := Dir(http.Request{Method: "GET"})
+	b := Dir(http.Request{Method: "POST"})
+
+	x := diff(a, b)
+	fmt.Println("x: ", x)
 }

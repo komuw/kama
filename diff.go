@@ -13,12 +13,12 @@ import (
 // Most of the code here is insipired by(or taken from):
 //   (a) https://github.com/rsc/diff whose license(BSD 3-Clause "New" or "Revised" License) can be found here: https://github.com/rsc/diff/blob/master/LICENSE
 
-// Format returns a formatted diff of the two texts,
+// diff returns a formatted diff of the two texts,
 // showing the entire text and the minimum line-level
 // additions and removals to turn text1 into text2.
 // (That is, lines only in text1 appear with a leading -,
 // and lines only in text2 appear with a leading +.)
-func Format(text1, text2 string) string {
+func diff(text1, text2 string) string {
 	if text1 != "" && !strings.HasSuffix(text1, "\n") {
 		text1 += "(missing final newline)"
 	}
