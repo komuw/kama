@@ -560,3 +560,56 @@ func TestPublicPrivate(t *testing.T) {
 		})
 	}
 }
+
+type ConfTestCircularRef struct {
+	Path    string
+	Hclient *http.Client
+}
+
+type ClientTestCircularRef struct {
+	Public string
+	c      *ConfTestCircularRef
+	s      srvTestCircularRef
+}
+
+type srvTestCircularRef struct {
+	cli *ClientTestCircularRef
+}
+
+func TestCircularRef(t *testing.T) {
+	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+	oldCfg := cfg
+
+	x := &ClientTestCircularRef{Public: "PublicName", c: &ConfTestCircularRef{Path: "path", Hclient: http.DefaultClient}}
+	x.s.cli = x
+
+	{ // Set the new config and schedule to return old config.
+		onceCfg = &sync.Once{}
+		t.Cleanup(func() {
+			cfg = oldCfg
+		})
+	}
+
+	for _, name := range []string{"ShowPrivateFields", "DoNotShowPrivateFields"} {
+		name := name
+		tName := fmt.Sprintf("TestCircularRef-%s", name)
+
+		t.Run(tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			var res string
+			switch name {
+			default:
+				t.Fatalf("option `%s` is not expected", name)
+			case "ShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: true})
+			case "DoNotShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: false})
+			}
+
+			path := getDataPath(t, "vars_test.go", tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+}

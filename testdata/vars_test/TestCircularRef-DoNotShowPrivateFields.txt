@@ -1,0 +1,13 @@
+
+[
+NAME: github.com/komuw/kama.ClientTestCircularRef
+KIND: struct
+SIGNATURE: [*kama.ClientTestCircularRef kama.ClientTestCircularRef]
+FIELDS: [
+	Public string 
+	]
+METHODS: []
+SNIPPET: &ClientTestCircularRef{
+  Public: "PublicName",
+}
+]
