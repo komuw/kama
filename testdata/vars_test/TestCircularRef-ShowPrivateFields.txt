@@ -19,7 +19,12 @@ SNIPPET: &Client{
             cli: &Client{
               Public: "PublicName",
               srv: srvRef{
-                cli: &Client bad indentLevel: 9,
+                cli: &Client{
+                  Public: "PublicName",
+                  srv: srvRef{
+                    cli: &Client bad indentLevel: 11,
+                  },
+                },
               },
             },
           },

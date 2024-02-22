@@ -577,6 +577,7 @@ func TestCircularRef(t *testing.T) {
 
 	x := &Client{Public: "PublicName"}
 	x.srv.cli = x
+	// x.srv.cli = &Client{Public: "NewPub"} // TODO: also test this.
 
 	{ // Set the new config and schedule to return old config.
 		onceCfg = &sync.Once{}

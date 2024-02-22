@@ -105,6 +105,8 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		if v.IsValid() {
 			if v.Type().Kind() == reflect.Struct {
 				fromPtr := true
+				// TODO: should we pass in `val`, itself instead of `v`
+				// that way `val.Pointer()` would happen inside `dumpStruct`
 				return dumpStruct(v, fromPtr, hideZeroValues, indentLevel)
 			} else {
 				return dumpNonStructPointer(v, hideZeroValues, indentLevel)
@@ -179,18 +181,7 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 		typeName = "&" + typeName
 	}
 
-	pointer := uintptr(0)
-	if isPointerValue(v) {
-		pointer = v.Pointer()
-	}
-	fmt.Println("dumpStruct. ",
-		"v: ", v,
-		"fromPtr: ", fromPtr,
-		"indentLevel: ", indentLevel,
-		"typeName: ", typeName,
-		"pointer: ", pointer,
-	)
-	if indentLevel > 8 {
+	if indentLevel > 10 {
 		return typeName + " bad indentLevel: " + fmt.Sprint(indentLevel)
 	}
 
@@ -216,9 +207,6 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 				_ = cpt
 				hzv := true
 				val := dump(fieldd, hzv, indentLevel)
-				if strings.HasPrefix(val, typeName) {
-					val = "same thing"
-				}
 				s = s + fieldNameSep + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
