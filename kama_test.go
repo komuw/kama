@@ -262,14 +262,11 @@ func TestDiff(t *testing.T) {
 			old:   "compress/flate",
 			new:   "compress/flate",
 		},
-		// {
-		// 	tName: "package github.com/pkg/errors",
-		// 	item:  "github.com/pkg/errors",
-		// },
-		// {
-		// 	tName: "http request",
-		// 	item:  req,
-		// },
+		{
+			tName: "errors",
+			old:   "errors",
+			new:   "github.com/pkg/errors",
+		},
 		{
 			tName: "http Request",
 			old:   http.Request{Method: "GET"},
