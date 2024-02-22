@@ -560,3 +560,89 @@ func TestPublicPrivate(t *testing.T) {
 		})
 	}
 }
+
+type Client struct {
+	Public string
+	srv    srvRef
+}
+
+type srvRef struct {
+	cli *Client
+}
+
+func TestCircularRef(t *testing.T) {
+	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+	oldCfg := cfg
+
+	{ // Set the new config and schedule to return old config.
+		onceCfg = &sync.Once{}
+		t.Cleanup(func() {
+			cfg = oldCfg
+		})
+	}
+
+	for _, name := range []string{"ShowPrivateFields", "DoNotShowPrivateFields"} {
+		name := name
+		tName := fmt.Sprintf("TestCircularRef-with-cirlce-%s", name)
+
+		x := &Client{Public: "PublicName"}
+		x.srv.cli = x // circular
+
+		t.Run(tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
+
+			var res string
+			switch name {
+			default:
+				t.Fatalf("option `%s` is not expected", name)
+			case "ShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: true})
+			case "DoNotShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: false})
+			}
+
+			path := getDataPath(t, "vars_test.go", tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+
+	for _, name := range []string{"ShowPrivateFields", "DoNotShowPrivateFields"} {
+		name := name
+		tName := fmt.Sprintf("TestCircularRef-with-NO-cirlce-%s", name)
+
+		x := &Client{Public: "PublicName"}
+		x.srv.cli = &Client{Public: "NewPubName"} // no circle
+
+		t.Run(tName, func(t *testing.T) {
+			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
+
+			var res string
+			switch name {
+			default:
+				t.Fatalf("option `%s` is not expected", name)
+			case "ShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: true})
+			case "DoNotShowPrivateFields":
+				res = Dir(x, Config{ShowPrivateFields: false})
+			}
+
+			path := getDataPath(t, "vars_test.go", tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+}

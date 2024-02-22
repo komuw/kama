@@ -105,6 +105,8 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		if v.IsValid() {
 			if v.Type().Kind() == reflect.Struct {
 				fromPtr := true
+				// TODO: should we pass in `val`, itself instead of `v`
+				// that way `val.Pointer()` would happen inside `dumpStruct`
 				return dumpStruct(v, fromPtr, hideZeroValues, indentLevel)
 			} else {
 				return dumpNonStructPointer(v, hideZeroValues, indentLevel)
@@ -177,6 +179,10 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 	typeName := v.Type().Name()
 	if fromPtr {
 		typeName = "&" + typeName
+	}
+
+	if indentLevel > cfg.MaxIndentLevel {
+		return fmt.Sprintf("%v: kama warning(indentation `%d` exceeds max of `%d`. Possible circular reference)", typeName, indentLevel, cfg.MaxIndentLevel)
 	}
 
 	sep := "\n"

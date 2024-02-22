@@ -2,6 +2,10 @@
 
 Most recent version is listed first.  
 
+
+# v0.0.17
+- Add ability to dump items with circular references: https://github.com/komuw/kama/pull/66
+
 # v0.0.16
 - Update Go version: https://github.com/komuw/kama/pull/62
 - Add ability to dump private struct fields via config option: https://github.com/komuw/kama/pull/64
