@@ -592,6 +592,13 @@ func TestCircularRef(t *testing.T) {
 		t.Run(tName, func(t *testing.T) {
 			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
 
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
+
 			var res string
 			switch name {
 			default:
@@ -612,10 +619,17 @@ func TestCircularRef(t *testing.T) {
 		tName := fmt.Sprintf("TestCircularRef-with-NO-cirlce-%s", name)
 
 		x := &Client{Public: "PublicName"}
-		x.srv.cli = &Client{Public: "NewPubNamw"} // no circle
+		x.srv.cli = &Client{Public: "NewPubName"} // no circle
 
 		t.Run(tName, func(t *testing.T) {
 			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+
+			{ // Set the new config and schedule to return old config.
+				onceCfg = &sync.Once{}
+				t.Cleanup(func() {
+					cfg = oldCfg
+				})
+			}
 
 			var res string
 			switch name {

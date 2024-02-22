@@ -9,11 +9,5 @@ FIELDS: [
 METHODS: []
 SNIPPET: &Client{
   Public: "PublicName",
-  srv: srvRef{
-    cli: &Client{
-      Public: "NewPubNamw",
-      srv: srvRef{},
-    },
-  },
 }
 ]

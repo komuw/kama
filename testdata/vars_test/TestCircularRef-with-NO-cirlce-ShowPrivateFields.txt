@@ -11,7 +11,7 @@ SNIPPET: &Client{
   Public: "PublicName",
   srv: srvRef{
     cli: &Client{
-      Public: "NewPubNamw",
+      Public: "NewPubName",
       srv: srvRef{},
     },
   },

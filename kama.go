@@ -18,11 +18,11 @@ import (
 )
 
 var (
-	cfg = Config{
+	cfg = Config{ //nolint:gochecknoglobals
 		MaxLength:         14,
 		ShowPrivateFields: false,
 		MaxIndentLevel:    10,
-	} //nolint:gochecknoglobals
+	}
 
 	onceCfg = &sync.Once{} //nolint:gochecknoglobals
 )
