@@ -192,7 +192,7 @@ func TestStdlibTypes(t *testing.T) {
 	for _, v := range tt {
 		v := v
 		_ = Dir(v)
-		_ = Dir(v, Config{8})
+		_ = Dir(v, Config{MaxLength: 8})
 	}
 }
 

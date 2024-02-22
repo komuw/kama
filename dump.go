@@ -190,7 +190,9 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 	for i := 0; i < numFields; i++ {
 		vtf := vt.Field(i)
 		fieldd := v.Field(i)
-		if unicode.IsUpper(rune(vtf.Name[0])) {
+		if unicode.IsUpper(rune(vtf.Name[0])) || cfg.ShowPrivateFields {
+			// Only dump public fields, unless the config option for private is turned on.
+
 			if hideZeroValues && isZeroValue(fieldd) {
 				continue
 			} else {
