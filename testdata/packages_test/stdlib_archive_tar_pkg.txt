@@ -42,6 +42,7 @@ TYPES: [
 		(*Reader) Next() (*Header, error)
 		(*Reader) Read(b []byte) (int, error) 
 	Writer struct
+		(*Writer) AddFS(fsys io/fs.FS) error
 		(*Writer) Close() error
 		(*Writer) Flush() error
 		(*Writer) Write(b []byte) (int, error)
