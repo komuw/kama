@@ -1,0 +1,75 @@
+
+[
+NAME: net/http.Request
+KIND: struct
+SIGNATURE: [http.Request *http.Request]
+FIELDS: [
+	Method string 
+	URL *url.URL 
+	Proto string 
+	ProtoMajor int 
+	ProtoMinor int 
+	Header http.Header 
+	Body io.ReadCloser 
+	GetBody func() (io.ReadCloser, error) 
+	ContentLength int64 
+	TransferEncoding []string 
+	Close bool 
+	Host string 
+	Form url.Values 
+	PostForm url.Values 
+	MultipartForm *multipart.Form 
+	Trailer http.Header 
+	RemoteAddr string 
+	RequestURI string 
+	TLS *tls.ConnectionState 
+	Cancel <-chan struct {} 
+	Response *http.Response 
+	]
+METHODS: [
+	AddCookie func(*http.Request, *http.Cookie) 
+	BasicAuth func(*http.Request) (string, string, bool) 
+	Clone func(*http.Request, context.Context) *http.Request 
+	Context func(*http.Request) context.Context 
+	Cookie func(*http.Request, string) (*http.Cookie, error) 
+	Cookies func(*http.Request) []*http.Cookie 
+	FormFile func(*http.Request, string) (multipart.File, *multipart.FileHeader, error) 
+	FormValue func(*http.Request, string) string 
+	MultipartReader func(*http.Request) (*multipart.Reader, error) 
+	ParseForm func(*http.Request) error 
+	ParseMultipartForm func(*http.Request, int64) error 
+	PathValue func(*http.Request, string) string 
+	PostFormValue func(*http.Request, string) string 
+	ProtoAtLeast func(*http.Request, int, int) bool 
+	Referer func(*http.Request) string 
+	SetBasicAuth func(*http.Request, string, string) 
+	SetPathValue func(*http.Request, string, string) 
+	UserAgent func(*http.Request) string 
+	WithContext func(*http.Request, context.Context) *http.Request 
+	Write func(*http.Request, io.Writer) error 
+	WriteProxy func(*http.Request, io.Writer) error 
+	]
+SNIPPET: Request{
+  Method: "Hello",
+  URL: *url.URL(nil),
+  Proto: "",
+  ProtoMajor: int(0),
+  ProtoMinor: int(0),
+  Header: http.Header{(nil)},
+  Body: io.ReadCloser nil,
+  GetBody: func() (io.ReadCloser, error),
+  ContentLength: int64(0),
+  TransferEncoding: []string{(nil)},
+  Close: false,
+  Host: "",
+  Form: url.Values{(nil)},
+  PostForm: url.Values{(nil)},
+  MultipartForm: *multipart.Form(nil),
+  Trailer: http.Header{(nil)},
+  RemoteAddr: "",
+  RequestURI: "",
+  TLS: *tls.ConnectionState(nil),
+  Cancel: <-chan struct {} (len=0, cap=0),
+  Response: *http.Response(nil),
+}
+]
