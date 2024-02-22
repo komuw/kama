@@ -561,10 +561,6 @@ func TestPublicPrivate(t *testing.T) {
 	}
 }
 
-// type Conf struct {
-// 	Path string
-// }
-
 type Client struct {
 	Public string
 	srv    srvRef
@@ -579,10 +575,7 @@ func TestCircularRef(t *testing.T) {
 
 	oldCfg := cfg
 
-	x := &Client{
-		Public: "PublicName",
-		// cfg:    &Conf{Path: "path"},
-	}
+	x := &Client{Public: "PublicName"}
 	x.srv.cli = x
 
 	{ // Set the new config and schedule to return old config.
