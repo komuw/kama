@@ -248,3 +248,43 @@ func TestReadmeExamples(t *testing.T) {
 		})
 	}
 }
+
+func TestDiff(t *testing.T) {
+	t.Parallel()
+
+	tt := []struct {
+		tName string
+		old   interface{}
+		new   interface{}
+	}{
+		{
+			tName: "package compress/flate",
+			old:   "compress/flate",
+			new:   "compress/flate",
+		},
+		{
+			tName: "errors",
+			old:   "errors",
+			new:   "github.com/pkg/errors",
+		},
+		{
+			tName: "http Request",
+			old:   http.Request{Method: "GET"},
+			new:   http.Request{Method: "POST"},
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+		tName := fmt.Sprintf("TestDiff-%s", v.tName)
+
+		t.Run(tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := Diff(v.old, v.new)
+
+			path := getDataPath(t, "kama_test.go", tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+}

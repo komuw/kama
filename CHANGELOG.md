@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.18
+- Add ability to diff items: https://github.com/komuw/kama/pull/67
+
 # v0.0.17
 - Add ability to dump items with circular references: https://github.com/komuw/kama/pull/66
 

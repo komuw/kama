@@ -135,3 +135,18 @@ func Dir(i interface{}, c ...Config) string {
 func Stackp() {
 	stackp()
 }
+
+// Diffp prints a formatted diff showing the minimum line-level additions and removals that would turn old into new.
+func Diffp(old, new interface{}, c ...Config) {
+	fmt.Println(
+		Diff(old, new, c...),
+	)
+}
+
+// Diff returns a formatted diff showing the minimum line-level additions and removals that would turn old into new.
+func Diff(old, new interface{}, c ...Config) string {
+	return diff(
+		Dir(old, c...),
+		Dir(new, c...),
+	)
+}
