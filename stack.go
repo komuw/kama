@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
-
-	"golang.org/x/sys/unix"
 )
 
 const (
@@ -23,6 +21,14 @@ func stackp() {
 	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
 
 	traces := getStackTrace()
+	if len(traces) > 0 {
+		printWithColor(
+			fmt.Sprintf("LEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s\n", compilerColor, thirdPartyColor, yourColor),
+			"DEFAULT",
+			true,
+		)
+	}
+
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
 			// compiler
@@ -38,11 +44,6 @@ func stackp() {
 			printWithColor(v, yourColor, true)
 		}
 	}
-
-	printWithColor(
-		fmt.Sprintf("\nLEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s", compilerColor, thirdPartyColor, yourColor),
-		"DEFAULT",
-		true)
 }
 
 // frm is like a runtime.Frame
@@ -187,7 +188,5 @@ func noColor() bool {
 		return true
 	}
 
-	fd := os.Stdout.Fd()
-	_, err := unix.IoctlGetTermios(int(fd), unix.TCGETS)
-	return err == nil
+	return false
 }
