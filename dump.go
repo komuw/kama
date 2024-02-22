@@ -179,6 +179,21 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 		typeName = "&" + typeName
 	}
 
+	pointer := uintptr(0)
+	if isPointerValue(v) {
+		pointer = v.Pointer()
+	}
+	fmt.Println("dumpStruct. ",
+		"v: ", v,
+		"fromPtr: ", fromPtr,
+		"indentLevel: ", indentLevel,
+		"typeName: ", typeName,
+		"pointer: ", pointer,
+	)
+	if indentLevel > 8 {
+		return typeName + " bad indentLevel: " + fmt.Sprint(indentLevel)
+	}
+
 	sep := "\n"
 	fieldNameSep := strings.Repeat("  ", indentLevel)
 	lastBracketSep := strings.Repeat("  ", indentLevel-1)
@@ -201,6 +216,9 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 				_ = cpt
 				hzv := true
 				val := dump(fieldd, hzv, indentLevel)
+				if strings.HasPrefix(val, typeName) {
+					val = "same thing"
+				}
 				s = s + fieldNameSep + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}

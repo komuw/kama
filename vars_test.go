@@ -561,19 +561,17 @@ func TestPublicPrivate(t *testing.T) {
 	}
 }
 
-type ConfTestCircularRef struct {
-	Path    string
-	Hclient *http.Client
-}
+// type Conf struct {
+// 	Path string
+// }
 
-type ClientTestCircularRef struct {
+type Client struct {
 	Public string
-	c      *ConfTestCircularRef
-	s      srvTestCircularRef
+	srv    srvRef
 }
 
-type srvTestCircularRef struct {
-	cli *ClientTestCircularRef
+type srvRef struct {
+	cli *Client
 }
 
 func TestCircularRef(t *testing.T) {
@@ -581,8 +579,11 @@ func TestCircularRef(t *testing.T) {
 
 	oldCfg := cfg
 
-	x := &ClientTestCircularRef{Public: "PublicName", c: &ConfTestCircularRef{Path: "path", Hclient: http.DefaultClient}}
-	x.s.cli = x
+	x := &Client{
+		Public: "PublicName",
+		// cfg:    &Conf{Path: "path"},
+	}
+	x.srv.cli = x
 
 	{ // Set the new config and schedule to return old config.
 		onceCfg = &sync.Once{}
