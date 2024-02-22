@@ -2,6 +2,8 @@
 
 Most recent version is listed first.  
 
+# v0.0.16
+- Update Go version: https://github.com/komuw/kama/pull/62
 
 # v0.0.15
 - Retracts v0.0.14 which had a panic bug.
