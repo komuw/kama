@@ -28,6 +28,9 @@ type Config struct {
 	MaxLength int
 	// ShowPrivateFields dictates whether private struct fields will be dumped.
 	ShowPrivateFields bool
+	// MaxIndentLevel is the maximum level of indentation/recursiveness to dump to.
+	// This is especially important to set if the thing you are dumping has circular references.
+	MaxIndentLevel int
 }
 
 // Dirp prints (to stdout) exported information of types, variables, packages, modules, imports
@@ -58,6 +61,13 @@ func Dir(i interface{}, c ...Config) string {
 				// the upper limit of a slice is some significant fraction of the address space of a process.
 				// https://github.com/golang/go/issues/38673#issuecomment-643885108
 				cfg.MaxLength = 10_000
+			}
+
+			if cfg.MaxIndentLevel < 1 {
+				cfg.MaxIndentLevel = 5 // ie, the default
+			}
+			if cfg.MaxIndentLevel > 100 {
+				cfg.MaxIndentLevel = 100
 			}
 		})
 	}

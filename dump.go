@@ -181,8 +181,8 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 		typeName = "&" + typeName
 	}
 
-	if indentLevel > 10 {
-		return typeName + " bad indentLevel: " + fmt.Sprint(indentLevel)
+	if indentLevel > cfg.MaxIndentLevel {
+		return fmt.Sprintf("%v: kama warning(indentation `%d` exceeds max of `%d`. Possible circular reference)", typeName, indentLevel, cfg.MaxIndentLevel)
 	}
 
 	sep := "\n"
