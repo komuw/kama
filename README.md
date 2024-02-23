@@ -22,7 +22,23 @@ It's name is derived from Kenyan hip hop artiste, `Kama`(One third of the hiphop
 
 ```shell
 go get -u github.com/komuw/kama
-```   
+```
+
+## API:
+```go
+func Dirp(i interface{}, c ...Config)
+    Dirp prints exported information of types, variables, packages,
+    modules, imports. It also pretty prints data structures.
+
+func Diffp(old, new interface{}, c ...Config)
+    Diffp prints a formatted diff showing the minimum line-level additions and
+    removals that would turn old into new.
+
+func Stackp()
+    Stackp prints the colorized stack trace.
+    Stack trace from the runtime/stdlib is colored blue, third party libraries
+    is yellow whereas your code is red.
+```
 
 ## Usage:    
 

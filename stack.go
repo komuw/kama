@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	compilerColor   = "blue"
+	runtimeColor    = "blue"
 	thirdPartyColor = "yellow"
 	yourColor       = "red"
 )
@@ -23,7 +23,7 @@ func stackp() {
 	traces := getStackTrace()
 	if len(traces) > 0 {
 		printWithColor(
-			fmt.Sprintf("LEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s\n", compilerColor, thirdPartyColor, yourColor),
+			fmt.Sprintf("LEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s\n", runtimeColor, thirdPartyColor, yourColor),
 			"DEFAULT",
 			true,
 		)
@@ -32,7 +32,7 @@ func stackp() {
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
 			// compiler
-			printWithColor(v, compilerColor, false)
+			printWithColor(v, runtimeColor, false)
 		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
 			printWithColor(v, thirdPartyColor, false)

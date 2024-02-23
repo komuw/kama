@@ -38,7 +38,7 @@ type Config struct {
 	MaxIndentLevel int
 }
 
-// Dirp prints (to stdout) exported information of types, variables, packages, modules, imports
+// Dirp prints (to stdout) exported information of types, variables, packages, modules, imports.
 // It also pretty prints data structures.
 //
 // examples:
@@ -54,7 +54,7 @@ func Dirp(i interface{}, c ...Config) {
 	fmt.Println(Dir(i, c...))
 }
 
-// Dir returns exported information of types, variables, packages, modules, imports
+// Dir returns exported information of types, variables, packages, modules, imports.
 func Dir(i interface{}, c ...Config) string {
 	if len(c) > 0 {
 		onceCfg.Do(func() {
@@ -128,10 +128,10 @@ func Dir(i interface{}, c ...Config) string {
 	}
 }
 
-// Stackp prints to standard error the colorized stack trace returned by debug.Stack.
+// Stackp prints to standard error the colorized stack trace.
 //
-// Stack trace from the runtime/stdlib is colored cyan, third party libraries is magenta
-// whereas your code is green.
+// Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
+// whereas your code is red.
 func Stackp() {
 	stackp()
 }

@@ -3,6 +3,9 @@
 Most recent version is listed first.  
 
 
+# v0.0.19
+- Update docs: https://github.com/komuw/kama/commit/d4ca96a82588938f72c736064701a75a66319f17
+
 # v0.0.18
 - Add ability to diff items: https://github.com/komuw/kama/pull/67
 - Add legend to stack trace: https://github.com/komuw/kama/pull/68
