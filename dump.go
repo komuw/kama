@@ -2,9 +2,9 @@ package kama
 
 import (
 	"fmt"
+	"golang.org/x/exp/slices"
 	"math"
 	"reflect"
-	"slices"
 	"sort"
 	"strings"
 	"unicode"
