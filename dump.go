@@ -2,12 +2,13 @@ package kama
 
 import (
 	"fmt"
-	"golang.org/x/exp/slices"
 	"math"
 	"reflect"
 	"sort"
 	"strings"
 	"unicode"
+
+	"golang.org/x/exp/slices"
 )
 
 func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {

@@ -72,6 +72,12 @@ func (v vari) String() string {
 		return fm
 	}
 
+	st := getStackTrace()
+	tr := ""
+	for _, v := range st {
+		tr = tr + fmt.Sprintf("\n%v", v)
+	}
+
 	return fmt.Sprintf(
 		`
 [
@@ -80,6 +86,8 @@ KIND: %v
 SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
+TRACE: [ %v
+]
 SNIPPET: %s
 ]
 `,
@@ -88,6 +96,7 @@ SNIPPET: %s
 		v.Signature,
 		nLf(v.Fields),
 		nLf(v.Methods),
+		tr,
 		v.Val,
 	)
 }
