@@ -14,7 +14,7 @@ func Test_getStackTrace(t *testing.T) {
 
 		got := a()
 
-		attest.Subsequence(t, got[1], "func a() []string {")
+		attest.Subsequence(t, got[0], "github.com/komuw/kama.a")
 	})
 }
 
