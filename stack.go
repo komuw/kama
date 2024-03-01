@@ -71,24 +71,35 @@ func getStackTrace() []string {
 		}
 	}
 
+	n := 0
 	txtLast := ""
 	txtLastButOne := ""
-	if len(frms) > 0 {
-		txtLast = readLastLine(frms[0].file, int64(frms[0].line))
+	for k, _ := range frms {
+		if strings.Contains(frms[k].file, "/kama/") || strings.Contains(frms[k].file, "go/src/") {
+			// Do not display expanded source code for this library or Go runtime.
+			n = n + 1
+		} else {
+			break
+		}
 	}
-	if len(frms) > 1 {
-		txtLastButOne = readLastLine(frms[1].file, int64(frms[1].line))
+
+	if len(frms) > n {
+		txtLast = readLastLine(frms[n].file, int64(frms[n].line))
+	}
+	next := n + 1
+	if len(frms) > next {
+		txtLastButOne = readLastLine(frms[next].file, int64(frms[next].line))
 	}
 
 	traces := []string{}
 	for k, v := range frms {
 		traces = append(traces, fmt.Sprintf("\t%s:%d %s", v.file, v.line, v.function))
 
-		if k == 0 && txtLast != "" {
+		if k == n && txtLast != "" {
 			traces = append(traces, txtLast)
 		}
 
-		if k == 1 && txtLastButOne != "" {
+		if k == next && txtLastButOne != "" {
 			traces = append(traces, txtLastButOne)
 		}
 	}
