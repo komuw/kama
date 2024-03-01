@@ -1,6 +1,7 @@
 package kama
 
 import (
+	"bytes"
 	"fmt"
 	"reflect"
 	"runtime"
@@ -72,6 +73,9 @@ func (v vari) String() string {
 		return fm
 	}
 
+	w := &bytes.Buffer{}
+	stackp(w)
+
 	return fmt.Sprintf(
 		`
 [
@@ -80,6 +84,8 @@ KIND: %v
 SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
+STACK_TRACE: [
+%v]
 SNIPPET: %s
 ]
 `,
@@ -88,6 +94,7 @@ SNIPPET: %s
 		v.Signature,
 		nLf(v.Fields),
 		nLf(v.Methods),
+		strings.TrimRight(w.String(), "\n"),
 		v.Val,
 	)
 }

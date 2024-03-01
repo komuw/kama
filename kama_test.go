@@ -288,3 +288,34 @@ func TestDiff(t *testing.T) {
 		})
 	}
 }
+
+func TestDirWithStack(t *testing.T) {
+	t.Parallel()
+
+	req, _ := http.NewRequest("GET", "https://example.com", nil)
+	req.Header.Set("Content-Type", "application/octet-stream")
+	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+
+	tt := []struct {
+		tName string
+		item  interface{}
+	}{
+		{
+			tName: "http request with stack",
+			item:  req,
+		},
+	}
+
+	for _, v := range tt {
+		v := v
+
+		t.Run(v.tName, func(t *testing.T) {
+			t.Parallel()
+
+			res := Dir(v.item)
+
+			path := getDataPath(t, "kama_test.go", v.tName)
+			dealWithTestData(t, path, res)
+		})
+	}
+}
