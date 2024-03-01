@@ -3,6 +3,7 @@ package kama
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -16,13 +17,14 @@ const (
 	yourColor       = "red"
 )
 
-func stackp() {
+func stackp(w io.Writer) {
 	goModCache := os.Getenv("GOMODCACHE")
 	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
 
 	traces := getStackTrace()
 	if len(traces) > 0 {
 		printWithColor(
+			w,
 			fmt.Sprintf("LEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s\n", runtimeColor, thirdPartyColor, yourColor),
 			"DEFAULT",
 			true,
@@ -32,16 +34,16 @@ func stackp() {
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
 			// compiler
-			printWithColor(v, runtimeColor, false)
+			printWithColor(w, v, runtimeColor, false)
 		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
-			printWithColor(v, thirdPartyColor, false)
+			printWithColor(w, v, thirdPartyColor, false)
 		} else if re.MatchString(v) {
 			// this is code snippets
-			printWithColor(v, yourColor, false)
+			printWithColor(w, v, yourColor, false)
 		} else {
 			// your code
-			printWithColor(v, yourColor, true)
+			printWithColor(w, v, yourColor, true)
 		}
 	}
 }
@@ -74,7 +76,7 @@ func getStackTrace() []string {
 	n := 0
 	txtLast := ""
 	txtLastButOne := ""
-	for k, _ := range frms {
+	for k := range frms {
 		if strings.Contains(frms[k].file, "/kama/") || strings.Contains(frms[k].file, "go/src/") {
 			// Do not display expanded source code for this library or Go runtime.
 			n = n + 1
@@ -142,22 +144,22 @@ func readLastLine(file string, line int64) string {
 	return strings.TrimSuffix(txt, "\n")
 }
 
-func reset() {
+func reset(w io.Writer) {
 	const escape = "\x1b"
 	const r = 0
-	fmt.Fprintf(os.Stderr, "%s[%dm", escape, r)
+	_, _ = fmt.Fprintf(w, "%s[%dm", escape, r)
 }
 
-func setColor(code int, bold bool) {
+func setColor(w io.Writer, code int, bold bool) {
 	const escape = "\x1b"
 	if bold {
-		fmt.Fprintf(os.Stderr, "%s[1%dm", escape, code)
+		_, _ = fmt.Fprintf(w, "%s[1%dm", escape, code)
 	} else {
-		fmt.Fprintf(os.Stderr, "%s[%dm", escape, code)
+		_, _ = fmt.Fprintf(w, "%s[%dm", escape, code)
 	}
 }
 
-func printWithColor(s, color string, bold bool) {
+func printWithColor(w io.Writer, s, color string, bold bool) {
 	// TODO: should be iota
 	colors := map[string]int{
 		// Go compiler == compilerColor
@@ -178,12 +180,12 @@ func printWithColor(s, color string, bold bool) {
 	}
 
 	if noColor() {
-		fmt.Fprintln(os.Stderr, s)
+		_, _ = fmt.Fprintln(w, s)
 	} else {
-		defer reset()
+		defer reset(w)
 		color = strings.ToLower(color)
-		setColor(colors[color], bold)
-		fmt.Fprintln(os.Stderr, s)
+		setColor(w, colors[color], bold)
+		_, _ = fmt.Fprintln(w, s)
 	}
 }
 
