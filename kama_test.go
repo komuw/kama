@@ -243,7 +243,7 @@ func TestReadmeExamples(t *testing.T) {
 
 			res := Dir(v.item)
 
-			path := getDataPath(t, "kama_test.go", v.tName)
+			path := getDataPath(t, "kama_test.go", "TestReadmeExamples_"+v.tName)
 			dealWithTestData(t, path, res)
 		})
 	}
