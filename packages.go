@@ -3,7 +3,7 @@ package kama
 import (
 	"fmt"
 	"go/types"
-	"slices"
+	"golang.org/x/exp/slices"
 	"strings"
 
 	"golang.org/x/tools/go/packages"

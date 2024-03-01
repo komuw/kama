@@ -63,6 +63,28 @@ jobs:
               esac
           fi
 
+  check_go_compatibility:
+    name: check_go_compatibility
+    timeout-minutes: 7
+    strategy:
+      matrix:
+        go-version: [1.20.x, 1.21.x, 1.22.x]
+        platform: [ubuntu-22.04]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3
+
+      - name: tests and benchmarks
+        run: |
+          go test -count=1 -timeout 1m --exec=/bin/true ./...
+
+
   run_tests:
     name: run_tests
     timeout-minutes: 7
@@ -98,7 +120,6 @@ jobs:
           go test -timeout 4m -race -cover -coverprofile=coverage.out ./... && bash <(curl -s https://codecov.io/bash)
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
-
 
   run_analysis:
     name: run_analysis
