@@ -1,6 +1,8 @@
 package kama
 
 import (
+	"bytes"
+	"io"
 	"testing"
 
 	"go.akshayshah.org/attest"
@@ -37,10 +39,12 @@ func Test_stackp(t *testing.T) {
 	t.Run("test-stackp", func(t *testing.T) {
 		t.Parallel()
 
-		d()
+		w := &bytes.Buffer{}
+
+		d(w)
 	})
 }
 
-func d() {
-	stackp()
+func d(w io.Writer) {
+	stackp(w)
 }

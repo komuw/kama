@@ -12,6 +12,7 @@ package kama
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 	"sync"
@@ -133,7 +134,7 @@ func Dir(i interface{}, c ...Config) string {
 // Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
 // whereas your code is red.
 func Stackp() {
-	stackp()
+	stackp(os.Stderr)
 }
 
 // Diffp prints a formatted diff showing the minimum line-level additions and removals that would turn old into new.
