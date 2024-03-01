@@ -64,7 +64,7 @@ jobs:
           fi
 
   check_go_compatibility:
-    name: run_tests
+    name: check_go_compatibility
     timeout-minutes: 7
     strategy:
       matrix:
