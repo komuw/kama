@@ -40,8 +40,9 @@ func Test_stackp(t *testing.T) {
 		t.Parallel()
 
 		w := &bytes.Buffer{}
-
 		d(w)
+
+		attest.Subsequence(t, w.String(), "kama.Test_stackp")
 	})
 }
 
