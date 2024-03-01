@@ -54,38 +54,38 @@ that will print:
 [
 NAME: compress/flate
 CONSTANTS: [
-	BestCompression untyped int 
-	BestSpeed untyped int 
-	DefaultCompression untyped int 
-	HuffmanOnly untyped int 
-	NoCompression untyped int 
-	]
+    BestCompression untyped int 
+    BestSpeed untyped int 
+    DefaultCompression untyped int 
+    HuffmanOnly untyped int 
+    NoCompression untyped int 
+    ]
 VARIABLES: []
 FUNCTIONS: [
-	NewReader(r io.Reader) io.ReadCloser 
-	NewReaderDict(r io.Reader, dict []byte) io.ReadCloser 
-	NewWriter(w io.Writer, level int) (*Writer, error) 
-	NewWriterDict(w io.Writer, level int, dict []byte) (*Writer, error) 
-	]
+    NewReader(r io.Reader) io.ReadCloser 
+    NewReaderDict(r io.Reader, dict []byte) io.ReadCloser 
+    NewWriter(w io.Writer, level int) (*Writer, error) 
+    NewWriterDict(w io.Writer, level int, dict []byte) (*Writer, error) 
+    ]
 TYPES: [
-	CorruptInputError int64
-		(CorruptInputError) Error() string 
-	InternalError string
-		(InternalError) Error() string 
-	ReadError struct
-		(*ReadError) Error() string 
-	Reader interface
-		(Reader) Read(p []byte) (n int, err error)
-		(Reader) ReadByte() (byte, error) 
-	Resetter interface
-		(Resetter) Reset(r io.Reader, dict []byte) error 
-	WriteError struct
-		(*WriteError) Error() string 
-	Writer struct
-		(*Writer) Close() error
-		(*Writer) Flush() error
-		(*Writer) Reset(dst io.Writer)
-		(*Writer) Write(data []byte) (n int, err error)]
+    CorruptInputError int64
+        (CorruptInputError) Error() string 
+    InternalError string
+        (InternalError) Error() string 
+    ReadError struct
+        (*ReadError) Error() string 
+    Reader interface
+        (Reader) Read(p []byte) (n int, err error)
+        (Reader) ReadByte() (byte, error) 
+    Resetter interface
+        (Resetter) Reset(r io.Reader, dict []byte) error 
+    WriteError struct
+        (*WriteError) Error() string 
+    Writer struct
+        (*Writer) Close() error
+        (*Writer) Flush() error
+        (*Writer) Reset(dst io.Writer)
+        (*Writer) Write(data []byte) (n int, err error)]
 ]
 ```
 ```bash
@@ -94,24 +94,24 @@ NAME: github.com/pkg/errors
 CONSTANTS: []
 VARIABLES: []
 FUNCTIONS: [
-	As(err error, target interface{}) bool 
-	Cause(err error) error 
-	Errorf(format string, args ...interface{}) error 
-	Is(err error, target error) bool 
-	New(message string) error 
-	Unwrap(err error) error 
-	WithMessage(err error, message string) error 
-	WithMessagef(err error, format string, args ...interface{}) error 
-	WithStack(err error) error 
-	Wrap(err error, message string) error 
-	Wrapf(err error, format string, args ...interface{}) error 
-	]
+    As(err error, target interface{}) bool 
+    Cause(err error) error 
+    Errorf(format string, args ...interface{}) error 
+    Is(err error, target error) bool 
+    New(message string) error 
+    Unwrap(err error) error 
+    WithMessage(err error, message string) error 
+    WithMessagef(err error, format string, args ...interface{}) error 
+    WithStack(err error) error 
+    Wrap(err error, message string) error 
+    Wrapf(err error, format string, args ...interface{}) error 
+    ]
 TYPES: [
-	Frame uintptr
-		(Frame) Format(s fmt.State, verb rune)
-		(Frame) MarshalText() ([]byte, error) 
-	StackTrace []Frame
-		(StackTrace) Format(s fmt.State, verb rune)]
+    Frame uintptr
+        (Frame) Format(s fmt.State, verb rune)
+        (Frame) MarshalText() ([]byte, error) 
+    StackTrace []Frame
+        (StackTrace) Format(s fmt.State, verb rune)]
 ]
 ```
 
@@ -165,15 +165,28 @@ METHODS: [
 	MultipartReader func(*http.Request) (*multipart.Reader, error) 
 	ParseForm func(*http.Request) error 
 	ParseMultipartForm func(*http.Request, int64) error 
+	PathValue func(*http.Request, string) string 
 	PostFormValue func(*http.Request, string) string 
 	ProtoAtLeast func(*http.Request, int, int) bool 
 	Referer func(*http.Request) string 
 	SetBasicAuth func(*http.Request, string, string) 
+	SetPathValue func(*http.Request, string, string) 
 	UserAgent func(*http.Request) string 
 	WithContext func(*http.Request, context.Context) *http.Request 
 	Write func(*http.Request, io.Writer) error 
 	WriteProxy func(*http.Request, io.Writer) error 
 	]
+STACK_TRACE: [
+LEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+    /home/komu/mystuff/kama/kama.go:129 github.com/komuw/kama.Dir
+    /home/komu/mystuff/kama/kama_test.go:244 github.com/komuw/kama.TestReadmeExamples.func1
+    /usr/local/go/src/testing/testing.go:1689 testing.tRunner
+    /usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: &Request{
   Method: "GET",
   URL: &URL{
