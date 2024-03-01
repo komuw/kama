@@ -5,6 +5,7 @@ Most recent version is listed first.
 # v0.0.20
 - Support older Go versions: https://github.com/komuw/kama/pull/71
 - Stackp can now write to any io.writer: https://github.com/komuw/kama/pull/74
+- Dispaly stacktrace when dumping variables: https://github.com/komuw/kama/pull/73
 
 # v0.0.19
 - Update docs: https://github.com/komuw/kama/commit/3dfdef76fbdd55a8ebed2d01dfb1cbb7c1cf2fc2
