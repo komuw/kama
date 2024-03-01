@@ -1,6 +1,8 @@
 package kama
 
 import (
+	"bytes"
+	"io"
 	"testing"
 
 	"go.akshayshah.org/attest"
@@ -14,7 +16,7 @@ func Test_getStackTrace(t *testing.T) {
 
 		got := a()
 
-		attest.Subsequence(t, got[1], "func a() []string {")
+		attest.Subsequence(t, got[0], "github.com/komuw/kama.a")
 	})
 }
 
@@ -37,10 +39,21 @@ func Test_stackp(t *testing.T) {
 	t.Run("test-stackp", func(t *testing.T) {
 		t.Parallel()
 
-		d()
+		w := &bytes.Buffer{}
+		d(w)
+
+		attest.Subsequence(t, w.String(), "kama.Test_stackp")
+	})
+
+	t.Run("test-stack", func(t *testing.T) {
+		t.Parallel()
+
+		res := Stack()
+
+		attest.Subsequence(t, res, "github.com/komuw/kama.Test_stackp")
 	})
 }
 
-func d() {
-	stackp()
+func d(w io.Writer) {
+	stackp(w)
 }
