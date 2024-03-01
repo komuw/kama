@@ -147,15 +147,15 @@ func readLastLine(file string, line int64) string {
 func reset(w io.Writer) {
 	const escape = "\x1b"
 	const r = 0
-	fmt.Fprintf(w, "%s[%dm", escape, r)
+	_, _ = fmt.Fprintf(w, "%s[%dm", escape, r)
 }
 
 func setColor(w io.Writer, code int, bold bool) {
 	const escape = "\x1b"
 	if bold {
-		fmt.Fprintf(w, "%s[1%dm", escape, code)
+		_, _ = fmt.Fprintf(w, "%s[1%dm", escape, code)
 	} else {
-		fmt.Fprintf(w, "%s[%dm", escape, code)
+		_, _ = fmt.Fprintf(w, "%s[%dm", escape, code)
 	}
 }
 
@@ -180,12 +180,12 @@ func printWithColor(w io.Writer, s, color string, bold bool) {
 	}
 
 	if noColor() {
-		fmt.Fprintln(w, s)
+		_, _ = fmt.Fprintln(w, s)
 	} else {
 		defer reset(w)
 		color = strings.ToLower(color)
 		setColor(w, colors[color], bold)
-		fmt.Fprintln(w, s)
+		_, _ = fmt.Fprintln(w, s)
 	}
 }
 
