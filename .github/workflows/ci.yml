@@ -121,7 +121,6 @@ jobs:
           go tool cover -html=coverage.out -o coverage.html
           go tool cover -func=coverage.out
 
-
   run_analysis:
     name: run_analysis
     timeout-minutes: 5
