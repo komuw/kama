@@ -84,8 +84,8 @@ KIND: %v
 SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
-STACK_TRACE: [ %v
-]
+STACK_TRACE: [
+%v]
 SNIPPET: %s
 ]
 `,
@@ -94,7 +94,7 @@ SNIPPET: %s
 		v.Signature,
 		nLf(v.Fields),
 		nLf(v.Methods),
-		w.String(),
+		strings.TrimRight(w.String(), "\n"),
 		v.Val,
 	)
 }
