@@ -5,6 +5,16 @@ KIND: array
 SIGNATURE: [[10000]int]
 FIELDS: []
 METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	github.com/komuw/kama/vars_test.go:217 github.com/komuw/kama.TestBasicVariables.func1
+[0m[131m	testing/testing.go:1689 testing.tRunner
+[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
 SNIPPET: [10000]int{
    int(0),
    int(1),

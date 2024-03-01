@@ -10,6 +10,17 @@ FIELDS: [
 	SomePublic kama.Hey 
 	]
 METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	github.com/komuw/kama/kama.go:129 github.com/komuw/kama.Dir
+[0m[131m	github.com/komuw/kama/vars_test.go:523 github.com/komuw/kama.TestPublicPrivate.func1
+[0m[131m	testing/testing.go:1689 testing.tRunner
+[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
 SNIPPET: SomeStruct{
   AAA: io.Reader(*strings.Reader) &{hello from strings NewReader 0 -1},
   SomeNilError: error(nil),

@@ -35,6 +35,17 @@ FIELDS: [
 	SomeUnsafety unsafe.Pointer 
 	]
 METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	github.com/komuw/kama/kama.go:129 github.com/komuw/kama.Dir
+[0m[131m	github.com/komuw/kama/e2e_test.go:381 github.com/komuw/kama_test.TestDir.func3
+[0m[131m	testing/testing.go:1689 testing.tRunner
+[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
 SNIPPET: &SomeStruct{
   SomeInt: int16(13),
   SomeUintptr: uintptr(64902),

@@ -13,5 +13,15 @@ METHODS: [
 	String func(*context.cancelCtx) string 
 	Value func(*context.cancelCtx, interface {}) interface {} 
 	]
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	github.com/komuw/kama/vars_test.go:398 github.com/komuw/kama.TestContexts.func2
+[0m[131m	testing/testing.go:1689 testing.tRunner
+[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
 SNIPPET: context.Background.WithCancel
 ]
