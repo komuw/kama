@@ -44,6 +44,14 @@ func Test_stackp(t *testing.T) {
 
 		attest.Subsequence(t, w.String(), "kama.Test_stackp")
 	})
+
+	t.Run("test-stack", func(t *testing.T) {
+		t.Parallel()
+
+		res := Stack()
+
+		attest.Subsequence(t, res, "github.com/komuw/kama.Test_stackp")
+	})
 }
 
 func d(w io.Writer) {

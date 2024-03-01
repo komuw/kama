@@ -11,6 +11,7 @@
 package kama
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"reflect"
@@ -135,6 +136,16 @@ func Dir(i interface{}, c ...Config) string {
 // whereas your code is red.
 func Stackp() {
 	stackp(os.Stderr)
+}
+
+// Stack returns the colorized stack trace.
+//
+// Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
+// whereas your code is red.
+func Stack() string {
+	w := &bytes.Buffer{}
+	stackp(w)
+	return w.String()
 }
 
 // Diffp prints a formatted diff showing the minimum line-level additions and removals that would turn old into new.
