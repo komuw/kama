@@ -2,6 +2,9 @@
 
 Most recent version is listed first.  
 
+# v0.0.22
+- Bugfix
+
 # v0.0.21
 - Bugfix
 

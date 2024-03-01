@@ -77,7 +77,7 @@ func getStackTrace() []string {
 	txtLast := ""
 	txtLastButOne := ""
 	for k := range frms {
-		if strings.Contains(frms[k].file, "komuw/kama") || strings.Contains(frms[k].file, "go/src/") {
+		if strings.Contains(frms[k].file, "komuw/kama") || strings.Contains(frms[k].file, "/kama/") || strings.Contains(frms[k].file, "go/src/") {
 			// Do not display expanded source code for this library or Go runtime.
 			n = n + 1
 		} else {
