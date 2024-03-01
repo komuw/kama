@@ -2,6 +2,9 @@
 
 Most recent version is listed first.  
 
+# v0.0.21
+- Bugfix
+
 # v0.0.20
 - Support older Go versions: https://github.com/komuw/kama/pull/71
 - Stackp can now write to any io.writer: https://github.com/komuw/kama/pull/74
