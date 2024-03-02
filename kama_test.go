@@ -81,9 +81,11 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 
 	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
-		attest.Ok(t,
-			os.WriteFile(path, []byte(gotContent), 0o644),
-		)
+		e := os.MkdirAll(filepath.Dir(p), 0o755)
+		attest.Ok(t, e)
+
+		err := os.WriteFile(path, []byte(gotContent), 0o644)
+		attest.Ok(t, err)
 		t.Logf("\n\t written testdata to %s\n", path)
 		return
 	}
@@ -314,7 +316,7 @@ func TestDirWithStack(t *testing.T) {
 
 			res := Dir(v.item)
 
-			path := getDataPath(t, "kama_test.go", v.tName)
+			path := getDataPath(t, "kama_test.go", "TestDirWithStack_"+v.tName)
 			dealWithTestData(t, path, res)
 		})
 	}
