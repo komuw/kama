@@ -229,7 +229,7 @@ See [testdata](testdata) directory for more examples.
 # run tests:
 export KAMA_WRITE_DATA_FOR_TESTS=YES
 unset KAMA_WRITE_DATA_FOR_TESTS
-go test -race ./... -count=1
+go test -race ./... -trimpath -count=1
 ```
 
 ## Inspiration
