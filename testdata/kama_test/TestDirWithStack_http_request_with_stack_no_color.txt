@@ -50,16 +50,10 @@ METHODS: [
 	WriteProxy func(*http.Request, io.Writer) error 
 	]
 STACK_TRACE: [
-[10mLEGEND:
- compiler: blue
- thirdParty: yellow
- yours: red
-
-[0m[131m	github.com/komuw/kama/kama.go:129 github.com/komuw/kama.Dir
-[0m[131m	github.com/komuw/kama/kama_test.go:315 github.com/komuw/kama.TestDirWithStack.func1
-[0m[131m	testing/testing.go:1689 testing.tRunner
-[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
-[0m]
+	github.com/komuw/kama/kama.go:113 github.com/komuw/kama.Dir
+	github.com/komuw/kama/kama_test.go:334 github.com/komuw/kama.TestDirWithStack.func1
+	testing/testing.go:1689 testing.tRunner
+	runtime/asm_amd64.s:1695 runtime.goexit]
 SNIPPET: &Request{
   Method: "GET",
   URL: &URL{

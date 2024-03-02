@@ -16,28 +16,23 @@ import (
 	"os"
 	"reflect"
 	"strings"
-	"sync"
-)
-
-var (
-	cfg = Config{ //nolint:gochecknoglobals
-		MaxLength:         14,
-		ShowPrivateFields: false,
-		MaxIndentLevel:    10,
-	}
-
-	onceCfg = &sync.Once{} //nolint:gochecknoglobals
 )
 
 // Config controls how printing is going to be done.
 type Config struct {
 	// MaxLength is the length of slices/maps/strings that is going to be dumped.
+	// It is 14 by default.
 	MaxLength int
 	// ShowPrivateFields dictates whether private struct fields will be dumped.
+	// It is false by default.
 	ShowPrivateFields bool
 	// MaxIndentLevel is the maximum level of indentation/recursiveness to dump to.
 	// This is especially important to set if the thing you are dumping has circular references.
+	// It is 10 by default.
 	MaxIndentLevel int
+	// NoColor controls whether stack traces are colorized.
+	// It is false by default
+	NoColor bool
 }
 
 // Dirp prints (to stdout) exported information of types, variables, packages, modules, imports.
@@ -58,35 +53,24 @@ func Dirp(i interface{}, c ...Config) {
 
 // Dir returns exported information of types, variables, packages, modules, imports.
 func Dir(i interface{}, c ...Config) string {
+	cfg := Config{ // default config.
+		MaxLength:         14,
+		ShowPrivateFields: false,
+		MaxIndentLevel:    10,
+		NoColor:           false,
+	}
 	if len(c) > 0 {
-		onceCfg.Do(func() {
-			cfg = c[0]
-			if cfg.MaxLength < 1 {
-				cfg.MaxLength = 1
-			}
-			if cfg.MaxLength > 10_000 {
-				// the upper limit of a slice is some significant fraction of the address space of a process.
-				// https://github.com/golang/go/issues/38673#issuecomment-643885108
-				cfg.MaxLength = 10_000
-			}
-
-			if cfg.MaxIndentLevel < 1 {
-				cfg.MaxIndentLevel = 10 // ie, the default
-			}
-			if cfg.MaxIndentLevel > 100 {
-				cfg.MaxIndentLevel = 100
-			}
-		})
+		cfg = c[0]
 	}
 
 	iType := reflect.TypeOf(i)
 	if iType == nil {
-		res := newVari(i)
+		res := newVari(i, cfg)
 		return res.String()
 	} else if iType.Kind() == reflect.String {
 		pat, ok := i.(string)
 		if !ok {
-			res := newVari(i)
+			res := newVari(i, cfg)
 			return res.String()
 		}
 
@@ -120,12 +104,12 @@ func Dir(i interface{}, c ...Config) string {
 
 			// If it is not a module error, then probably `i` is a variable of type string.
 			// Thus we need to create a `kama.vari`
-			res := newVari(i)
+			res := newVari(i, cfg)
 			return res.String()
 		}
 		return res.String()
 	} else {
-		res := newVari(i)
+		res := newVari(i, cfg)
 		return res.String()
 	}
 }
@@ -135,7 +119,7 @@ func Dir(i interface{}, c ...Config) string {
 // Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
 // whereas your code is red.
 func Stackp() {
-	stackp(os.Stderr)
+	stackp(os.Stderr, false)
 }
 
 // Stack returns the colorized stack trace.
@@ -144,7 +128,7 @@ func Stackp() {
 // whereas your code is red.
 func Stack() string {
 	w := &bytes.Buffer{}
-	stackp(w)
+	stackp(w, true)
 	return w.String()
 }
 

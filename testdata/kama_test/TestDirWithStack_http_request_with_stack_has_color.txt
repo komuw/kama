@@ -55,23 +55,34 @@ STACK_TRACE: [
  thirdParty: yellow
  yours: red
 
-[0m[131m	github.com/komuw/kama/vars_test.go:261 github.com/komuw/kama.TestStdlibVariables.func1
+[0m[131m	github.com/komuw/kama/kama.go:113 github.com/komuw/kama.Dir
+[0m[131m	github.com/komuw/kama/kama_test.go:334 github.com/komuw/kama.TestDirWithStack.func1
 [0m[131m	testing/testing.go:1689 testing.tRunner
 [0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
 [0m]
 SNIPPET: &Request{
-  Method: "",
-  URL: *url.URL(nil),
-  Proto: "",
-  ProtoMajor: int(0),
-  ProtoMinor: int(0),
-  Header: http.Header{(nil)},
+  Method: "GET",
+  URL: &URL{
+    Scheme: "https",
+    Host: "example.com",
+  },
+  Proto: "HTTP/1.1",
+  ProtoMajor: int(1),
+  ProtoMinor: int(1),
+  Header: http.Header{
+   "Content-Type": []string{
+   "application/octet-stream",
+      }, 
+   "Cookie": []string{
+   "hello=world",
+      }, 
+    },
   Body: io.ReadCloser nil,
   GetBody: func() (io.ReadCloser, error),
   ContentLength: int64(0),
   TransferEncoding: []string{(nil)},
   Close: false,
-  Host: "",
+  Host: "example.com",
   Form: url.Values{(nil)},
   PostForm: url.Values{(nil)},
   MultipartForm: *multipart.Form(nil),

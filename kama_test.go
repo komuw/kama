@@ -81,9 +81,11 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 
 	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
-		attest.Ok(t,
-			os.WriteFile(path, []byte(gotContent), 0o644),
-		)
+		errM := os.MkdirAll(filepath.Dir(p), 0o755)
+		attest.Ok(t, errM)
+
+		err := os.WriteFile(path, []byte(gotContent), 0o644)
+		attest.Ok(t, err)
 		t.Logf("\n\t written testdata to %s\n", path)
 		return
 	}
@@ -299,10 +301,27 @@ func TestDirWithStack(t *testing.T) {
 	tt := []struct {
 		tName string
 		item  interface{}
+		c     Config
 	}{
 		{
-			tName: "http request with stack",
+			tName: "http request with stack has color",
 			item:  req,
+			c: Config{
+				MaxLength:         14,
+				ShowPrivateFields: false,
+				MaxIndentLevel:    10,
+				NoColor:           false,
+			},
+		},
+		{
+			tName: "http request with stack no color",
+			item:  req,
+			c: Config{
+				MaxLength:         14,
+				ShowPrivateFields: false,
+				MaxIndentLevel:    10,
+				NoColor:           true,
+			},
 		},
 	}
 
@@ -312,9 +331,9 @@ func TestDirWithStack(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			res := Dir(v.item)
+			res := Dir(v.item, v.c)
 
-			path := getDataPath(t, "kama_test.go", v.tName)
+			path := getDataPath(t, "kama_test.go", "TestDirWithStack_"+v.tName)
 			dealWithTestData(t, path, res)
 		})
 	}

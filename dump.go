@@ -11,7 +11,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
+func (va vari) dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	/*
 		`compact` indicates whether the struct should be laid in one line or not
 		`hideZeroValues` indicates whether to show zeroValued vars
@@ -76,7 +76,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 	case reflect.Invalid:
 		return "<invalid>"
 	case reflect.String:
-		return dumpString(val)
+		return va.dumpString(val)
 	case reflect.Int,
 		reflect.Int8,
 		reflect.Int16,
@@ -90,7 +90,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		reflect.Float32,
 		reflect.Float64,
 		reflect.Uintptr:
-		return dumpNumbers(val)
+		return va.dumpNumbers(val)
 	case reflect.Struct:
 		// We used to use `sanity-io/litter` to do dumping.
 		// We however, decided to implement our own dump functionality.
@@ -100,7 +100,7 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		// This logic can be discarded if sanity-io/litter implements similar.
 		// see: https://github.com/sanity-io/litter/pull/43
 		fromPtr := false
-		return dumpStruct(val, fromPtr, hideZeroValues, indentLevel)
+		return va.dumpStruct(val, fromPtr, hideZeroValues, indentLevel)
 	case reflect.Ptr:
 		v := val.Elem()
 		if v.IsValid() {
@@ -108,9 +108,9 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 				fromPtr := true
 				// TODO: should we pass in `val`, itself instead of `v`
 				// that way `val.Pointer()` would happen inside `dumpStruct`
-				return dumpStruct(v, fromPtr, hideZeroValues, indentLevel)
+				return va.dumpStruct(v, fromPtr, hideZeroValues, indentLevel)
 			} else {
-				return dumpNonStructPointer(v, hideZeroValues, indentLevel)
+				return va.dumpNonStructPointer(v, hideZeroValues, indentLevel)
 			}
 		} else {
 			// `v.IsValid()` returns false if v is the zero Value.
@@ -118,17 +118,17 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 			return val.Type().String() + "(nil)"
 		}
 	case reflect.Array, reflect.Slice:
-		return dumpSlice(val, hideZeroValues, indentLevel)
+		return va.dumpSlice(val, hideZeroValues, indentLevel)
 	case reflect.Chan:
-		return dumpChan(val)
+		return va.dumpChan(val)
 	case reflect.Map:
-		return dumpMap(val, hideZeroValues, indentLevel)
+		return va.dumpMap(val, hideZeroValues, indentLevel)
 	case reflect.Bool:
 		return fmt.Sprint(val)
 	case reflect.Func:
-		return dumpFunc(val)
+		return va.dumpFunc(val)
 	case reflect.Complex64, reflect.Complex128:
-		return dumpComplexNum(val)
+		return va.dumpComplexNum(val)
 	case reflect.UnsafePointer:
 		// It is not generally safe to do anything with an unsafe.Pointer
 		// see: https://golang.org/pkg/unsafe/#Pointer
@@ -136,13 +136,13 @@ func dump(val reflect.Value, hideZeroValues bool, indentLevel int) string {
 		// do note that if we wanted we could get a uintptr via `val.Pointer()`
 		return "unsafe.Pointer"
 	case reflect.Interface:
-		return dumpInterface(val)
+		return va.dumpInterface(val)
 	default:
 		return fmt.Sprintf("%v NotImplemented", iTypeKind)
 	}
 }
 
-func dumpString(v reflect.Value) string {
+func (va vari) dumpString(v reflect.Value) string {
 	// dumps strings
 
 	adder := 1 // this is a custom string type.
@@ -155,7 +155,7 @@ func dumpString(v reflect.Value) string {
 	}
 	newLineCount := strings.Count(fmt.Sprintf("%s", v), "\n")
 
-	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength+50))) + adder + newLineCount
+	constraint := int(math.Min(float64(numEntries), float64(va.cfg.MaxLength+50))) + adder + newLineCount
 
 	s := fmt.Sprintf("%#v", v)[:constraint]
 
@@ -170,7 +170,7 @@ func dumpString(v reflect.Value) string {
 	return s
 }
 
-func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) string {
+func (va vari) dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) string {
 	/*
 		`fromPtr` indicates whether the struct is a value or a pointer; `T{}` vs `&T{}`
 		`compact` indicates whether the struct should be laid in one line or not
@@ -182,8 +182,8 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 		typeName = "&" + typeName
 	}
 
-	if indentLevel > cfg.MaxIndentLevel {
-		return fmt.Sprintf("%v: kama warning(indentation `%d` exceeds max of `%d`. Possible circular reference)", typeName, indentLevel, cfg.MaxIndentLevel)
+	if indentLevel > va.cfg.MaxIndentLevel {
+		return fmt.Sprintf("%v: kama warning(indentation `%d` exceeds max of `%d`. Possible circular reference)", typeName, indentLevel, va.cfg.MaxIndentLevel)
 	}
 
 	sep := "\n"
@@ -197,7 +197,7 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 	for i := 0; i < numFields; i++ {
 		vtf := vt.Field(i)
 		fieldd := v.Field(i)
-		if unicode.IsUpper(rune(vtf.Name[0])) || cfg.ShowPrivateFields {
+		if unicode.IsUpper(rune(vtf.Name[0])) || va.cfg.ShowPrivateFields {
 			// Only dump public fields, unless the config option for private is turned on.
 
 			if hideZeroValues && isZeroValue(fieldd) {
@@ -207,7 +207,7 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 				cpt := true
 				_ = cpt
 				hzv := true
-				val := dump(fieldd, hzv, indentLevel)
+				val := va.dump(fieldd, hzv, indentLevel)
 				s = s + fieldNameSep + vtf.Name + ": " + val + fmt.Sprintf(",%s", sep)
 			}
 		}
@@ -223,7 +223,7 @@ func dumpStruct(v reflect.Value, fromPtr, hideZeroValues bool, indentLevel int) 
 	return s
 }
 
-func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func (va vari) dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps slices & arrays
 
 	// In future(if we ever add compation) we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
@@ -232,7 +232,7 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	//     2. https://github.com/komuw/kama/pull/28
 
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength)))
+	constraint := int(math.Min(float64(numEntries), float64(va.cfg.MaxLength)))
 	typeName := v.Type().String()
 
 	newline := "\n"
@@ -245,7 +245,7 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	s := typeName + "{" + newline
 	for i := 0; i < constraint; i++ {
 		elm := v.Index(i)
-		s = s + leftSep + dump(elm, hideZeroValues, indentLevel) + "," + newline
+		s = s + leftSep + va.dump(elm, hideZeroValues, indentLevel) + "," + newline
 	}
 	if numEntries > constraint {
 		remainder := numEntries - constraint
@@ -264,7 +264,7 @@ func dumpSlice(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	return s
 }
 
-func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func (va vari) dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps maps
 
 	// In future(if we ever add compation) we could restrict compaction only to arrays/slices/maps that are of primitive(basic) types
@@ -273,7 +273,7 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	//     2. https://github.com/komuw/kama/pull/28
 
 	numEntries := v.Len()
-	constraint := int(math.Min(float64(numEntries), float64(cfg.MaxLength)))
+	constraint := int(math.Min(float64(numEntries), float64(va.cfg.MaxLength)))
 	typeName := v.Type().String()
 
 	newline := "\n"
@@ -287,13 +287,13 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	sort.Slice(keys,
 		func(i, j int) bool {
 			// it's unfortunate that we have to dump twice. In this func and in the `for range` below.
-			return dump(keys[i], hideZeroValues, indentLevel) < dump(keys[j], hideZeroValues, indentLevel)
+			return va.dump(keys[i], hideZeroValues, indentLevel) < va.dump(keys[j], hideZeroValues, indentLevel)
 		},
 	)
 	for count, key := range keys {
 		mapKey := key
 		mapVal := v.MapIndex(key)
-		s = s + leftSep + dump(mapKey, hideZeroValues, indentLevel) + ":" + colonSep + dump(mapVal, hideZeroValues, indentLevel) + ", " + newline
+		s = s + leftSep + va.dump(mapKey, hideZeroValues, indentLevel) + ":" + colonSep + va.dump(mapVal, hideZeroValues, indentLevel) + ", " + newline
 		if count > constraint {
 			remainder := numEntries - constraint
 			s = s + fmt.Sprintf("%s...<%d more redacted>..", leftSep, remainder)
@@ -313,7 +313,7 @@ func dumpMap(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	return s
 }
 
-func dumpChan(v reflect.Value) string {
+func (va vari) dumpChan(v reflect.Value) string {
 	// dumps channels
 	cap := v.Cap()
 	len := v.Len()
@@ -322,7 +322,7 @@ func dumpChan(v reflect.Value) string {
 	return fmt.Sprintf("%v %v (len=%d, cap=%d)", direction, element, len, cap)
 }
 
-func dumpFunc(v reflect.Value) string {
+func (va vari) dumpFunc(v reflect.Value) string {
 	// dumps functions
 
 	vType := v.Type()
@@ -357,7 +357,7 @@ func dumpFunc(v reflect.Value) string {
 	return typeName
 }
 
-func dumpComplexNum(v reflect.Value) string {
+func (va vari) dumpComplexNum(v reflect.Value) string {
 	// dumps complex64 and complex128 numbers
 	bits := v.Type().Bits()
 	cmp := v.Complex() // returns complex128 even for `reflect.Complex64`
@@ -367,13 +367,13 @@ func dumpComplexNum(v reflect.Value) string {
 	return fmt.Sprintf("complex128%v", cmp)
 }
 
-func dumpNonStructPointer(v reflect.Value, hideZeroValues bool, indentLevel int) string {
+func (va vari) dumpNonStructPointer(v reflect.Value, hideZeroValues bool, indentLevel int) string {
 	// dumps pointer types other than struct.
 	// ie; someIntEight := int8(14); kama.Dirp(&someIntEight)
 	// dumping for struct pointers is handled in `dumpStruct()`
 
 	pref := "&"
-	s := dump(v, hideZeroValues, indentLevel)
+	s := va.dump(v, hideZeroValues, indentLevel)
 
 	if strings.HasPrefix(s, pref) {
 		return s
@@ -381,7 +381,7 @@ func dumpNonStructPointer(v reflect.Value, hideZeroValues bool, indentLevel int)
 	return pref + s
 }
 
-func dumpNumbers(v reflect.Value) string {
+func (va vari) dumpNumbers(v reflect.Value) string {
 	// dumps numbers.
 
 	iType := v.Type()
@@ -412,7 +412,7 @@ func dumpNumbers(v reflect.Value) string {
 	}
 }
 
-func dumpInterface(v reflect.Value) string {
+func (va vari) dumpInterface(v reflect.Value) string {
 	// dump interface
 
 	name := v.Type().String() // eg; `io.Reader` or `error`

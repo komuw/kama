@@ -55,8 +55,8 @@ STACK_TRACE: [
  thirdParty: yellow
  yours: red
 
-[0m[131m	github.com/komuw/kama/kama.go:129 github.com/komuw/kama.Dir
-[0m[131m	github.com/komuw/kama/kama_test.go:244 github.com/komuw/kama.TestReadmeExamples.func1
+[0m[131m	github.com/komuw/kama/kama.go:113 github.com/komuw/kama.Dir
+[0m[131m	github.com/komuw/kama/kama_test.go:246 github.com/komuw/kama.TestReadmeExamples.func1
 [0m[131m	testing/testing.go:1689 testing.tRunner
 [0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
 [0m]

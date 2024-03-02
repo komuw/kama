@@ -17,14 +17,15 @@ const (
 	yourColor       = "red"
 )
 
-func stackp(w io.Writer) {
+func stackp(w io.Writer, noColor bool) {
 	goModCache := os.Getenv("GOMODCACHE")
 	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
 
 	traces := getStackTrace()
-	if len(traces) > 0 {
+	if len(traces) > 0 && (!noColor) {
 		printWithColor(
 			w,
+			noColor,
 			fmt.Sprintf("LEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s\n", runtimeColor, thirdPartyColor, yourColor),
 			"DEFAULT",
 			true,
@@ -34,16 +35,16 @@ func stackp(w io.Writer) {
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
 			// compiler
-			printWithColor(w, v, runtimeColor, false)
+			printWithColor(w, noColor, v, runtimeColor, false)
 		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
-			printWithColor(w, v, thirdPartyColor, false)
+			printWithColor(w, noColor, v, thirdPartyColor, false)
 		} else if re.MatchString(v) {
 			// this is code snippets
-			printWithColor(w, v, yourColor, false)
+			printWithColor(w, noColor, v, yourColor, false)
 		} else {
 			// your code
-			printWithColor(w, v, yourColor, true)
+			printWithColor(w, noColor, v, yourColor, true)
 		}
 	}
 }
@@ -159,7 +160,7 @@ func setColor(w io.Writer, code int, bold bool) {
 	}
 }
 
-func printWithColor(w io.Writer, s, color string, bold bool) {
+func printWithColor(w io.Writer, noColor bool, s, color string, bold bool) {
 	// TODO: should be iota
 	colors := map[string]int{
 		// Go compiler == compilerColor
@@ -179,7 +180,7 @@ func printWithColor(w io.Writer, s, color string, bold bool) {
 		"RESET":   0,
 	}
 
-	if noColor() {
+	if hasNoColor() || noColor {
 		_, _ = fmt.Fprintln(w, s)
 	} else {
 		defer reset(w)
@@ -189,9 +190,9 @@ func printWithColor(w io.Writer, s, color string, bold bool) {
 	}
 }
 
-// noColor indicates whether the terminal in question supports color.
+// hasNoColor indicates whether the terminal in question supports color.
 // see: https://github.com/fatih/color/blob/v1.13.0/color.go#L22-L23
-func noColor() bool {
+func hasNoColor() bool {
 	_, exists := os.LookupEnv("NO_COLOR")
 	if exists {
 		return true
