@@ -478,3 +478,11 @@ func TestAllAboutInterfaces(t *testing.T) {
 		}
 	})
 }
+
+func ExampleDirp() {
+	req, _ := http.NewRequest("GET", "https://example.com", nil)
+	req.Header.Set("Content-Type", "application/octet-stream")
+	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
+
+	kama.Dirp(req, kama.Config{NoColor: true})
+}
