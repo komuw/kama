@@ -22,7 +22,7 @@ func stackp(w io.Writer, noColor bool) {
 	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
 
 	traces := getStackTrace()
-	if len(traces) > 0 && (noColor == false) {
+	if len(traces) > 0 && (!noColor) {
 		printWithColor(
 			w,
 			noColor,
