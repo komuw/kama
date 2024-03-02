@@ -2,6 +2,9 @@
 
 Most recent version is listed first.  
 
+# v0.0.24
+- Add example: https://github.com/komuw/kama/pull/77
+
 # v0.0.23
 - Make stacktrace colorization configurable: https://github.com/komuw/kama/pull/76
 
