@@ -1,0 +1,27 @@
+
+[
+NAME: context.cancelCtx
+KIND: struct
+SIGNATURE: [*context.cancelCtx context.cancelCtx]
+FIELDS: [
+	Context context.Context 
+	]
+METHODS: [
+	Deadline func(context.cancelCtx) (time.Time, bool) 
+	Done func(*context.cancelCtx) <-chan struct {} 
+	Err func(*context.cancelCtx) error 
+	String func(*context.cancelCtx) string 
+	Value func(*context.cancelCtx, interface {}) interface {} 
+	]
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/vars_test.go:398 github.com/komuw/kama.TestContexts.func2
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: context.Background.WithCancel
+]

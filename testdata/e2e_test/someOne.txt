@@ -1,0 +1,28 @@
+
+[
+NAME: github.com/komuw/kama_test.SomeStructWithInterfaces
+KIND: struct
+SIGNATURE: [kama_test.SomeStructWithInterfaces *kama_test.SomeStructWithInterfaces]
+FIELDS: [
+	AAA io.Reader 
+	SomeNilError error 
+	SomeConcreteError error 
+	]
+METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/kama.go:129 github.com/komuw/kama.Dir
+[0m[131m	/home/komu/mystuff/kama/e2e_test.go:473 github.com/komuw/kama_test.TestAllAboutInterfaces.func1.1
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: SomeStructWithInterfaces{
+  AAA: io.Reader(*strings.Reader) &{hello from strings NewReader 0 -1},
+  SomeNilError: error(nil),
+  SomeConcreteError: error(houston something bad happened),
+}
+]

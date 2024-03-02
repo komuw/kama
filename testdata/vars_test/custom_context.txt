@@ -1,0 +1,25 @@
+
+[
+NAME: github.com/komuw/kama.customContext
+KIND: struct
+SIGNATURE: [kama.customContext *kama.customContext]
+FIELDS: []
+METHODS: [
+	Deadline func(kama.customContext) (time.Time, bool) 
+	Done func(kama.customContext) <-chan struct {} 
+	Err func(kama.customContext) error 
+	Value func(kama.customContext, interface {}) interface {} 
+	]
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/vars_test.go:398 github.com/komuw/kama.TestContexts.func2
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: customContext{
+}
+]

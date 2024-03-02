@@ -1,0 +1,21 @@
+
+[
+NAME: github.com/komuw/kama.customerID
+KIND: uint16
+SIGNATURE: [kama.customerID]
+FIELDS: []
+METHODS: [
+	ID func(kama.customerID) uint16 
+	]
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/vars_test.go:217 github.com/komuw/kama.TestBasicVariables.func1
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: kama.customerID(9)
+]

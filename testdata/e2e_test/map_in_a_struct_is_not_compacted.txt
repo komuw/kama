@@ -1,0 +1,42 @@
+
+[
+NAME: github.com/komuw/kama_test.someStructWithMap
+KIND: struct
+SIGNATURE: [kama_test.someStructWithMap *kama_test.someStructWithMap]
+FIELDS: [
+	XX map[int]string 
+	]
+METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/kama.go:129 github.com/komuw/kama.Dir
+[0m[131m	/home/komu/mystuff/kama/e2e_test.go:270 github.com/komuw/kama_test.TestDir.func1
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: someStructWithMap{
+  XX: map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   ...<9986 more redacted>..
+    },
+}
+]

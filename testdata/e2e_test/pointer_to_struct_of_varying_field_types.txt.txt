@@ -1,0 +1,187 @@
+
+[
+NAME: github.com/komuw/kama_test.SomeStruct
+KIND: struct
+SIGNATURE: [*kama_test.SomeStruct kama_test.SomeStruct]
+FIELDS: [
+	SomeInt int16 
+	SomeUintptr uintptr 
+	SliceOfHttpRequest []http.Request 
+	OneHttpRequest http.Request 
+	EmptyString string 
+	SmallString string 
+	LargeString string 
+	DistinctType kama_test.Distance 
+	SomeNilError error 
+	SomeConcreteError error 
+	LargeSlice []int 
+	LargeMap map[int]string 
+	UndirectedChan chan int 
+	DirectedChan chan<- bool 
+	SomeBool bool 
+	NonIntializedFuncClosure func() (io.ReadCloser, error) 
+	NonIntializedFuncFromStdLib http.HandlerFunc 
+	NonIntializedFuncWithReturn kama_test.FuncWithReturn 
+	IntializedFuncClosure func() (io.ReadCloser, error) 
+	IntializedFuncFromStdLib http.HandlerFunc 
+	IntializedFuncWithReturn kama_test.FuncWithReturn 
+	ZeroPointerStruct *url.URL 
+	NonZeroPointerStruct *url.URL 
+	EvenMoreUrl *url.URL 
+	SliceOfNonZeroPointerStruct []*url.URL 
+	ComplexxySixFour complex64 
+	ComplexyOneTwoEight complex128 
+	NonStructPointer *int8 
+	SomeUnsafety unsafe.Pointer 
+	]
+METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/kama.go:129 github.com/komuw/kama.Dir
+[0m[131m	/home/komu/mystuff/kama/e2e_test.go:383 github.com/komuw/kama_test.TestDir.func3
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: &SomeStruct{
+  SomeInt: int16(13),
+  SomeUintptr: uintptr(64902),
+  SliceOfHttpRequest: []http.Request{
+   Request{
+      Method: "0",
+    },
+   Request{
+      Method: "1",
+    },
+   Request{
+      Method: "2",
+    },
+   Request{
+      Method: "3",
+    },
+   Request{
+      Method: "4",
+    },
+   Request{
+      Method: "5",
+    },
+   Request{
+      Method: "6",
+    },
+   Request{
+      Method: "7",
+    },
+   Request{
+      Method: "8",
+    },
+   Request{
+      Method: "9",
+    },
+   Request{
+      Method: "10",
+    },
+   Request{
+      Method: "11",
+    },
+   Request{
+      Method: "12",
+    },
+   Request{
+      Method: "13",
+    },
+     ...<86 more redacted>..
+    },
+  OneHttpRequest: Request{
+    Method: "Hello",
+  },
+  EmptyString: "",
+  SmallString: "What up?",
+  LargeString: "AT last the sleepy atmosphere was stirred—and vigorously: the murder trial came on in the ...<3414 more redacted>..,
+  DistinctType: kama_test.Distance(9131),
+  SomeNilError: error(nil),
+  SomeConcreteError: error(Houston something bad happened),
+  LargeSlice: []int{
+   int(0),
+   int(1),
+   int(2),
+   int(3),
+   int(4),
+   int(5),
+   int(6),
+   int(7),
+   int(8),
+   int(9),
+   int(10),
+   int(11),
+   int(12),
+   int(13),
+     ...<9986 more redacted>..
+    },
+  LargeMap: map[int]string{
+   int(0): "0", 
+   int(1): "1", 
+   int(10): "10", 
+   int(100): "100", 
+   int(1000): "1000", 
+   int(1001): "1001", 
+   int(1002): "1002", 
+   int(1003): "1003", 
+   int(1004): "1004", 
+   int(1005): "1005", 
+   int(1006): "1006", 
+   int(1007): "1007", 
+   int(1008): "1008", 
+   int(1009): "1009", 
+   int(101): "101", 
+   int(1010): "1010", 
+   ...<9986 more redacted>..
+    },
+  UndirectedChan: chan int (len=122, cap=10000),
+  DirectedChan: chan<- bool (len=1, cap=13),
+  SomeBool: true,
+  NonIntializedFuncClosure: func() (io.ReadCloser, error),
+  NonIntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
+  NonIntializedFuncWithReturn: kama_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
+  IntializedFuncClosure: func() (io.ReadCloser, error),
+  IntializedFuncFromStdLib: http.HandlerFunc(http.ResponseWriter, *http.Request),
+  IntializedFuncWithReturn: kama_test.FuncWithReturn(http.ResponseWriter) (uint16, error),
+  ZeroPointerStruct: *url.URL(nil),
+  NonZeroPointerStruct: &URL{},
+  EvenMoreUrl: &URL{
+    Path: "/some/path",
+  },
+  SliceOfNonZeroPointerStruct: []*url.URL{
+   &URL{
+      Path: "1",
+    },
+   &URL{
+      Path: "2",
+    },
+   &URL{
+      Path: "3",
+    },
+   &URL{
+      Path: "4",
+    },
+   &URL{
+      Path: "5",
+    },
+   &URL{
+      Path: "6",
+    },
+   &URL{
+      Path: "7",
+    },
+   &URL{
+      Path: "8",
+    },
+    },
+  ComplexxySixFour: complex64(5+7i),
+  ComplexyOneTwoEight: complex128(5+7i),
+  NonStructPointer: &int8(14),
+  SomeUnsafety: unsafe.Pointer,
+}
+]

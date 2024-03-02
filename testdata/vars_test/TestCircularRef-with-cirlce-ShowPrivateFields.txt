@@ -1,0 +1,47 @@
+
+[
+NAME: github.com/komuw/kama.Client
+KIND: struct
+SIGNATURE: [*kama.Client kama.Client]
+FIELDS: [
+	Public string 
+	]
+METHODS: []
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/kama.go:129 github.com/komuw/kama.Dir
+[0m[131m	/home/komu/mystuff/kama/vars_test.go:607 github.com/komuw/kama.TestCircularRef.func2
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: &Client{
+  Public: "PublicName",
+  srv: srvRef{
+    cli: &Client{
+      Public: "PublicName",
+      srv: srvRef{
+        cli: &Client{
+          Public: "PublicName",
+          srv: srvRef{
+            cli: &Client{
+              Public: "PublicName",
+              srv: srvRef{
+                cli: &Client{
+                  Public: "PublicName",
+                  srv: srvRef{
+                    cli: &Client: kama warning(indentation `11` exceeds max of `10`. Possible circular reference),
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+]

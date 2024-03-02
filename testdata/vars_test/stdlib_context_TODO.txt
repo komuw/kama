@@ -1,0 +1,25 @@
+
+[
+NAME: context.todoCtx
+KIND: struct
+SIGNATURE: [context.todoCtx *context.todoCtx]
+FIELDS: []
+METHODS: [
+	Deadline func(context.todoCtx) (time.Time, bool) 
+	Done func(context.todoCtx) <-chan struct {} 
+	Err func(context.todoCtx) error 
+	String func(context.todoCtx) string 
+	Value func(context.todoCtx, interface {}) interface {} 
+	]
+STACK_TRACE: [
+[10mLEGEND:
+ compiler: blue
+ thirdParty: yellow
+ yours: red
+
+[0m[131m	/home/komu/mystuff/kama/vars_test.go:398 github.com/komuw/kama.TestContexts.func2
+[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
+[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m]
+SNIPPET: context.TODO
+]
