@@ -428,6 +428,8 @@ func TestContexts(t *testing.T) {
 }
 
 func TestLong(t *testing.T) {
+	t.Parallel()
+
 	type Hey struct {
 		BigSlice  []int
 		BigArray  [10_000]int

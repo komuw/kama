@@ -17,7 +17,7 @@ STACK_TRACE: [
  yours: red
 
 [0m[131m	github.com/komuw/kama/kama.go:113 github.com/komuw/kama.Dir
-[0m[131m	github.com/komuw/kama/vars_test.go:532 github.com/komuw/kama.TestPublicPrivate.func1
+[0m[131m	github.com/komuw/kama/vars_test.go:534 github.com/komuw/kama.TestPublicPrivate.func1
 [0m[131m	testing/testing.go:1689 testing.tRunner
 [0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
 [0m]
