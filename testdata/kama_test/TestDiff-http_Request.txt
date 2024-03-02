@@ -55,12 +55,12 @@
   thirdParty: yellow
   yours: red
  
- [0m[131m	/home/komu/mystuff/kama/kama.go:129 github.com/komuw/kama.Dir
--[0m[131m	/home/komu/mystuff/kama/kama.go:161 github.com/komuw/kama.Diff
-+[0m[131m	/home/komu/mystuff/kama/kama.go:162 github.com/komuw/kama.Diff
- [0m[131m	/home/komu/mystuff/kama/kama_test.go:286 github.com/komuw/kama.TestDiff.func1
- [0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
- [0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+ [0m[131m	github.com/komuw/kama/kama.go:129 github.com/komuw/kama.Dir
+-[0m[131m	github.com/komuw/kama/kama.go:161 github.com/komuw/kama.Diff
++[0m[131m	github.com/komuw/kama/kama.go:162 github.com/komuw/kama.Diff
+ [0m[131m	github.com/komuw/kama/kama_test.go:286 github.com/komuw/kama.TestDiff.func1
+ [0m[131m	testing/testing.go:1689 testing.tRunner
+ [0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
  [0m]
  SNIPPET: Request{
 -  Method: "GET",

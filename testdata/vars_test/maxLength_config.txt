@@ -16,9 +16,9 @@ STACK_TRACE: [
  thirdParty: yellow
  yours: red
 
-[0m[131m	/home/komu/mystuff/kama/vars_test.go:469 github.com/komuw/kama.TestLong.func1
-[0m[34m	/usr/local/go/src/testing/testing.go:1689 testing.tRunner
-[0m[34m	/usr/local/go/src/runtime/asm_amd64.s:1695 runtime.goexit
+[0m[131m	github.com/komuw/kama/vars_test.go:469 github.com/komuw/kama.TestLong.func1
+[0m[131m	testing/testing.go:1689 testing.tRunner
+[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
 [0m]
 SNIPPET: Hey{
   BigSlice: []int{
