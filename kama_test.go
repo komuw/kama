@@ -301,10 +301,27 @@ func TestDirWithStack(t *testing.T) {
 	tt := []struct {
 		tName string
 		item  interface{}
+		c     Config
 	}{
 		{
-			tName: "http request with stack",
+			tName: "http request with stack has color",
 			item:  req,
+			c: Config{
+				MaxLength:         14,
+				ShowPrivateFields: false,
+				MaxIndentLevel:    10,
+				NoColor:           false,
+			},
+		},
+		{
+			tName: "http request with stack no color",
+			item:  req,
+			c: Config{
+				MaxLength:         14,
+				ShowPrivateFields: false,
+				MaxIndentLevel:    10,
+				NoColor:           true,
+			},
 		},
 	}
 
@@ -314,7 +331,7 @@ func TestDirWithStack(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			res := Dir(v.item)
+			res := Dir(v.item, v.c)
 
 			path := getDataPath(t, "kama_test.go", "TestDirWithStack_"+v.tName)
 			dealWithTestData(t, path, res)

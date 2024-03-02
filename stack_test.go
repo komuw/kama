@@ -55,5 +55,5 @@ func Test_stackp(t *testing.T) {
 }
 
 func d(w io.Writer) {
-	stackp(w)
+	stackp(w, false)
 }

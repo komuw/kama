@@ -100,7 +100,7 @@ func (v vari) String() string {
 	}
 
 	w := &bytes.Buffer{}
-	stackp(w)
+	stackp(w, v.cfg.NoColor)
 
 	return fmt.Sprintf(
 		`

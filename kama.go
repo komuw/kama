@@ -21,12 +21,18 @@ import (
 // Config controls how printing is going to be done.
 type Config struct {
 	// MaxLength is the length of slices/maps/strings that is going to be dumped.
+	// It is 14 by default.
 	MaxLength int
 	// ShowPrivateFields dictates whether private struct fields will be dumped.
+	// It is false by default.
 	ShowPrivateFields bool
 	// MaxIndentLevel is the maximum level of indentation/recursiveness to dump to.
 	// This is especially important to set if the thing you are dumping has circular references.
+	// It is 10 by default.
 	MaxIndentLevel int
+	// NoColor controls whether stack traces are colorized.
+	// It is false by default
+	NoColor bool
 }
 
 // Dirp prints (to stdout) exported information of types, variables, packages, modules, imports.
@@ -51,6 +57,7 @@ func Dir(i interface{}, c ...Config) string {
 		MaxLength:         14,
 		ShowPrivateFields: false,
 		MaxIndentLevel:    10,
+		NoColor:           false,
 	}
 	if len(c) > 0 {
 		cfg = c[0]
@@ -112,7 +119,7 @@ func Dir(i interface{}, c ...Config) string {
 // Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
 // whereas your code is red.
 func Stackp() {
-	stackp(os.Stderr)
+	stackp(os.Stderr, false)
 }
 
 // Stack returns the colorized stack trace.
@@ -121,7 +128,7 @@ func Stackp() {
 // whereas your code is red.
 func Stack() string {
 	w := &bytes.Buffer{}
-	stackp(w)
+	stackp(w, true)
 	return w.String()
 }
 
