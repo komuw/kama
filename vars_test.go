@@ -8,7 +8,6 @@ import (
 	"math"
 	"net/http"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 )
@@ -211,7 +210,14 @@ func TestBasicVariables(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			res := newVari(v.variable)
+			res := newVari(
+				v.variable,
+				Config{
+					MaxLength:         14,
+					ShowPrivateFields: false,
+					MaxIndentLevel:    10,
+				},
+			)
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
@@ -242,7 +248,14 @@ func TestStdlibVariables(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			res := newVari(v.variable)
+			res := newVari(
+				v.variable,
+				Config{
+					MaxLength:         14,
+					ShowPrivateFields: false,
+					MaxIndentLevel:    10,
+				},
+			)
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
@@ -300,7 +313,14 @@ func TestSliceMap(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			res := newVari(v.variable)
+			res := newVari(
+				v.variable,
+				Config{
+					MaxLength:         14,
+					ShowPrivateFields: false,
+					MaxIndentLevel:    10,
+				},
+			)
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
@@ -392,7 +412,14 @@ func TestContexts(t *testing.T) {
 		t.Run(v.tName, func(t *testing.T) {
 			t.Parallel()
 
-			res := newVari(v.variable)
+			res := newVari(
+				v.variable,
+				Config{
+					MaxLength:         14,
+					ShowPrivateFields: false,
+					MaxIndentLevel:    10,
+				},
+			)
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
@@ -401,10 +428,6 @@ func TestContexts(t *testing.T) {
 }
 
 func TestLong(t *testing.T) {
-	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-	oldCfg := cfg
-
 	type Hey struct {
 		BigSlice  []int
 		BigArray  [10_000]int
@@ -430,7 +453,11 @@ func TestLong(t *testing.T) {
 		{
 			tName:    "default_config",
 			variable: h,
-			c:        oldCfg,
+			c: Config{
+				MaxLength:         14,
+				ShowPrivateFields: false,
+				MaxIndentLevel:    10,
+			},
 		},
 		{
 			tName:    "maxLength_config",
@@ -453,17 +480,9 @@ func TestLong(t *testing.T) {
 		v := v
 
 		t.Run(v.tName, func(t *testing.T) {
-			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
+			t.Parallel()
 
-			{ // Set the new config and schedule to return old config.
-				onceCfg = &sync.Once{}
-				_ = Dir("", v.c)
-				t.Cleanup(func() {
-					cfg = oldCfg
-				})
-			}
-
-			res := newVari(v.variable)
+			res := newVari(v.variable, v.c)
 
 			path := getDataPath(t, "vars_test.go", v.tName)
 			dealWithTestData(t, path, res.String())
@@ -472,10 +491,7 @@ func TestLong(t *testing.T) {
 }
 
 func TestPublicPrivate(t *testing.T) {
-	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-	oldCfg := cfg
-
+	t.Parallel()
 	type Hey struct {
 		Name       string
 		agePrivate int
@@ -502,14 +518,7 @@ func TestPublicPrivate(t *testing.T) {
 		}
 
 		t.Run(tName, func(t *testing.T) {
-			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-			{ // Set the new config and schedule to return old config.
-				onceCfg = &sync.Once{}
-				t.Cleanup(func() {
-					cfg = oldCfg
-				})
-			}
+			t.Parallel()
 
 			var res string
 			switch name {
@@ -534,14 +543,7 @@ func TestPublicPrivate(t *testing.T) {
 		x := http.Request{Method: "Hello"}
 
 		t.Run(tName, func(t *testing.T) {
-			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-			{ // Set the new config and schedule to return old config.
-				onceCfg = &sync.Once{}
-				t.Cleanup(func() {
-					cfg = oldCfg
-				})
-			}
+			t.Parallel()
 
 			var res string
 			switch name {
@@ -571,16 +573,7 @@ type srvRef struct {
 }
 
 func TestCircularRef(t *testing.T) {
-	// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-	oldCfg := cfg
-
-	{ // Set the new config and schedule to return old config.
-		onceCfg = &sync.Once{}
-		t.Cleanup(func() {
-			cfg = oldCfg
-		})
-	}
+	t.Parallel()
 
 	for _, name := range []string{"ShowPrivateFields", "DoNotShowPrivateFields"} {
 		name := name
@@ -590,14 +583,7 @@ func TestCircularRef(t *testing.T) {
 		x.srv.cli = x // circular
 
 		t.Run(tName, func(t *testing.T) {
-			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-			{ // Set the new config and schedule to return old config.
-				onceCfg = &sync.Once{}
-				t.Cleanup(func() {
-					cfg = oldCfg
-				})
-			}
+			t.Parallel()
 
 			var res string
 			switch name {
@@ -622,14 +608,7 @@ func TestCircularRef(t *testing.T) {
 		x.srv.cli = &Client{Public: "NewPubName"} // no circle
 
 		t.Run(tName, func(t *testing.T) {
-			// t.Parallel() // This cannot be ran in Parallel since it mutates a global var.
-
-			{ // Set the new config and schedule to return old config.
-				onceCfg = &sync.Once{}
-				t.Cleanup(func() {
-					cfg = oldCfg
-				})
-			}
+			t.Parallel()
 
 			var res string
 			switch name {

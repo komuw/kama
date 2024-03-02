@@ -16,9 +16,29 @@ type vari struct {
 	Fields    []string
 	Methods   []string
 	Val       string
+
+	cfg Config
 }
 
-func newVari(i interface{}) vari {
+func newVari(i interface{}, cfg Config) vari {
+	{ // config validation.
+		if cfg.MaxLength < 1 {
+			cfg.MaxLength = 1
+		}
+		if cfg.MaxLength > 10_000 {
+			// the upper limit of a slice is some significant fraction of the address space of a process.
+			// https://github.com/golang/go/issues/38673#issuecomment-643885108
+			cfg.MaxLength = 10_000
+		}
+
+		if cfg.MaxIndentLevel < 1 {
+			cfg.MaxIndentLevel = 10 // ie, the default
+		}
+		if cfg.MaxIndentLevel > 100 {
+			cfg.MaxIndentLevel = 100
+		}
+	}
+
 	iType := reflect.TypeOf(i)
 	valueOfi := reflect.ValueOf(i)
 	hideZeroValues := false
@@ -26,20 +46,24 @@ func newVari(i interface{}) vari {
 
 	if iType == nil {
 		// TODO: maybe there is a way in reflect to diffrentiate the various types of nil
-		return vari{
+		v := vari{
 			Name:      "nil",
 			Kind:      reflect.Ptr,
 			Signature: []string{"nil"},
-			Val:       dump(valueOfi, hideZeroValues, indentLevel),
+			cfg:       cfg,
 		}
+		v.Val = v.dump(valueOfi, hideZeroValues, indentLevel)
+		return v
 	}
 	if iType.Kind() == reflect.Pointer && valueOfi.IsNil() && valueOfi.IsZero() {
-		return vari{
+		v := vari{
 			Name:      "unknown",
 			Kind:      reflect.Ptr,
 			Signature: []string{fmt.Sprintf("%v", iType)},
-			Val:       dump(valueOfi, hideZeroValues, indentLevel),
+			cfg:       cfg,
 		}
+		v.Val = v.dump(valueOfi, hideZeroValues, indentLevel)
+		return v
 	}
 
 	typeKind := getKind(i)
@@ -49,14 +73,16 @@ func newVari(i interface{}) vari {
 	fields := getAllFields(i)
 	methods := trimMethods(getAllMethods(i))
 
-	return vari{
+	v := vari{
 		Name:      typeName,
 		Kind:      typeKind,
 		Signature: typeSig,
 		Fields:    fields,
 		Methods:   methods,
-		Val:       dump(valueOfi, hideZeroValues, indentLevel),
+		cfg:       cfg,
 	}
+	v.Val = v.dump(valueOfi, hideZeroValues, indentLevel)
+	return v
 }
 
 func (v vari) String() string {

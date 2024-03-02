@@ -16,17 +16,6 @@ import (
 	"os"
 	"reflect"
 	"strings"
-	"sync"
-)
-
-var (
-	cfg = Config{ //nolint:gochecknoglobals
-		MaxLength:         14,
-		ShowPrivateFields: false,
-		MaxIndentLevel:    10,
-	}
-
-	onceCfg = &sync.Once{} //nolint:gochecknoglobals
 )
 
 // Config controls how printing is going to be done.
@@ -58,35 +47,23 @@ func Dirp(i interface{}, c ...Config) {
 
 // Dir returns exported information of types, variables, packages, modules, imports.
 func Dir(i interface{}, c ...Config) string {
+	cfg := Config{ // default config.
+		MaxLength:         14,
+		ShowPrivateFields: false,
+		MaxIndentLevel:    10,
+	}
 	if len(c) > 0 {
-		onceCfg.Do(func() {
-			cfg = c[0]
-			if cfg.MaxLength < 1 {
-				cfg.MaxLength = 1
-			}
-			if cfg.MaxLength > 10_000 {
-				// the upper limit of a slice is some significant fraction of the address space of a process.
-				// https://github.com/golang/go/issues/38673#issuecomment-643885108
-				cfg.MaxLength = 10_000
-			}
-
-			if cfg.MaxIndentLevel < 1 {
-				cfg.MaxIndentLevel = 10 // ie, the default
-			}
-			if cfg.MaxIndentLevel > 100 {
-				cfg.MaxIndentLevel = 100
-			}
-		})
+		cfg = c[0]
 	}
 
 	iType := reflect.TypeOf(i)
 	if iType == nil {
-		res := newVari(i)
+		res := newVari(i, cfg)
 		return res.String()
 	} else if iType.Kind() == reflect.String {
 		pat, ok := i.(string)
 		if !ok {
-			res := newVari(i)
+			res := newVari(i, cfg)
 			return res.String()
 		}
 
@@ -120,12 +97,12 @@ func Dir(i interface{}, c ...Config) string {
 
 			// If it is not a module error, then probably `i` is a variable of type string.
 			// Thus we need to create a `kama.vari`
-			res := newVari(i)
+			res := newVari(i, cfg)
 			return res.String()
 		}
 		return res.String()
 	} else {
-		res := newVari(i)
+		res := newVari(i, cfg)
 		return res.String()
 	}
 }
