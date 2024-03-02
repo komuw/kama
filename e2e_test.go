@@ -161,8 +161,8 @@ func dealWithTestData(t *testing.T, path, gotContent string) {
 
 	writeData := os.Getenv(kamaWriteDataForTests) != ""
 	if writeData {
-		e := os.MkdirAll(filepath.Dir(p), 0o755)
-		attest.Ok(t, e)
+		errM := os.MkdirAll(filepath.Dir(p), 0o755)
+		attest.Ok(t, errM)
 
 		err := os.WriteFile(path, []byte(gotContent), 0o644)
 		attest.Ok(t, err)
