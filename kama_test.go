@@ -310,7 +310,7 @@ func TestDirWithStack(t *testing.T) {
 				MaxLength:         14,
 				ShowPrivateFields: false,
 				MaxIndentLevel:    10,
-				NoColor:           false,
+				ShowColor:         true,
 			},
 		},
 		{
@@ -320,7 +320,7 @@ func TestDirWithStack(t *testing.T) {
 				MaxLength:         14,
 				ShowPrivateFields: false,
 				MaxIndentLevel:    10,
-				NoColor:           true,
+				ShowColor:         false,
 			},
 		},
 	}
