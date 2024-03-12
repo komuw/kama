@@ -52,7 +52,8 @@ METHODS: [
 STACK_TRACE: [
 	github.com/komuw/kama/vars_test.go:261 github.com/komuw/kama.TestStdlibVariables.func1
 	testing/testing.go:1689 testing.tRunner
-	runtime/asm_amd64.s:1695 runtime.goexit]
+	runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: &Request{
   Method: "",
   URL: *url.URL(nil),

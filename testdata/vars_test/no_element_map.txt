@@ -8,6 +8,7 @@ METHODS: []
 STACK_TRACE: [
 	github.com/komuw/kama/vars_test.go:326 github.com/komuw/kama.TestSliceMap.func1
 	testing/testing.go:1689 testing.tRunner
-	runtime/asm_amd64.s:1695 runtime.goexit]
+	runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: map[string]int{}
 ]

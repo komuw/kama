@@ -53,7 +53,8 @@ STACK_TRACE: [
 	github.com/komuw/kama/kama.go:113 github.com/komuw/kama.Dir
 	github.com/komuw/kama/kama_test.go:246 github.com/komuw/kama.TestReadmeExamples.func1
 	testing/testing.go:1689 testing.tRunner
-	runtime/asm_amd64.s:1695 runtime.goexit]
+	runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: &Request{
   Method: "GET",
   URL: &URL{

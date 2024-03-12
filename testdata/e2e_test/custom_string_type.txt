@@ -12,6 +12,7 @@ STACK_TRACE: [
 	github.com/komuw/kama/kama.go:74 github.com/komuw/kama.Dir
 	github.com/komuw/kama/e2e_test.go:270 github.com/komuw/kama_test.TestDir.func1
 	testing/testing.go:1689 testing.tRunner
-	runtime/asm_amd64.s:1695 runtime.goexit]
+	runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: secretKey(T<REDACTED>)
 ]

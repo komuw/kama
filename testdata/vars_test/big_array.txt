@@ -8,7 +8,8 @@ METHODS: []
 STACK_TRACE: [
 	github.com/komuw/kama/vars_test.go:223 github.com/komuw/kama.TestBasicVariables.func1
 	testing/testing.go:1689 testing.tRunner
-	runtime/asm_amd64.s:1695 runtime.goexit]
+	runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: [10000]int{
    int(0),
    int(1),
