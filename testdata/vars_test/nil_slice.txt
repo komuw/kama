@@ -6,14 +6,9 @@ SIGNATURE: [[]string]
 FIELDS: []
 METHODS: []
 STACK_TRACE: [
-[10mLEGEND:
- compiler: blue
- thirdParty: yellow
- yours: red
-
-[0m[131m	github.com/komuw/kama/vars_test.go:326 github.com/komuw/kama.TestSliceMap.func1
-[0m[131m	testing/testing.go:1689 testing.tRunner
-[0m[131m	runtime/asm_amd64.s:1695 runtime.goexit
-[0m]
+	github.com/komuw/kama/vars_test.go:326 github.com/komuw/kama.TestSliceMap.func1
+	testing/testing.go:1689 testing.tRunner
+	runtime/asm_amd64.s:1695 runtime.goexit
+]
 SNIPPET: []string{(nil)}
 ]

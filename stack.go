@@ -17,15 +17,15 @@ const (
 	yourColor       = "red"
 )
 
-func stackp(w io.Writer, noColor bool) {
+func stackp(w io.Writer, ShowColor bool) {
 	goModCache := os.Getenv("GOMODCACHE")
 	re := regexp.MustCompile(`\d:`) // this pattern is the one created in `readLastLine()`
 
 	traces := getStackTrace()
-	if len(traces) > 0 && (!noColor) {
+	if len(traces) > 0 && ShowColor {
 		printWithColor(
 			w,
-			noColor,
+			ShowColor,
 			fmt.Sprintf("LEGEND:\n compiler: %s\n thirdParty: %s\n yours: %s\n", runtimeColor, thirdPartyColor, yourColor),
 			"DEFAULT",
 			true,
@@ -35,16 +35,16 @@ func stackp(w io.Writer, noColor bool) {
 	for _, v := range traces {
 		if strings.Contains(v, "go/src/") {
 			// compiler
-			printWithColor(w, noColor, v, runtimeColor, false)
+			printWithColor(w, ShowColor, v, runtimeColor, false)
 		} else if goModCache != "" && strings.Contains(v, goModCache) {
 			// third party
-			printWithColor(w, noColor, v, thirdPartyColor, false)
+			printWithColor(w, ShowColor, v, thirdPartyColor, false)
 		} else if re.MatchString(v) {
 			// this is code snippets
-			printWithColor(w, noColor, v, yourColor, false)
+			printWithColor(w, ShowColor, v, yourColor, false)
 		} else {
 			// your code
-			printWithColor(w, noColor, v, yourColor, true)
+			printWithColor(w, ShowColor, v, yourColor, true)
 		}
 	}
 }
@@ -160,7 +160,7 @@ func setColor(w io.Writer, code int, bold bool) {
 	}
 }
 
-func printWithColor(w io.Writer, noColor bool, s, color string, bold bool) {
+func printWithColor(w io.Writer, ShowColor bool, s, color string, bold bool) {
 	// TODO: should be iota
 	colors := map[string]int{
 		// Go compiler == compilerColor
@@ -180,7 +180,7 @@ func printWithColor(w io.Writer, noColor bool, s, color string, bold bool) {
 		"RESET":   0,
 	}
 
-	if hasNoColor() || noColor {
+	if hasNoColor() || !ShowColor {
 		_, _ = fmt.Fprintln(w, s)
 	} else {
 		defer reset(w)

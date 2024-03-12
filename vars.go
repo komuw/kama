@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"unicode"
 )
 
 // vari represents a variable
@@ -100,7 +101,7 @@ func (v vari) String() string {
 	}
 
 	w := &bytes.Buffer{}
-	stackp(w, v.cfg.NoColor)
+	stackp(w, v.cfg.ShowColor)
 
 	return fmt.Sprintf(
 		`
@@ -111,7 +112,8 @@ SIGNATURE: %v
 FIELDS: %v
 METHODS: %v
 STACK_TRACE: [
-%v]
+%v
+]
 SNIPPET: %s
 ]
 `,
@@ -120,7 +122,7 @@ SNIPPET: %s
 		v.Signature,
 		nLf(v.Fields),
 		nLf(v.Methods),
-		strings.TrimRight(w.String(), "\n"),
+		strings.TrimRightFunc(w.String(), unicode.IsSpace),
 		v.Val,
 	)
 }

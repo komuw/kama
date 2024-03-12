@@ -484,5 +484,5 @@ func ExampleDirp() {
 	req.Header.Set("Content-Type", "application/octet-stream")
 	req.AddCookie(&http.Cookie{Name: "hello", Value: "world"})
 
-	kama.Dirp(req, kama.Config{NoColor: true})
+	kama.Dirp(req, kama.Config{ShowColor: false})
 }

@@ -30,9 +30,9 @@ type Config struct {
 	// This is especially important to set if the thing you are dumping has circular references.
 	// It is 10 by default.
 	MaxIndentLevel int
-	// NoColor controls whether stack traces are colorized.
+	// ShowColor controls whether stack traces are colorized.
 	// It is false by default
-	NoColor bool
+	ShowColor bool
 }
 
 // Dirp prints (to stdout) exported information of types, variables, packages, modules, imports.
@@ -57,7 +57,7 @@ func Dir(i interface{}, c ...Config) string {
 		MaxLength:         14,
 		ShowPrivateFields: false,
 		MaxIndentLevel:    10,
-		NoColor:           false,
+		ShowColor:         false,
 	}
 	if len(c) > 0 {
 		cfg = c[0]
@@ -119,16 +119,16 @@ func Dir(i interface{}, c ...Config) string {
 // Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
 // whereas your code is red.
 func Stackp() {
-	stackp(os.Stderr, false)
+	stackp(os.Stderr, true)
 }
 
-// Stack returns the colorized stack trace.
+// Stack returns the stack trace.
 //
 // Stack trace from the runtime/stdlib is colored blue, third party libraries is yellow
 // whereas your code is red.
 func Stack() string {
 	w := &bytes.Buffer{}
-	stackp(w, true)
+	stackp(w, false)
 	return w.String()
 }
 

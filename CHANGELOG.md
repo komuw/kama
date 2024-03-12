@@ -2,6 +2,9 @@
 
 Most recent version is listed first.  
 
+# v0.0.25
+- Do not colorize stack traces by default: https://github.com/komuw/kama/pull/78
+
 # v0.0.24
 - Add example: https://github.com/komuw/kama/pull/77
 
